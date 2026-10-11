@@ -1,2 +1,4 @@
-# SDLC_G3
-E commerce excercise as MA course project.
+# SDLC\_G3
+
+E commerce exercise as MA course project.
+
