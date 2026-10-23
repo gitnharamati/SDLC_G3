@@ -1,0 +1,264 @@
+<!doctype html><html><head><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script type='text/javascript' nonce='6IVXAr4jImoqtfLCCFVL/A==' src='https://76255444-a6f2-4616-9079-4796e1df52e7.frame.claudeusercontent.com/QZpjMVVZHHtzIAzSl7yaADDp73EqrQ6_NP19-MZBb94ljeHSLv9XAMn1g15bjKBsQ86pwF36HQ8zZNf08ZNnWjK1E0RFYo9StP7Pay1NkMDMwyvKzZZqVzlmKc7xX6QiHAdn9odSCRYmCcMpPjY8vvbiiK55-J0v1-UyrGXGsGbyc67AupoL9CT7R3ifC3RqupJE7QwdYtM5RlXcCAnYNtJyW2gmYxIYV_cq-Dp8sh6GQrCr4wMLkMfHNI8LE8Eg3jPoQy_s2ZbJXC35mf2vjV974GT1eTyYVJe6q7gr5Qq4VUgCNibVbynYIOayjCd2JEL1k4SzNj7HtxaYmfq5digh8_kJXxhWUQGFCH74OG7KudrQxXC0Qr8KeWn418Gc6sHDb0kiGz9ML3dWIulIRxCtcHW6mHtlYemwUXCy9adJRMeM5IljonTp8U-vUTCmQk9qaKkMX62ZYjflh39LxZ39JOBsQWyu2pimijryBH2yh1JccPlEBYc2IMcAeMKeC5z0ewW4AMfOpznLe_0MA8HMHjB9E8VohzWr0wopaQ71YafanwdFS6s4DcBJGk6hOYd66QnGNIXNntJa8x6Uk4LXkPCI7mBJQGE-zcL58FmsdOB5lAwlK5uj0KWkeOVGQ19GDJdcOztj4VlRZ9_deKd2RF845nl4sjfVmyDn3KK2WX-_YAKTV9cC8PVC6J0rfHNz1nqY50UC_UYBoWgr6A'></script></head><body>
+<title>Home Décor Store Traceability Matrix</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+/* Layout: header + coverage summary → sticky filter bar → forward matrix (req → AC → TC) / reverse view (AC → req → TC) */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --fg:#1d2329; --muted:#5d6873; --line:#dde2e7; --soft:#eef1f4; --accent:#2f6f8f;
+  --i1:#2f6f8f; --i2:#8a5a1f; --i3:#7a3f6e; --i4:#4f7a3a;
+  --t-f:#2f6f8f; --t-n:#a0522d; --t-s:#8b2f3c; --t-p:#6b4fa0; --t-c:#4f7a3a;
+  --ok:#3d7a3a; --warn:#9a5b00;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14181c; --surface:#1b2026; --fg:#e4e8ec; --muted:#9aa5b0; --line:#2c333b; --soft:#232a31; --accent:#7cb8d6;
+  --i1:#7cb8d6; --i2:#e0b072; --i3:#d394c4; --i4:#9ccc84;
+  --t-f:#7cb8d6; --t-n:#e39a72; --t-s:#ec8a98; --t-p:#b9a2e6; --t-c:#9ccc84;
+  --ok:#8fcf86; --warn:#f0b65a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181c; --surface:#1b2026; --fg:#e4e8ec; --muted:#9aa5b0; --line:#2c333b; --soft:#232a31; --accent:#7cb8d6;
+  --i1:#7cb8d6; --i2:#e0b072; --i3:#d394c4; --i4:#9ccc84;
+  --t-f:#7cb8d6; --t-n:#e39a72; --t-s:#ec8a98; --t-p:#b9a2e6; --t-c:#9ccc84;
+  --ok:#8fcf86; --warn:#f0b65a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:2.1rem;font-weight:700} h2{font-size:1.35rem;font-weight:600}
+p{margin:0;max-width:72ch}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted)}
+header{display:flex;flex-direction:column;gap:12px}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--mono);font-size:.8rem}
+.chain span{padding:3px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.chain i{font-style:normal;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stat{background:var(--surface);padding:12px 16px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--muted)}
+.stat b.ok{color:var(--ok)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tabs{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.tabs button{font:500 .85rem var(--body);padding:7px 14px;border:0;background:var(--surface);color:var(--fg);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--bg)}
+input,select{font:400 .85rem var(--body);padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+input{flex:1 1 200px;min-width:0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.count{font-family:var(--mono);font-size:.78rem;color:var(--muted);margin-left:auto}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:.85rem}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft);font-weight:500;position:sticky;top:0}
+tr.grp td{background:var(--soft);font-family:var(--display);font-weight:600;font-size:.95rem;padding:8px 12px}
+.rid{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.pri{font-family:var(--mono);font-size:.72rem;padding:1px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.pri.must{border-color:var(--fg);font-weight:500}
+.inc{font-family:var(--mono);font-size:.72rem;white-space:nowrap;color:var(--c)}
+.inc b{display:block;font-weight:500}
+.ac{display:flex;flex-direction:column;gap:6px}
+.ac div{display:grid;grid-template-columns:5.4em 1fr;gap:6px}
+.ac code,.tc code{font-family:var(--mono);font-size:.72rem;color:var(--muted);white-space:nowrap}
+.tc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.tc li{display:grid;grid-template-columns:8.6em 4.6em 1fr;gap:8px;align-items:baseline}
+.ty{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--c);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);border-radius:3px;padding:0 5px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--muted)}
+.legend span{display:flex;gap:6px;align-items:center}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.notes{display:flex;flex-direction:column;gap:8px;font-size:.88rem}
+.notes ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;max-width:90ch}
+@media (max-width:640px){h1{font-size:1.7rem}.count{margin-left:0;width:100%}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Home décor e-commerce · Release 1 · Requirements traceability</div>
+  <h1>Home Décor Store Traceability Matrix</h1>
+  <p class="lede">Every requirement from the Requirements List traced back to its acceptance criterion in User Story 1 or 2 (or to a resolved question), and forward to the test cases that verify it. Increment and test week follow the 8-week delivery schedule.</p>
+  <div class="chain"><span>Requirement</span><i>→</i><span>Acceptance criterion / RQ</span><i>→</i><span>Test case</span><i>→</i><span>Increment · test week</span></div>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<div class="bar">
+  <div class="tabs" role="tablist">
+    <button id="tab-fwd" role="tab" aria-selected="true">Requirement → Test</button>
+    <button id="tab-rev" role="tab" aria-selected="false">Criterion → Requirement</button>
+  </div>
+  <input id="q" type="search" placeholder="Search ID or text, e.g. ADM-14, stock, AC7">
+  <select id="f-area" aria-label="Area"><option value="">All areas</option><option value="CUS">Customer storefront</option><option value="ADM">Admin back office</option><option value="NFR">Cross-cutting</option></select>
+  <select id="f-pri" aria-label="Priority"><option value="">All priorities</option><option>Must</option><option>Should</option></select>
+  <select id="f-inc" aria-label="Increment"><option value="">All increments</option><option value="1">Inc 1 · Admin &amp; catalog</option><option value="2">Inc 2 · Storefront &amp; cart</option><option value="3">Inc 3 · Checkout &amp; orders</option><option value="4">Inc 4 · Should-haves &amp; release</option></select>
+  <select id="f-type" aria-label="Test type"><option value="">All test types</option><option value="F">Functional</option><option value="N">Negative</option><option value="S">Security</option><option value="P">Concurrency</option><option value="C">Compatibility</option></select>
+  <span class="count" id="count"></span>
+</div>
+
+<div class="legend">
+  <span><b class="ty" style="--c:var(--t-f)">Func</b>Functional, happy path</span>
+  <span><b class="ty" style="--c:var(--t-n)">Neg</b>Negative / validation</span>
+  <span><b class="ty" style="--c:var(--t-s)">Sec</b>Security / server authority</span>
+  <span><b class="ty" style="--c:var(--t-p)">Conc</b>Concurrency / transaction</span>
+  <span><b class="ty" style="--c:var(--t-c)">Compat</b>Browser and device</span>
+</div>
+
+<div class="scroll" id="view"></div>
+
+<section class="notes">
+  <h2>Reading the matrix</h2>
+  <ul>
+    <li><b>US1-ACn / US2-ACn</b> number the acceptance criteria in the order they appear in each story. US1-AC10 to AC13 are the named criteria (All options required, Search by room, Full catalogue page, Multi-item adds). US2-AC8n is the "word of caution" note on system-controlled statuses; US2-AC10 to AC12 are Catalog hierarchy, Product placement and Graphics per level.</li>
+    <li><b>RQ1–RQ5</b> are the resolved questions: payment simulator, order contesting, stock per size/color, options per product, email/SMS notification.</li>
+    <li><b>Test IDs</b> follow TC-&lt;requirement&gt;-&lt;nn&gt;, so a failing test points straight back to its requirement.</li>
+    <li><b>NFR-01</b> also gets a phone/desktop smoke pass at the end of each increment (weeks 3, 5, 7); the full run is in week 8.</li>
+    <li>Test cases verify each requirement against the criterion's Given/When/Then. Expected results, test data and execution status belong in the test management tool, keyed by these IDs.</li>
+  </ul>
+</section>
+</div>
+
+<script>
+const AC={
+ "US1-AC1":"Browse by category or search by name reaches a product page within three clicks",
+ "US1-AC2":"Search or filter by category and price with no match shows a clear \"no results\" message",
+ "US1-AC3":"Product page shows photos, description, material, price, size and color options, and stock",
+ "US1-AC4":"Adding an item with size, color and quantity shows chosen options, correct line and order totals",
+ "US1-AC5":"Changing quantity or removing an item updates totals correctly",
+ "US1-AC6":"Missing required contact or delivery fields block the order, with a message next to each field",
+ "US1-AC7":"Placed order gets a unique number and a clear test-order / no-payment message",
+ "US1-AC8":"Server checks prices, options and stock before accepting an order",
+ "US1-AC9":"Steps work on current phone and computer browsers",
+ "US1-AC10":"All options required: add-to-cart disabled until every option is selected",
+ "US1-AC11":"Search by room shows the items for that room",
+ "US1-AC12":"Full catalogue page grouped by department, category and subcategory",
+ "US1-AC13":"Multi-item add to cart from any list page",
+ "US1-ST":"Story statement: place an order without creating an account",
+ "US2-AC1":"Valid admin login reaches the admin area; invalid details refused with an error",
+ "US2-AC2":"Without admin sign-in, admin pages and change requests are rejected by the server",
+ "US2-AC3":"New product with all details, options and stock appears in the customer product list",
+ "US2-AC4":"Price or stock change shows on the customer product page",
+ "US2-AC5":"Product marked unavailable can no longer be added to the cart",
+ "US2-AC6":"Order reduces stock; order and stock change saved together or not at all",
+ "US2-AC7":"Two customers buying the last item: one order accepted, stock never below zero",
+ "US2-AC8":"Orders list shows number, items, customer details and status",
+ "US2-AC8a":"Seven status names: Received … Delivered to customers",
+ "US2-AC8n":"Note: order status is controlled by the system through events",
+ "US2-AC9":"Admin passwords stored as hashes",
+ "US2-AC10":"Catalog hierarchy: add and edit department, category, subcategory; initial catalog",
+ "US2-AC11":"Product placement: cannot save without department, category and subcategory",
+ "US2-AC12":"Graphics per level (CSS, banners, icon), shown to customers",
+ "US2-ST":"Story statement: admin updates order statuses",
+ "RQ1":"Simulated payment service; always returns true for now",
+ "RQ2":"No direct status edits; an order contesting process may change status",
+ "RQ3":"Stock is tracked per size/color combination",
+ "RQ4":"Option types are defined per product",
+ "RQ5":"Order number sent by email or SMS as well as on screen"
+};
+const TY={F:["Func","--t-f"],N:["Neg","--t-n"],S:["Sec","--t-s"],P:["Conc","--t-p"],C:["Compat","--t-c"]};
+const INC={1:["Inc 1","Wk 3","--i1"],2:["Inc 2","Wk 4–5","--i2"],3:["Inc 3","Wk 6–7","--i3"],4:["Inc 4","Wk 8","--i4"]};
+const GROUP={CUS:"Customer storefront · User Story 1",ADM:"Admin back office · User Story 2",NFR:"Cross-cutting requirements"};
+// [id, requirement, priority, increment, [criteria], [[type, test case], ...]]
+const REQ=[
+["CUS-01","Home page lets the shopper browse products by category.","Must",2,["US1-AC1"],[["F","Select each category on the home page; list shows only that category's products"]]],
+["CUS-02","Shopper can search products by name.","Must",2,["US1-AC1"],[["F","Search a full product name; product is returned"],["F","Search a partial, mixed-case name; matching products are returned"]]],
+["CUS-03","Any product page is reachable from the home page within three clicks.","Must",2,["US1-AC1"],[["F","Reach a product in each category via category navigation in ≤ 3 clicks"],["F","Reach a product via search in ≤ 3 clicks"]]],
+["CUS-04","Search results and lists can be filtered by category and by price.","Must",2,["US1-AC2"],[["F","Filter list by category; only that category shown"],["F","Filter by price range; products at both boundary prices included"],["F","Combine search term + category + price filter"]]],
+["CUS-05","Clear \"no results\" message when nothing matches.","Must",2,["US1-AC2"],[["N","Search a term with no matches; \"no results\" message shown"],["N","Apply a category + price combination with no matches; message shown"]]],
+["CUS-06","Search or filter by room (e.g. bedroom cushions, kitchen curtains).","Should",2,["US1-AC11"],[["F","Filter Bedroom + Cushions; only bedroom cushions shown"],["F","Search \"kitchen curtains\"; only kitchen curtains shown"]]],
+["CUS-07","Catalogue page shows the entire catalogue on a single page.","Should",4,["US1-AC12"],[["F","Open catalogue page; every available product appears once on one page"]]],
+["CUS-08","Catalogue page groups items by department, category and subcategory.","Should",4,["US1-AC12"],[["F","Each product sits under its assigned department → category → subcategory heading"]]],
+["CUS-09","Department, category and subcategory pages display the graphics the admin assigned.","Should",4,["US2-AC12","US1-AC12"],[["F","Assigned CSS, banner(s) and icon render on each level's page"],["N","Level with no graphics assigned falls back to default styling without errors"]]],
+["CUS-10","Product page shows photos, description, material and price.","Must",2,["US1-AC3"],[["F","Product page fields match the data entered in admin"]]],
+["CUS-11","Product page shows that product's options and stock per option combination.","Must",2,["US1-AC3","RQ3","RQ4"],[["F","Product with custom option type (e.g. dimensions) shows only its own options"],["F","Selecting a size/color combination shows that combination's stock"],["N","Combination with zero stock is shown as unavailable"]]],
+["CUS-12","Add-to-cart button disabled until every option is selected.","Must",2,["US1-AC10"],[["F","Button enables only after the last option is selected"],["N","Clearing a selected option disables the button again"]]],
+["CUS-13","Add an item with chosen option values and quantity; cart shows those options.","Must",2,["US1-AC4","RQ4"],[["F","Cart line shows the chosen options and quantity"],["F","Same product in two combinations creates two separate cart lines"]]],
+["CUS-14","Cart shows correct line totals and order total.","Must",2,["US1-AC4"],[["F","Line total = unit price × quantity; order total = sum of lines"],["F","Prices with cents round correctly in line and order totals"]]],
+["CUS-15","Shopper can change quantities or remove items; totals update.","Must",2,["US1-AC5"],[["F","Change quantity; line and order totals recalculate"],["F","Remove an item; totals recalculate; removing the last item shows an empty cart"],["N","Quantity 0, negative or above stock is rejected with a message"]]],
+["CUS-16","Select one or more items on a list page and add them all with one click.","Should",4,["US1-AC13"],[["F","Select three items with complete options; one click adds all three"]]],
+["CUS-17","Selecting an item on a list reveals its required options and a message.","Should",4,["US1-AC13"],[["F","Selected item shows its option fields and the \"choose options\" message"]]],
+["CUS-18","Multi-add adds complete items and lists the rest (minimum: button disabled until all complete).","Should",4,["US1-AC13"],[["F","Mixed selection: complete items added, incomplete items listed for completion"],["F","Fallback build: add button stays disabled until every selected item has options"]]],
+["CUS-19","Shopper can check out as a guest, without creating an account.","Must",3,["US1-ST"],[["F","Complete checkout end to end with no sign-in or account prompt"]]],
+["CUS-20","Order not submitted while required fields are empty; message next to each.","Must",3,["US1-AC6"],[["N","Leave each required field empty in turn; order blocked with a message at that field"],["N","Submit with all fields empty; every required field shows its message"],["N","Invalid email or mobile format is rejected"]]],
+["CUS-21","Placed order receives a unique order number.","Must",3,["US1-AC7"],[["F","Place two orders; numbers differ"],["F","Order number on confirmation matches the admin orders list"]]],
+["CUS-22","Confirmation states this is a test order and no payment was taken.","Must",3,["US1-AC7"],[["F","Confirmation page shows the test-order / no-payment message"]]],
+["CUS-23","Server re-checks prices, options and stock before accepting an order.","Must",3,["US1-AC8","RQ3"],[["N","Admin changes price after cart loads; order uses server price or is blocked with a message"],["N","Stock of the combination drops to zero before submit; order rejected"],["S","Tamper with price in the request; server rejects or recalculates"],["S","Submit a non-existent option combination; server rejects"]]],
+["CUS-24","Order number shown on screen and sent by email or SMS; email or mobile required.","Must",3,["US1-AC7","RQ5"],[["F","Email given: email with the order number is received"],["F","Mobile only: SMS with the order number is received"],["N","Neither email nor mobile given: checkout blocked"]]],
+["ADM-01","Valid credentials open the admin area.","Must",1,["US2-AC1"],[["F","Sign in with valid credentials; admin dashboard opens"]]],
+["ADM-02","Invalid credentials refused with an error message.","Must",1,["US2-AC1"],[["N","Wrong password: error shown, no access"],["N","Unknown username: same generic error shown"]]],
+["ADM-03","Admin pages cannot be opened without an admin sign-in.","Must",1,["US2-AC2"],[["S","Open admin URLs directly without a session; redirected to login"],["S","After sign-out, back button and saved URLs do not reopen admin pages"]]],
+["ADM-04","Server rejects product, stock or order changes not from a signed-in admin.","Must",1,["US2-AC2"],[["S","Unauthenticated requests to product, stock and order endpoints return 401/403; data unchanged"],["S","Expired or forged session token is rejected"]]],
+["ADM-05","Admin can add and edit department, category and subcategory.","Must",1,["US2-AC10"],[["F","Add a new item at each of the three levels"],["F","Rename an item at each level; storefront shows the new name"]]],
+["ADM-06","Catalog launches with Home Décor, 3 categories and 5 subcategories.","Must",1,["US2-AC10"],[["F","Fresh install contains exactly the seeded department, categories and subcategories"]]],
+["ADM-07","Add a product with all details, own option types and stock per combination; it appears to customers.","Must",1,["US2-AC3","RQ3","RQ4"],[["F","Create product with all fields and stock per combination; it appears in the customer list"],["F","Define a custom option type (e.g. dimensions) for one product only"]]],
+["ADM-08","Product cannot be saved without department, category and subcategory.","Must",1,["US2-AC11"],[["N","Save with each level missing in turn; save blocked with a message"]]],
+["ADM-09","Admin price and stock changes show on the customer product page.","Must",2,["US2-AC4"],[["F","Change price; product page shows the new price"],["F","Change stock of one combination; product page shows the new stock for it only"]]],
+["ADM-10","Product marked unavailable cannot be added to the cart.","Must",2,["US2-AC5"],[["F","Mark unavailable; add-to-cart is blocked on the product page"],["S","Direct add-to-cart request for the unavailable product is rejected by the server"],["N","Item already in a cart before being marked unavailable is blocked at checkout"]]],
+["ADM-11","Admin can add and change CSS, banners and icon for each catalog level.","Should",4,["US2-AC12"],[["F","Upload CSS, banner(s) and icon at each level"],["F","Replace an existing graphic; the new one is used"],["N","Unsupported file type is rejected with a message"]]],
+["ADM-12","Placing an order reduces stock of each ordered combination.","Must",3,["US2-AC6","RQ3"],[["F","Order quantity 2 reduces that combination's stock by 2; other combinations unchanged"]]],
+["ADM-13","Order and stock change saved in one transaction.","Must",3,["US2-AC6"],[["P","Force the stock update to fail; no order is saved"],["P","Force the order save to fail; stock is unchanged"]]],
+["ADM-14","Simultaneous purchases of the last unit: one order accepted, stock never below zero.","Must",3,["US2-AC7","RQ3"],[["P","Two simultaneous orders for the last unit; one accepted, one rejected, stock 0"],["P","20 parallel orders against 5 units; exactly 5 succeed, stock never negative"]]],
+["ADM-15","Orders list shows number, items, customer details and status.","Must",3,["US2-AC8"],[["F","Orders list columns match each placed order"]]],
+["ADM-16","Orders use the seven statuses in order.","Must",3,["US2-AC8a"],[["F","Status values are exactly the seven names, in order"],["N","Events cannot skip a status or move an order backwards"]]],
+["ADM-17","Status changes are driven by system events.","Must",3,["US2-AC8n","RQ1"],[["F","Payment confirmation moves Received → Paid automatically"],["F","Moving the order to the shipping room moves In assembly → Ready to ship"]]],
+["ADM-18","Admin changes status only by recording the triggering event.","Must",3,["US2-ST","US2-AC8n","RQ2"],[["F","Admin order screen offers event actions only, no free status field"],["S","Direct status-change request to the server is rejected"]]],
+["ADM-19","Simulated payment service; always returns true until the real payment cycle exists.","Must",3,["US2-AC8n","RQ1"],[["F","Simulator returns true; order moves to Paid"],["N","Simulator forced to false (test switch); order stays Received"]]],
+["ADM-20","Admin never changes status directly; order contesting is the only override.","Must",3,["US2-AC8n","RQ2"],[["F","Raise and resolve a contest; status corrected and the change recorded in history"],["S","No admin screen or request path changes status outside events and contesting"]]],
+["NFR-01","All customer flows work on current phone and desktop browsers.","Must",4,["US1-AC9"],[["C","Customer journey on current Chrome, Edge, Firefox and Safari (desktop)"],["C","Customer journey on iOS Safari and Android Chrome"],["C","Layout usable at 360 px width without horizontal scrolling"]]],
+["NFR-02","Admin passwords stored as hashes.","Must",1,["US2-AC9"],[["S","Database holds a salted hash, never the plain password"],["S","Two admins with the same password have different hashes"]]],
+["NFR-03","Server is the authority for prices, stock, availability and permissions.","Must",3,["US1-AC8","US2-AC2","US2-AC5"],[["S","With browser validation bypassed, invalid price/stock/availability data is rejected by the server"]]]
+];
+REQ.forEach(r=>r.tcs=r[5].map((t,i)=>({id:`TC-${r[0]}-${String(i+1).padStart(2,"0")}`,type:t[0],title:t[1]})));
+
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const $=id=>document.getElementById(id);
+let mode="fwd";
+
+// summary
+const allTc=REQ.flatMap(r=>r.tcs), usedAc=new Set(REQ.flatMap(r=>r[4]));
+const acCount=Object.keys(AC).length, untested=REQ.filter(r=>!r.tcs.length).length;
+$("stats").innerHTML=[
+ [REQ.length,"requirements traced"],
+ [`${usedAc.size} / ${acCount}`,"criteria and RQs covered",usedAc.size===acCount],
+ [allTc.length,"test cases"],
+ [REQ.length-untested+" / "+REQ.length,"requirements with tests",untested===0],
+ [allTc.filter(t=>t.type==="S"||t.type==="P").length,"security and concurrency tests"],
+ [REQ.filter(r=>r[2]==="Must").length+" / "+REQ.filter(r=>r[2]==="Should").length,"Must / Should"]
+].map(([b,s,ok])=>`<div class="stat"><b class="${ok?"ok":""}">${b}</b><span>${s}</span></div>`).join("");
+
+function match(r){
+  const q=$("q").value.trim().toLowerCase(), a=$("f-area").value, p=$("f-pri").value, i=$("f-inc").value, t=$("f-type").value;
+  if(a&&!r[0].startsWith(a))return false;
+  if(p&&r[2]!==p)return false;
+  if(i&&String(r[3])!==i)return false;
+  if(t&&!r.tcs.some(x=>x.type===t))return false;
+  if(q){const hay=[r[0],r[1],...r[4],...r[4].map(k=>AC[k]),...r.tcs.map(x=>x.id+" "+x.title)].join(" ").toLowerCase();if(!hay.includes(q))return false}
+  return true;
+}
+const tcList=(r)=>{const t=$("f-type").value;return `<ul class="tc">${r.tcs.filter(x=>!t||x.type===t).map(x=>`<li><code>${x.id}</code><span class="ty" style="--c:var(${TY[x.type][1]})">${TY[x.type][0]}</span><span>${esc(x.title)}</span></li>`).join("")}</ul>`};
+const incCell=n=>`<span class="inc" style="--c:var(${INC[n][2]})"><b>${INC[n][0]}</b>${INC[n][1]}</span>`;
+
+function renderFwd(){
+  const rows=REQ.filter(match);let out="",g="";
+  rows.forEach(r=>{const k=r[0].slice(0,3);if(k!==g){g=k;out+=`<tr class="grp"><td colspan="6">${GROUP[k]}</td></tr>`}
+    out+=`<tr><td class="rid">${r[0]}</td><td style="max-width:260px">${esc(r[1])}</td><td><span class="pri ${r[2].toLowerCase()}">${r[2]}</span></td><td>${incCell(r[3])}</td><td style="min-width:240px"><div class="ac">${r[4].map(k=>`<div><code>${k}</code><span>${esc(AC[k])}</span></div>`).join("")}</div></td><td style="min-width:360px">${tcList(r)}</td></tr>`});
+  $("view").innerHTML=rows.length?`<table><thead><tr><th>Req</th><th>Requirement</th><th>Priority</th><th>Increment</th><th>Acceptance criterion / RQ</th><th>Test cases</th></tr></thead><tbody>${out}</tbody></table>`:`<div class="empty">No requirements match these filters.</div>`;
+  $("count").textContent=`${rows.length} requirements · ${rows.reduce((s,r)=>s+r.tcs.filter(x=>!$("f-type").value||x.type===$("f-type").value).length,0)} test cases`;
+}
+function renderRev(){
+  const rows=REQ.filter(match);let out="",n=0,g="";
+  Object.keys(AC).forEach(k=>{const rs=rows.filter(r=>r[4].includes(k));if(!rs.length)return;n++;
+    const src=k.startsWith("US1")?"User Story 1 · customer":k.startsWith("US2")?"User Story 2 · admin":"Resolved questions";
+    if(src!==g){g=src;out+=`<tr class="grp"><td colspan="4">${src}</td></tr>`}
+    rs.forEach((r,i)=>{out+=`<tr>${i===0?`<td rowspan="${rs.length}" style="min-width:260px"><div class="ac"><div><code>${k}</code><span>${esc(AC[k])}</span></div></div></td>`:""}<td class="rid">${r[0]}</td><td style="max-width:280px">${esc(r[1])} ${incCell(r[3])}</td><td style="min-width:360px">${tcList(r)}</td></tr>`})});
+  $("view").innerHTML=n?`<table><thead><tr><th>Acceptance criterion / RQ</th><th>Req</th><th>Requirement</th><th>Test cases</th></tr></thead><tbody>${out}</tbody></table>`:`<div class="empty">No criteria match these filters.</div>`;
+  $("count").textContent=`${n} criteria · ${rows.length} requirements`;
+}
+const render=()=>mode==="fwd"?renderFwd():renderRev();
+["q","f-area","f-pri","f-inc","f-type"].forEach(id=>$(id).addEventListener("input",render));
+function setMode(m){mode=m;$("tab-fwd").setAttribute("aria-selected",m==="fwd");$("tab-rev").setAttribute("aria-selected",m==="rev");render()}
+$("tab-fwd").onclick=()=>setMode("fwd");$("tab-rev").onclick=()=>setMode("rev");
+setMode(location.hash==="#criteria"?"rev":"fwd");
+</script>
+
+</body></html>

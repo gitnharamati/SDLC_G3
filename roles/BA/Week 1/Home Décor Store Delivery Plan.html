@@ -1,0 +1,251 @@
+<!doctype html><html><head><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script type='text/javascript' nonce='7cY6M12VTVBY5oDwAUpqqg==' src='https://3cbdfb13-4ea8-41ec-8dd4-a3ad50954dee.frame.claudeusercontent.com/aIvqj3_8V_rxZXta57ZXxLnLOZTt0QcrYkZe1Zein8doK-v2xkbVqm944PEoTIYZL_TiyrJNX5m-K06tDie2BoXFR-sesegCzpY3HIavf6IuI-KRzB_sWLJ9wtXGupO3tFuQlAZnhJXX4oc4gf2lsAL4v5S3wIYmFH25Kb9ZHzOXU26FCtU6TEtSuxIBU0hX8RWa4fESveWWoPrObFuirjU7Oh8efJXWt-QahyOvm7N1TjqQf8xEsNFnFojslrnWqZSUgDFuyBWPwQ1j91r8utaJqvvgtPpVRgkhq7MRzi53bcVzlzr15vC8H9jGCsLUMXd3CHck2WgtR1MWttgV4IpFCi0LAPPwqBzj8P2hiKxUfeklAb2wlgdbpbVG_8Z4L5IqLJuZb-JzLgPOyKEeAaKyE9Y5DL9-VTGQPZyf8ntqNeSXP9xwO1yGuewSPXsLz3riuM3poH984jNwrKv3TN26m6zNTmI0Ne572jiY9GNp8d__uvi7cKriSkRLpCS1-ycJfwMiSsVAOdx403BUhkVToqzu8dvtqmqEPSQACj49bQ72p8n1uD2aR36Uw6ombEFwLTfrBvXlaR4XJLqLt7OsgIFcjcZHID7CnsP2bZgfNZt4ldzHEFlFZdx3toidQto_KZcP4f9YirM42cUyv7LxoZ-OBcrEdz9F0Jvm04fUnjo_8KK8XP4bBs_NEu4ukKFQKLoFRNx337wluldDjA'></script></head><body>
+<title>Home Décor Store Delivery Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+/* Layout: plan header → increment Gantt (role lanes) → weekly cards (3 role columns) → capacity table → coverage + risks */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --fg:#1d2329; --muted:#5d6873; --line:#dde2e7; --soft:#eef1f4;
+  --ba:#2f6f8f; --ba-soft:#e1eef4; --dev:#8a5a1f; --dev-soft:#f5ebdc; --qa:#4f7a3a; --qa-soft:#e5efdf;
+  --i0:#7a8591; --i1:#2f6f8f; --i2:#8a5a1f; --i3:#7a3f6e; --i4:#4f7a3a;
+  --warn:#9a5b00; --warn-soft:#fdf1dc;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14181c; --surface:#1b2026; --fg:#e4e8ec; --muted:#9aa5b0; --line:#2c333b; --soft:#232a31;
+  --ba:#7cb8d6; --ba-soft:#1f3340; --dev:#e0b072; --dev-soft:#3a2e1d; --qa:#9ccc84; --qa-soft:#25331f;
+  --i0:#8e99a5; --i1:#7cb8d6; --i2:#e0b072; --i3:#d394c4; --i4:#9ccc84;
+  --warn:#f0b65a; --warn-soft:#3a2d17; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181c; --surface:#1b2026; --fg:#e4e8ec; --muted:#9aa5b0; --line:#2c333b; --soft:#232a31;
+  --ba:#7cb8d6; --ba-soft:#1f3340; --dev:#e0b072; --dev-soft:#3a2e1d; --qa:#9ccc84; --qa-soft:#25331f;
+  --i0:#8e99a5; --i1:#7cb8d6; --i2:#e0b072; --i3:#d394c4; --i4:#9ccc84;
+  --warn:#f0b65a; --warn-soft:#3a2d17; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:2.1rem;font-weight:700}
+h2{font-size:1.45rem;font-weight:600}
+h3{font-size:1.05rem;font-weight:600}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:0;max-width:68ch}
+.lede{color:var(--muted);margin-top:8px}
+header{display:flex;flex-direction:column;gap:14px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:6px}
+.fact{display:flex;flex-direction:column}
+.fact b{font-family:var(--display);font-size:1.3rem;font-variant-numeric:tabular-nums}
+.fact span{font-size:.8rem;color:var(--muted)}
+.role-ba{--r:var(--ba);--rs:var(--ba-soft)} .role-dev{--r:var(--dev);--rs:var(--dev-soft)} .role-qa{--r:var(--qa);--rs:var(--qa-soft)}
+section{display:flex;flex-direction:column;gap:16px}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+/* Gantt */
+.gantt{display:grid;grid-template-columns:150px repeat(8,minmax(92px,1fr));min-width:900px}
+.gantt>div{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:8px;font-size:.8rem}
+.gantt>div:nth-child(9n){border-right:0}
+.gh{font-family:var(--mono);font-size:.72rem!important;color:var(--muted);text-align:center;background:var(--soft)}
+.gl{font-weight:600;display:flex;align-items:center;gap:8px}
+.gl i{width:10px;height:10px;border-radius:2px;background:var(--r);flex:none}
+.cell{display:flex}
+.bar{flex:1;border-radius:4px;padding:5px 7px;font-size:.74rem;line-height:1.3;color:var(--fg);background:color-mix(in srgb,var(--c) 16%,var(--surface));border-left:3px solid var(--c)}
+.inc-row .bar{font-weight:600}
+.span2{grid-column:span 2}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.8rem;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;background:var(--c)}
+/* Weeks */
+.weeks{display:flex;flex-direction:column;gap:18px}
+.week{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.week-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.week-head .wk{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.chip{font-family:var(--mono);font-size:.72rem;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 15%,var(--surface));color:var(--c);border:1px solid color-mix(in srgb,var(--c) 40%,transparent)}
+.milestone{margin-left:auto;font-size:.8rem;color:var(--fg);display:flex;gap:6px;align-items:center}
+.milestone::before{content:"";width:9px;height:9px;transform:rotate(45deg);background:var(--fg);flex:none}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.col{padding:14px 18px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:10px;min-width:0}
+.col:last-child{border-right:0}
+.col-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-bottom:6px;border-bottom:2px solid var(--r)}
+.col-h b{font-family:var(--display);font-size:.95rem;color:var(--r)}
+.col-h span{font-family:var(--mono);font-size:.8rem;font-variant-numeric:tabular-nums}
+ul.tasks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+ul.tasks li{display:grid;grid-template-columns:2.6em 1fr;gap:8px;font-size:.86rem;line-height:1.4}
+ul.tasks .h{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;padding-top:1px}
+.ids{display:block;font-family:var(--mono);font-size:.72rem;color:var(--r);margin-top:2px}
+.deliv{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+@media (max-width:820px){.cols{grid-template-columns:1fr}.col{border-right:0;border-bottom:1px solid var(--line)}.col:last-child{border-bottom:0}.milestone{margin-left:0;width:100%}}
+/* Tables */
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft);font-weight:500}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+tr.total td{font-weight:600;border-bottom:0}
+.cap td.n{width:70px}
+.mono{font-family:var(--mono);font-size:.78rem}
+.two{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+.risk{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.risk h3{color:var(--warn)}
+.risk ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.88rem}
+.model{display:flex;flex-direction:column;gap:8px;font-size:.9rem}
+.model ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Home décor e-commerce · Release 1 · Incremental SDLC</div>
+  <h1>Home Décor Store: 8-Week Delivery Schedule</h1>
+  <p class="lede">Four increments plus an inception week, covering all 47 requirements from User Story 1 (storefront) and User Story 2 (admin back office). Each increment runs analysis → design → build → test → demo, with the BA working one increment ahead of development and QA testing in the same increment as it is built.</p>
+  <div class="facts" id="facts"></div>
+</header>
+
+<section>
+  <div><h2>Increment timeline</h2><p class="lede">Where each role is focused week by week. Overlapping increments are the point of the model: while Dev builds increment N, the BA is analysing N+1.</p></div>
+  <div class="legend">
+    <span style="--c:var(--i0)"><i></i>Inc 0 · Inception</span>
+    <span style="--c:var(--i1)"><i></i>Inc 1 · Admin access &amp; catalog</span>
+    <span style="--c:var(--i2)"><i></i>Inc 2 · Storefront &amp; cart</span>
+    <span style="--c:var(--i3)"><i></i>Inc 3 · Checkout &amp; order lifecycle</span>
+    <span style="--c:var(--i4)"><i></i>Inc 4 · Should-haves, UAT &amp; release</span>
+  </div>
+  <div class="scroll">
+    <div class="gantt">
+      <div class="gh"></div><div class="gh">Wk 1</div><div class="gh">Wk 2</div><div class="gh">Wk 3</div><div class="gh">Wk 4</div><div class="gh">Wk 5</div><div class="gh">Wk 6</div><div class="gh">Wk 7</div><div class="gh">Wk 8</div>
+
+      <div class="gl">Increment</div>
+      <div class="cell inc-row"><div class="bar" style="--c:var(--i0)">Inc 0</div></div>
+      <div class="cell inc-row span2"><div class="bar" style="--c:var(--i1)">Inc 1 · 9 reqs</div></div>
+      <div class="cell inc-row span2"><div class="bar" style="--c:var(--i2)">Inc 2 · 14 reqs</div></div>
+      <div class="cell inc-row span2"><div class="bar" style="--c:var(--i3)">Inc 3 · 16 reqs</div></div>
+      <div class="cell inc-row"><div class="bar" style="--c:var(--i4)">Inc 4 · 8 reqs</div></div>
+
+      <div class="gl role-ba"><i></i>BA</div>
+      <div class="cell"><div class="bar" style="--c:var(--i1)">Baseline + Inc 1 specs</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i2)">Inc 2 analysis</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i3)">Inc 1 demo · Inc 3 analysis</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i3)">Inc 3 specs</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i3)">Inc 2 demo · Inc 3 final</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i4)">Inc 4 specs · UAT scripts</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i4)">Inc 3 demo · UAT prep</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i4)">UAT · sign-off</div></div>
+
+      <div class="gl role-dev"><i></i>Developer</div>
+      <div class="cell"><div class="bar" style="--c:var(--i0)">Architecture · data model</div></div>
+      <div class="cell span2"><div class="bar" style="--c:var(--i1)">Build Inc 1</div></div>
+      <div class="cell span2"><div class="bar" style="--c:var(--i2)">Build Inc 2</div></div>
+      <div class="cell span2"><div class="bar" style="--c:var(--i3)">Build Inc 3</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i4)">Build Inc 4 · UAT fixes</div></div>
+
+      <div class="gl role-qa"><i></i>QA</div>
+      <div class="cell"><div class="bar" style="--c:var(--i0)">Test strategy</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i1)">Inc 1 cases</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i1)">Test Inc 1</div></div>
+      <div class="cell span2"><div class="bar" style="--c:var(--i2)">Test Inc 2 · regress Inc 1</div></div>
+      <div class="cell span2"><div class="bar" style="--c:var(--i3)">Test Inc 3 · regress 1–2</div></div>
+      <div class="cell"><div class="bar" style="--c:var(--i4)">Full regression · go/no-go</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div><h2>Week-by-week schedule</h2><p class="lede">Hours per task, with the requirement IDs each task delivers or verifies. Role totals stay inside the agreed weekly ranges: BA 6–8 h, Developer 5–6 h, QA 6–7 h.</p></div>
+  <div class="weeks" id="weeks"></div>
+</section>
+
+<section>
+  <div><h2>Capacity</h2><p class="lede">Weekly hours by role against the agreed range.</p></div>
+  <div class="scroll"><table class="cap" id="cap"></table></div>
+</section>
+
+<section class="two">
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <h2>Requirement coverage by increment</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Increment</th><th>Requirements</th><th class="n">Count</th></tr></thead>
+      <tbody>
+        <tr><td><span class="chip" style="--c:var(--i1)">Inc 1</span><br>Admin access &amp; catalog<br><span class="eyebrow">Wk 2–3</span></td><td class="mono">ADM-01–04 (sign-in, server auth guard)<br>ADM-05–06 (catalog hierarchy + seed data)<br>ADM-07–08 (products, per-product options, per-combination stock)<br>NFR-02 (password hashing)</td><td class="n">9</td></tr>
+        <tr><td><span class="chip" style="--c:var(--i2)">Inc 2</span><br>Storefront &amp; cart<br><span class="eyebrow">Wk 4–5</span></td><td class="mono">CUS-01–05 (browse, search, filter, no results)<br>CUS-06 (room filter, Should)<br>CUS-10–12 (product page, options, add-to-cart gate)<br>CUS-13–15 (cart and totals)<br>ADM-09–10 (price/stock sync, unavailable)</td><td class="n">14</td></tr>
+        <tr><td><span class="chip" style="--c:var(--i3)">Inc 3</span><br>Checkout &amp; order lifecycle<br><span class="eyebrow">Wk 6–7</span></td><td class="mono">CUS-19–24 (guest checkout, validation, order no., email/SMS)<br>ADM-12–14 (transactional stock, concurrency)<br>ADM-15–20 (orders list, 7 statuses, events, payment sim, contesting)<br>NFR-03 (server is authority)</td><td class="n">16</td></tr>
+        <tr><td><span class="chip" style="--c:var(--i4)">Inc 4</span><br>Should-haves &amp; release<br><span class="eyebrow">Wk 8</span></td><td class="mono">CUS-07–08 (full catalogue page)<br>ADM-11, CUS-09 (graphics per level)<br>CUS-16–18 (multi-add to cart, stretch)<br>NFR-01 (phone + desktop browsers, final pass)</td><td class="n">8</td></tr>
+        <tr class="total"><td>Total</td><td></td><td class="n">47</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <h2>How the increments are cut</h2>
+    <div class="model">
+      <ul>
+        <li><b>Admin first.</b> The storefront needs real catalog data, so Increment 1 delivers sign-in, the hierarchy and products with per-combination stock (RQ3, RQ4).</li>
+        <li><b>Every increment is usable.</b> Inc 1 ends with an admin who can load the catalog; Inc 2 with a shopper who can browse and fill a cart; Inc 3 with an end-to-end test order.</li>
+        <li><b>All Must-haves land by week 7.</b> Week 8 holds the Should-haves, UAT and release, so slippage there costs only optional scope.</li>
+        <li><b>NFR-01 is tested every increment</b> with a phone/desktop smoke pass, then fully in week 8.</li>
+      </ul>
+    </div>
+    <div class="risk">
+      <h3>Risks and assumptions</h3>
+      <ul>
+        <li><b>Developer capacity is the constraint.</b> 47 hours across 47 requirements leaves about one hour each. Inc 3 (transactions, concurrency, status engine, contesting) is the heaviest; any overrun pushes Should-haves out.</li>
+        <li><b>CUS-16–18 (multi-add) is a stretch goal.</b> If week 8 is tight, ship the minimum version (button disabled until all options chosen) or defer to Release 2.</li>
+        <li><b>Email/SMS (CUS-24)</b> assumes a sandbox provider account is ready by week 6; the BA confirms this in week 4.</li>
+        <li><b>Order contesting (ADM-20)</b> needs its workflow agreed by week 5, since no detail exists yet beyond RQ2.</li>
+        <li>Hours are focused effort; meetings beyond the listed demos come out of the same budget.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const INC={0:["Inc 0","--i0"],1:["Inc 1","--i1"],2:["Inc 2","--i2"],3:["Inc 3","--i3"],4:["Inc 4","--i4"]};
+const W=[
+ {n:1,title:"Inception and Increment 1 analysis",inc:[0,1],ms:"Requirements baseline and increment plan agreed",
+  ba:{t:[[2,"Confirm the 47-requirement baseline and sign-off on resolved questions RQ1–RQ5","All"],[2,"Build traceability matrix: requirement → acceptance criterion → test case","All"],[2,"Define increment scope and order with the product owner; set Must/Should priorities",""],[2,"Write Inc 1 specs: admin sign-in, catalog hierarchy, product model with per-product options and per-combination stock","ADM-01–08, NFR-02"]],d:"Signed baseline, traceability matrix, Inc 1 specs"},
+  dev:{t:[[2,"Choose stack and architecture; server-side authority for price, stock and permissions","NFR-03"],[2,"Design data model: department/category/subcategory, product, option types, option combinations (SKU), stock, orders","ADM-05–07, ADM-12"],[1,"Set up repository, dev environment and CI build",""]],d:"Architecture note, ER diagram, running skeleton app"},
+  qa:{t:[[2,"Write test strategy and plan for incremental delivery (per-increment testing + cumulative regression)",""],[2,"Review requirements for testability; log ambiguities back to the BA","All"],[1,"Plan test environment and seed data (Home Décor, 3 categories, 5 rooms)","ADM-06"],[1,"Set up defect workflow and test case repository",""]],d:"Test strategy, test plan, testability review log"}},
+ {n:2,title:"Increment 1 build: admin access",inc:[1,2],ms:"",
+  ba:{t:[[1.5,"Answer developer and QA questions on Inc 1","ADM-01–08"],[3,"Analyse Inc 2: browse, search, filters, product page, cart; sketch wireframes","CUS-01–15"],[1.5,"Refine Inc 2 acceptance criteria (cart total rules, option gating)","CUS-12–15"]],d:"Inc 2 wireframes and draft specs"},
+  dev:{t:[[3,"Admin login, session handling, server-side guard on all admin pages and write requests; hashed passwords","ADM-01–04, NFR-02"],[3,"Catalog hierarchy CRUD for department, category and subcategory; seed the launch catalog","ADM-05–06"]],d:"Admin sign-in and hierarchy on test server"},
+  qa:{t:[[4,"Write Inc 1 test cases (valid/invalid login, catalog CRUD, product save rules)","ADM-01–08"],[1,"Write security cases: direct URL access, unauthenticated write requests, password storage check","ADM-03–04, NFR-02"],[2,"Exploratory test of early login and hierarchy builds","ADM-01–06"]],d:"Inc 1 test suite"}},
+ {n:3,title:"Increment 1 build, test and demo",inc:[1,3],ms:"Inc 1 delivered: admin can sign in and load the catalog",
+  ba:{t:[[1.5,"Run Inc 1 demo with the stakeholder; capture feedback","ADM-01–08"],[2,"Finalise Inc 2 specs","CUS-01–15, ADM-09–10"],[3,"Start Inc 3 analysis: checkout fields, 7-status state machine, payment simulator, contesting process","CUS-19–24, ADM-15–20"],[0.5,"Update traceability matrix",""]],d:"Inc 1 demo notes, final Inc 2 specs"},
+  dev:{t:[[4.5,"Product create/edit: description, material, photos, price, own option types and values, stock per combination; block save without department, category and subcategory","ADM-07–08"],[1.5,"Fix Inc 1 defects",""]],d:"Inc 1 build ready for demo"},
+  qa:{t:[[4,"Execute Inc 1 test cases","ADM-01–08, NFR-02"],[1.5,"Log defects and retest fixes",""],[1.5,"Start Inc 2 test cases (search, filter, no-results)","CUS-01–05"]],d:"Inc 1 test report"}},
+ {n:4,title:"Increment 2 build: storefront",inc:[2,3],ms:"",
+  ba:{t:[[1,"Clarifications for Inc 2 build","CUS-01–15"],[3.5,"Write Inc 3 specs: status events, payment simulator (always true), contesting workflow, email/SMS notification","CUS-24, ADM-16–20"],[1.5,"Confirm email/SMS sandbox provider; groom Should-have backlog","CUS-24"]],d:"Draft Inc 3 specs"},
+  dev:{t:[[3.5,"Home page category browsing, search by name, category/price filters, no-results message, three-click navigation, room filter","CUS-01–06"],[2.5,"Product page with photos, description, material, price, options and stock per combination","CUS-10–11"]],d:"Browsable storefront on test server"},
+  qa:{t:[[2,"Complete Inc 2 test cases (product page, cart arithmetic)","CUS-10–15"],[2.5,"Test browse, search, filters, room filter and three-click rule","CUS-01–06"],[1.5,"Regression on Inc 1","ADM-01–08"]],d:"Inc 2 test suite, Inc 1 regression pass"}},
+ {n:5,title:"Increment 2 build, test and demo",inc:[2,3],ms:"Inc 2 delivered: shopper can browse and fill a cart",
+  ba:{t:[[1.5,"Run Inc 2 demo; capture feedback","CUS-01–15"],[2,"Finalise Inc 3 acceptance criteria; agree contesting workflow","ADM-17–20"],[1.5,"Define concurrency and rollback scenarios with QA","ADM-13–14"],[2,"Draft UAT plan and stakeholder schedule",""]],d:"Final Inc 3 specs, UAT plan draft"},
+  dev:{t:[[3.5,"Add-to-cart disabled until all options chosen; cart with options, line and order totals; change quantity and remove","CUS-12–15"],[1.5,"Admin price/stock edits reflected on storefront; unavailable flag blocks add-to-cart","ADM-09–10"],[1,"Fix Inc 2 defects",""]],d:"Inc 2 build ready for demo"},
+  qa:{t:[[3.5,"Execute Inc 2 tests, including cart arithmetic edge cases","CUS-10–15"],[1,"Cross-check admin edits and unavailable flag on storefront","ADM-09–10"],[1,"Phone and desktop smoke test","NFR-01"],[1.5,"Design Inc 3 tests: concurrency, transaction rollback, status flow","ADM-12–20"]],d:"Inc 2 test report"}},
+ {n:6,title:"Increment 3 build: checkout",inc:[3,4],ms:"",
+  ba:{t:[[1,"Clarifications for Inc 3 build","CUS-19–24"],[3,"Specify Should-haves: catalogue page, graphics per level, multi-add to cart","CUS-07–09, CUS-16–18, ADM-11"],[2,"Write UAT scripts for the end-to-end test order",""]],d:"Inc 4 specs, UAT scripts"},
+  dev:{t:[[2,"Guest checkout, required-field validation, unique order number, test-order message","CUS-19–22"],[1.5,"Server re-check of price, options and stock before accepting an order","CUS-23, NFR-03"],[2.5,"Order + stock decrement in one transaction; row locking so the last unit sells once","ADM-12–14"]],d:"Checkout flow on test server"},
+  qa:{t:[[2,"Write Inc 3 test cases","CUS-19–24, ADM-12–20"],[2,"Test checkout validation and tampered/out-of-date browser data","CUS-19–23, NFR-03"],[2,"Concurrency test (two buyers, last unit) and rollback test","ADM-13–14"],[1,"Regression on Inc 1–2",""]],d:"Inc 3 test suite"}},
+ {n:7,title:"Increment 3 build, test and demo",inc:[3,4],ms:"Inc 3 delivered: all Must-haves complete",
+  ba:{t:[[1.5,"Run Inc 3 demo (end-to-end test order)","CUS-19–24, ADM-12–20"],[2,"Prepare UAT: data, accounts, stakeholder briefing",""],[2.5,"Write release notes and admin user guide (catalog, stock, orders, contesting)",""],[1,"Update traceability matrix",""]],d:"Release notes, admin guide, UAT ready"},
+  dev:{t:[[4.5,"Orders list; 7-status state machine driven by events; payment simulator; contesting process as the only manual override","ADM-15–20"],[1.5,"Order number by email or SMS","CUS-24"]],d:"Inc 3 build ready for demo"},
+  qa:{t:[[4,"Execute Inc 3 tests: status flow, payment simulator, contesting, notifications","ADM-15–20, CUS-24"],[1.5,"Log defects and retest fixes",""],[1.5,"Start full regression of Inc 1–3",""]],d:"Inc 3 test report"}},
+ {n:8,title:"Increment 4: Should-haves, UAT and release",inc:[4],ms:"Release 1 go/no-go",
+  ba:{t:[[3,"Run UAT sessions with the stakeholder",""],[1.5,"Triage UAT findings with Dev and QA",""],[1.5,"Final traceability check and sign-off","All"],[2,"Release 2 backlog (deferred Should-haves, real payment cycle) and lessons learned",""]],d:"UAT sign-off, Release 2 backlog"},
+  dev:{t:[[2,"Full catalogue page grouped by department, category and subcategory","CUS-07–08"],[2,"Graphics per level (CSS, banners, icon) in admin and storefront","ADM-11, CUS-09"],[2,"Fix UAT defects; multi-add to cart if capacity remains (stretch)","CUS-16–18"]],d:"Release candidate"},
+  qa:{t:[[3,"Full regression of all Must-haves","All Must"],[1.5,"Cross-browser and device testing on current phone and desktop browsers","NFR-01"],[1,"Test delivered Should-haves","CUS-07–09, ADM-11"],[1.5,"Test summary report and go/no-go recommendation",""]],d:"Test summary report"}}
+];
+const R=[["ba","BA","Business Analyst",6,8],["dev","Developer","Developer",5,6],["qa","QA","QA",6,7]];
+const sum=a=>a.reduce((s,x)=>s+x[0],0);
+const fmt=h=>Number.isInteger(h)?h+"":h.toFixed(1);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+document.getElementById("weeks").innerHTML=W.map(w=>{
+  const chips=w.inc.map(i=>`<span class="chip" style="--c:var(${INC[i][1]})">${INC[i][0]}</span>`).join(" ");
+  const cols=R.map(([k,label])=>{const r=w[k];return `<div class="col role-${k}"><div class="col-h"><b>${label}</b><span>${fmt(sum(r.t))} h</span></div><ul class="tasks">${r.t.map(t=>`<li><span class="h">${fmt(t[0])}h</span><span>${esc(t[1])}${t[2]?`<span class="ids">${t[2]}</span>`:""}</span></li>`).join("")}</ul><div class="deliv"><b>Output:</b> ${esc(r.d)}</div></div>`}).join("");
+  return `<article class="week"><div class="week-head"><span class="wk">Week ${w.n}</span><h3>${esc(w.title)}</h3>${chips}${w.ms?`<span class="milestone">${esc(w.ms)}</span>`:""}</div><div class="cols">${cols}</div></article>`;
+}).join("");
+const tot={};R.forEach(([k])=>tot[k]=W.reduce((s,w)=>s+sum(w[k].t),0));
+document.getElementById("cap").innerHTML=`<thead><tr><th>Role</th>${W.map(w=>`<th class="n">Wk ${w.n}</th>`).join("")}<th class="n">Total</th><th>Range</th></tr></thead><tbody>${R.map(([k,l,full,lo,hi])=>`<tr><td class="role-${k}" style="color:var(--r);font-weight:600">${full}</td>${W.map(w=>`<td class="n">${fmt(sum(w[k].t))}</td>`).join("")}<td class="n"><b>${fmt(tot[k])}</b></td><td class="mono">${lo}–${hi} h/wk (${lo*8}–${hi*8})</td></tr>`).join("")}<tr class="total"><td>All roles</td>${W.map(w=>`<td class="n">${fmt(R.reduce((s,[k])=>s+sum(w[k].t),0))}</td>`).join("")}<td class="n">${fmt(tot.ba+tot.dev+tot.qa)}</td><td></td></tr></tbody>`;
+document.getElementById("facts").innerHTML=[["8 weeks","schedule"],["5","increments (0–4)"],["47","requirements"],[fmt(tot.ba)+" h","BA"],[fmt(tot.dev)+" h","Developer"],[fmt(tot.qa)+" h","QA"]].map(([b,s])=>`<div class="fact"><b>${b}</b><span>${s}</span></div>`).join("");
+// sanity: flag any week outside range
+W.forEach(w=>R.forEach(([k,,,lo,hi])=>{const h=sum(w[k].t);if(h<lo||h>hi)console.warn("Week",w.n,k,h)}));
+</script>
+
+</body></html>
