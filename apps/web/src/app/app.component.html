@@ -1,0 +1,37 @@
+<header class="site-header"><a class="wordmark" href="/">HOME DÉCOR<span>Everyday comfort</span></a><span class="demo-label">Team 3 · Course demo</span></header>
+<main>
+  <section class="intro" aria-labelledby="page-title">
+    <p class="eyebrow">Cushions · Bed sheets · Curtains</p>
+    <h1 id="page-title">Simple comforts.<br>A home that feels like you.</h1>
+    <p class="lead">Explore our first sample collection of everyday essentials for your home.</p>
+    <p class="notice">Sample products and prices. Ordering is not available in this version. Currency shown as CAD for demonstration, pending team confirmation.</p>
+  </section>
+  <section class="collection" aria-labelledby="collection-title">
+    <div class="section-heading"><h2 id="collection-title">The sample collection</h2>@if (!loading() && !error()) { <span>{{ products().length }} products · {{ totalVariants() }} size and colour combinations</span> }</div>
+    @if (loading()) { <p role="status" class="state">Loading the catalogue…</p> }
+    @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
+    @else if (!products().length) { <p class="state">There are no products to display yet.</p> }
+    @else {
+      <div class="product-grid">
+        @for (product of products(); track product.id) {
+          <article class="product">
+            <div class="product-placeholder" [class.curtain]="product.category === 'Curtains'" [class.bedding]="product.category === 'Bed sheets'"><span>{{ product.category }}</span><small>Product photo to be added</small></div>
+            <p class="product-category">{{ product.category }} / {{ product.room }}</p>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.material }}</p>
+            <div class="product-bottom"><strong>{{ product.priceCents / 100 | currency:'CAD':'symbol-narrow' }}</strong><span>{{ totalStock(product) }} available across options</span></div>
+            <button class="view-button" (click)="selected.set(selected()?.id === product.id ? null : product)" [attr.aria-expanded]="selected()?.id === product.id" [attr.aria-controls]="'options-' + product.id">{{ selected()?.id === product.id ? 'Hide details' : 'View options and stock' }}</button>
+            @if (selected()?.id === product.id) {
+              <div class="details" [id]="'options-' + product.id"><p>{{ product.description }}</p><ul aria-label="Stock by product option">
+                @for (variant of product.variants; track variant.id) {
+                  <li><span>@for (option of variant.options; track option.name; let last = $last) { {{ option.value }}@if (!last) { · } }</span><strong>{{ variant.stock === 0 ? 'Out of stock' : variant.stock + ' in stock' }}</strong></li>
+                }
+              </ul></div>
+            }
+          </article>
+        }
+      </div>
+    }
+  </section>
+</main>
+<footer>Home Décor · Team 3<span>Built as a Software Development Life Cycle course project.</span></footer>

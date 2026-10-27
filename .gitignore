@@ -8,12 +8,15 @@
 .angular/
 
 # Node modules and dependency files
-/node_modules/
-/package-lock.json
+node_modules/
+dist/
+.angular/
+coverage/
+data/*.sqlite*
 /yarn.lock
 
 # Environment files
-/.env
+.env
 
 # Angular CLI and build artefacts
 /.angular-cli.json
@@ -30,3 +33,5 @@ yarn-error.log*
 
 # Ignore Word temporary and lock files
 ~$*.docx
+
+**/data/*.sqlite*

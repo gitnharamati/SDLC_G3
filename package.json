@@ -1,0 +1,16 @@
+{
+  "name": "sdlc-g3-home-decor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Team 3 home decor course project",
+  "engines": { "node": ">=24.0.0 <25" },
+  "workspaces": ["apps/api", "apps/web"],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "npm run dev --workspace apps/api",
+    "dev:web": "npm run start --workspace apps/web",
+    "build": "npm run build --workspace apps/web",
+    "start": "npm run start --workspace apps/api",
+    "test": "npm run test --workspace apps/api"
+  }
+}
