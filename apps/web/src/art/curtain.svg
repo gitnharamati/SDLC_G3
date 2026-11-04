@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470">
+ <defs>
+ <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#fff6df"/><stop offset="1" stop-color="#d3b597"/></linearGradient>
+ <linearGradient id="light" x2="1" y2="1"><stop stop-color="#fff9dc" stop-opacity=".65"/><stop offset="1" stop-color="#fff9dc" stop-opacity="0"/></linearGradient>
+ <pattern id="weave" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0h4M0 2h4" stroke="#513b29" stroke-opacity=".1"/></pattern>
+ </defs>
+ <path fill="url(#wall)" d="M0 0h600v470H0z"/>
+<rect x="119" y="61" width="364" height="350" fill="#fff9df" stroke="#aa805b" stroke-width="8"/>
+<path d="M301 65v345M124 218h354" stroke="#d2ae83" stroke-width="6"/>
+<circle cx="325" cy="145" r="38" fill="#f7d78e"/>
+<path d="M122 342q117-101 178-36 85-61 179-11v112H122z" fill="#b6bd9b"/>
+<path d="M91 52h418" stroke="#72533b" stroke-width="7" stroke-linecap="round"/>
+<path d="M110 58h141q-36 107-31 205t29 155q-79-14-138 0-13-143-1-360m381 0H350q36 107 31 205t-29 155q79-14 138 0 13-143 1-360" fill="#d9bb94"/>
+<path d="M128 63q-15 185 4 344m27-344q-19 201 4 344m27-344q-31 202 4 344m25-344q-33 198 5 344m249-344q15 185-4 344m-27-344q19 201-4 344m-27-344q31 202-4 344m-25-344q33 198-5 344" stroke="#f8e4c6" stroke-width="10" opacity=".7" fill="none"/>
+ </svg>

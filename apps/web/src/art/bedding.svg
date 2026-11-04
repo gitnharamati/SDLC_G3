@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470">
+ <defs>
+ <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#fff6df"/><stop offset="1" stop-color="#d4b8a1"/></linearGradient>
+ <linearGradient id="light" x2="1" y2="1"><stop stop-color="#fff9dc" stop-opacity=".65"/><stop offset="1" stop-color="#fff9dc" stop-opacity="0"/></linearGradient>
+ <pattern id="weave" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0h4M0 2h4" stroke="#513b29" stroke-opacity=".1"/></pattern>
+ </defs>
+ <path fill="url(#wall)" d="M0 0h600v470H0z"/>
+<path d="M87 393h427" stroke="#a9856e" opacity=".36" stroke-width="30" stroke-linecap="round"/>
+<path d="M95 321l88-65 314 15 10 76-97 40-303-23q-22-15-12-43" fill="#a68b78"/>
+<path d="M88 313l92-67 317 23-93 77-307-21z" fill="#c4a996"/>
+<path d="M109 258l72-62 304 23 11 62-94 50-279-25q-26-8-14-48" fill="#dfc8b4"/>
+<path d="M113 250l76-72 294 22-81 81-287-17z" fill="#f3dfca"/>
+<path d="M123 208l81-67 275 22 4 48-87 52-261-15q-22-9-12-40" fill="#f4ece0"/>
+<path d="M126 202l80-76 272 28-83 77z" fill="#fffbef"/>
+<path d="M144 232l250 17 77-41m-341 80 270 25 83-42m-370 82 290 21 92-38" fill="none" stroke="#937760" stroke-width="2" opacity=".5"/>
+ </svg>

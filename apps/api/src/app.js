@@ -1,7 +1,8 @@
 import express from 'express';
+import { adminRouter } from './admin.js';
 import { getCatalogue, getProducts } from './catalogue.js';
 
-export function createApp(db) {
+export function createApp(db, adminOptions) {
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json({ limit: '100kb' }));
@@ -11,7 +12,7 @@ export function createApp(db) {
   });
   app.get('/api/catalogue', (_req, res) => res.json({ departments: getCatalogue(db) }));
   app.get('/api/products', (_req, res) => res.json({ products: getProducts(db) }));
-  // No mutation endpoints are exposed before admin authentication is implemented.
+  app.use('/api/admin', adminRouter(adminOptions));
   app.use('/api', (_req, res) => res.status(404).json({ error: 'API endpoint not found' }));
   app.use((error, _req, res, _next) => {
     if (error.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON' });

@@ -1,13 +1,31 @@
-<header class="site-header"><a class="wordmark" href="/">HOME DÉCOR<span>Everyday comfort</span></a><span class="demo-label">Team 3 · Course demo</span></header>
-<main>
-  <section class="intro" aria-labelledby="page-title">
-    <p class="eyebrow">Cushions · Bed sheets · Curtains</p>
-    <h1 id="page-title">Simple comforts.<br>A home that feels like you.</h1>
-    <p class="lead">Explore our first sample collection of everyday essentials for your home.</p>
-    <p class="notice">Sample products and prices. Ordering is not available in this version. Currency shown as CAD for demonstration, pending team confirmation.</p>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label="Home Décor home">
+    <span class="brand-mark" aria-hidden="true">✦</span><span>Home Décor<small>EVERYDAY COMFORT</small></span>
+  </a>
+  <nav aria-label="Main navigation">
+    <a href="/#collection" [attr.aria-current]="isAdmin ? null : 'page'">Shop</a>
+    <a href="/admin" [attr.aria-current]="isAdmin ? 'page' : null">Admin</a>
+  </nav>
+</header>
+@if (isAdmin) {
+  <app-admin />
+} @else {
+<main id="main-content" tabindex="-1">
+  <section class="hero" aria-labelledby="page-title">
+    <div class="hero-copy">
+      <p class="eyebrow">✦ &nbsp; The everyday collection</p>
+      <h1 id="page-title">Make yourself <em>at home.</em></h1>
+      <p class="lead">Soft cushions, fresh sheets and curtains that let the morning light in. Little things that make a room feel like yours.</p>
+      <a class="button" href="#collection">Explore the collection <span aria-hidden="true">↘</span></a>
+    </div>
+    <div class="hero-art" aria-hidden="true"></div>
   </section>
-  <section class="collection" aria-labelledby="collection-title">
-    <div class="section-heading"><h2 id="collection-title">The sample collection</h2>@if (!loading() && !error()) { <span>{{ products().length }} products · {{ totalVariants() }} size and colour combinations</span> }</div>
+  <section class="collection" id="collection" aria-labelledby="collection-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Cushions · Bed sheets · Curtains</p><h2 id="collection-title">Little home comforts</h2></div>
+      @if (!loading() && !error()) { <span>{{ products().length }} products · {{ totalVariants() }} size and colour combinations</span> }
+    </div>
     @if (loading()) { <p role="status" class="state">Loading the catalogue…</p> }
     @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
     @else if (!products().length) { <p class="state">There are no products to display yet.</p> }
@@ -15,7 +33,10 @@
       <div class="product-grid">
         @for (product of products(); track product.id) {
           <article class="product">
-            <div class="product-placeholder" [class.curtain]="product.category === 'Curtains'" [class.bedding]="product.category === 'Bed sheets'"><span>{{ product.category }}</span><small>Product photo to be added</small></div>
+            <div class="product-art" [class.curtain]="product.category === 'Curtains'" [class.bedding]="product.category === 'Bed sheets'" [class.cushion]="product.category === 'Cushions'">
+              <span>{{ product.category }}</span>
+            </div>
+            <div class="product-copy">
             <p class="product-category">{{ product.category }} / {{ product.room }}</p>
             <h3>{{ product.name }}</h3>
             <p>{{ product.material }}</p>
@@ -28,10 +49,13 @@
                 }
               </ul></div>
             }
+            </div>
           </article>
         }
       </div>
     }
+    <p class="notice">Demo catalogue · Illustrations, sample stock and prices in CAD. Online ordering is not available.</p>
   </section>
 </main>
-<footer>Home Décor · Team 3<span>Built as a Software Development Life Cycle course project.</span></footer>
+}
+<footer><strong>✦ &nbsp; Home Décor</strong><span>Team 3 · Software Development Life Cycle course project</span></footer>

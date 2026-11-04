@@ -1,0 +1,62 @@
+import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
+import { Router } from 'express';
+
+const cookieName = 'decor_admin';
+const sessionMs = 30 * 60 * 1000;
+const failureWindowMs = 60 * 1000;
+
+export function adminRouter({ password, secure = false } = {}) {
+  const router = Router();
+  const enabled = typeof password === 'string' && password.length >= 12 && password.length <= 256;
+  const salt = randomBytes(16);
+  const hash = enabled ? scryptSync(password, salt, 32) : null;
+  const sessions = new Map();
+  const cookieOptions = { httpOnly: true, sameSite: 'strict', secure, path: '/api/admin' };
+  let failures = 0;
+  let resetAt = 0;
+
+  function token(req) {
+    return req.headers.cookie?.match(/(?:^|;\s*)decor_admin=([a-f0-9]{64})(?:;|$)/)?.[1];
+  }
+  router.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    if (!enabled) return res.status(503).json({ error: 'Admin access is not configured.' });
+    if (req.method === 'POST' && req.get('X-Admin-Request') !== '1') {
+      return res.status(403).json({ error: 'Request not allowed.' });
+    }
+    next();
+  });
+  router.post('/login', (req, res) => {
+    const now = Date.now();
+    if (now >= resetAt) { failures = 0; resetAt = now + failureWindowMs; }
+    if (failures >= 5) {
+      res.set('Retry-After', String(Math.ceil((resetAt - now) / 1000)));
+      return res.status(429).json({ error: 'Too many attempts. Try again in a minute.' });
+    }
+    const candidate = req.body?.password;
+    if (typeof candidate !== 'string' || candidate.length > 256 ||
+        !timingSafeEqual(hash, scryptSync(candidate, salt, 32))) {
+      failures++;
+      return res.status(401).json({ error: 'Incorrect password.' });
+    }
+    for (const [key, expires] of sessions) if (expires <= now) sessions.delete(key);
+    sessions.delete(token(req));
+    const key = randomBytes(32).toString('hex');
+    sessions.set(key, now + sessionMs);
+    res.cookie(cookieName, key, { ...cookieOptions, maxAge: sessionMs });
+    return res.json({ signedIn: true });
+  });
+  router.get('/session', (req, res) => {
+    const key = token(req);
+    if ((sessions.get(key) ?? 0) <= Date.now()) {
+      sessions.delete(key);
+      return res.status(401).json({ error: 'Sign in to open the admin area.' });
+    }
+    return res.json({ signedIn: true });
+  });
+  router.post('/logout', (req, res) => {
+    sessions.delete(token(req));
+    res.clearCookie(cookieName, cookieOptions).status(204).end();
+  });
+  return router;
+}

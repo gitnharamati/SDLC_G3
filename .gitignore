@@ -33,5 +33,3 @@ yarn-error.log*
 
 # Ignore Word temporary and lock files
 ~$*.docx
-
-**/data/*.sqlite*

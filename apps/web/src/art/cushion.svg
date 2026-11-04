@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470">
+ <defs>
+ <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#fff6df"/><stop offset="1" stop-color="#c9ac92"/></linearGradient>
+ <linearGradient id="light" x2="1" y2="1"><stop stop-color="#fff9dc" stop-opacity=".65"/><stop offset="1" stop-color="#fff9dc" stop-opacity="0"/></linearGradient>
+ <pattern id="weave" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0h4M0 2h4" stroke="#513b29" stroke-opacity=".1"/></pattern>
+ </defs>
+ <path fill="url(#wall)" d="M0 0h600v470H0z"/>
+<ellipse cx="302" cy="390" rx="220" ry="36" fill="#8b674c" opacity=".25"/>
+<path d="M95 350q22-65 9-117 127 8 215-46 9 116 58 163-130-4-241 33z" fill="#a5654b"/>
+<path d="M236 140q96 19 224-22-12 99 44 215-127-7-243 52-1-119-25-245" fill="#758469" stroke="#4d614a" stroke-width="5"/>
+<path d="M236 140q96 19 224-22-12 99 44 215-127-7-243 52-1-119-25-245" fill="url(#weave)"/>
+<path d="M253 155q89 16 193-22-3 99 43 190-116-4-216 47-3-113-20-215" fill="none" stroke="#ccd1ae" stroke-width="2" stroke-dasharray="4 6"/>
+ </svg>
