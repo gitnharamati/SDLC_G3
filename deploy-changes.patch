@@ -1,0 +1,52 @@
+diff --git a/apps/api/src/app.js b/apps/api/src/app.js
+index 5607999..d353888 100644
+--- a/apps/api/src/app.js
++++ b/apps/api/src/app.js
+@@ -1,4 +1,7 @@
+ import express from 'express';
++import { existsSync } from 'node:fs';
++import { join } from 'node:path';
++import { fileURLToPath } from 'node:url';
+ import { adminRouter } from './admin.js';
+ import { getCatalogue, getProducts } from './catalogue.js';
+ 
+@@ -14,6 +17,19 @@ export function createApp(db, adminOptions) {
+   app.get('/api/products', (_req, res) => res.json({ products: getProducts(db) }));
+   app.use('/api/admin', adminRouter(adminOptions));
+   app.use('/api', (_req, res) => res.status(404).json({ error: 'API endpoint not found' }));
++
++  // Serve the built Angular app (after `npm run build`) from the same server.
++  const webDist = process.env.WEB_DIST ||
++    fileURLToPath(new URL('../../web/dist/home-decor/browser/', import.meta.url));
++  if (existsSync(join(webDist, 'index.html'))) {
++    app.use(express.static(webDist));
++    // Send index.html for page routes like /admin so a refresh works.
++    app.use((req, res, next) => {
++      if (req.method !== 'GET' || !req.accepts('html')) return next();
++      res.sendFile(join(webDist, 'index.html'));
++    });
++  }
++
+   app.use((error, _req, res, _next) => {
+     if (error.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON' });
+     console.error(error.message);
+diff --git a/apps/api/src/server.js b/apps/api/src/server.js
+index fc2425b..f5dbc97 100644
+--- a/apps/api/src/server.js
++++ b/apps/api/src/server.js
+@@ -5,10 +5,13 @@ import { createApp } from './app.js';
+ const databasePath = process.env.DATABASE_PATH || fileURLToPath(new URL('../data/home-decor.sqlite', import.meta.url));
+ const db = openDatabase(databasePath);
+ const port = Number(process.env.PORT || 3000);
++const production = process.env.NODE_ENV === 'production';
++// Hosting platforms need the server reachable from outside the container.
++const host = process.env.HOST || (production ? '0.0.0.0' : '127.0.0.1');
+ const server = createApp(db, {
+   password: process.env.ADMIN_PASSWORD,
+-  secure: process.env.NODE_ENV === 'production'
+-}).listen(port, '127.0.0.1', () => {
++  secure: production
++}).listen(port, host, () => {
+   console.log(`Home Decor API: http://localhost:${port}/api/health`);
+ });
+ function stop() { server.close(() => { db.close(); process.exit(0); }); }
