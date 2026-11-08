@@ -2,6 +2,8 @@
 
 Home decor e-commerce application for Software Development Life Cycle.
 
+The app is live @ https://sdlc-g3.onrender.com/
+
 Nir Haramati: Business Analyst. Omkumar Patel: Developer. Romit Tejani: QA.
 
 ## Current milestone
