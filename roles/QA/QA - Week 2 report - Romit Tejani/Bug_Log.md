@@ -57,5 +57,5 @@ Tester: Romit Tejani. Status key: Open / Fixed / Retested / Closed.
 - **Status:** Open - suggestion
 
 ## OBS-06 - Developer did not browser-test mobile layout, options button, error/retry (carried over)
-- Developer says browser testing on team computers is pending. Covered by TC-31 to TC-34, TC-45 to TC-52.
-- **Status:** Open - QA to run
+- Developer said browser testing on team computers was pending. QA ran these checks (TC-31 to TC-34, TC-45 to TC-52) and they passed.
+- **Status:** Closed - done by QA
