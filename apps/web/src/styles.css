@@ -99,3 +99,34 @@ footer span { font-size: .78rem; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   button, .button { transition: none; }
 }
+
+/* Signed-in product editor */
+.admin-workspace { align-items: start; gap: 18px; background: #eee4d5; padding: clamp(14px, 3vw, 32px); }
+.admin-workspace > * { width: 100%; }
+.admin-workspace .admin-card { padding: clamp(18px, 3vw, 26px); box-shadow: none; }
+.admin-workspace .admin-card h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+.admin-workspace .admin-card form { max-width: 440px; }
+.product-editor { padding: clamp(16px, 3vw, 30px); border: 1px solid var(--line); border-radius: 24px; background: var(--paper); }
+.product-editor h2 { margin: 0 0 6px; }
+.editor-note { margin: 0 0 12px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+.editor-fields { display: grid; grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr); gap: 18px; margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.editor-primary, .editor-side { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.editor-section { display: grid; gap: 10px; min-width: 0; padding: clamp(12px, 2.3vw, 19px); background: #faf6ee; border: 1px solid var(--line); border-radius: 14px; }
+.editor-section h3, .editor-section .editor-note { margin: 0; }
+.editor-section label { display: grid; gap: 5px; font-size: .88rem; font-weight: 650; min-width: 0; }
+.editor-section input:not([type="checkbox"]), .editor-section select, .editor-section textarea {
+  width: 100%; min-width: 0; min-height: 44px; padding: 8px 10px; border: 1px solid #8d7f70;
+  border-radius: 8px; color: var(--ink); background: white; font: inherit; font-weight: 400;
+}
+.editor-section textarea { resize: vertical; }
+.editor-section .editor-checkbox { display: flex; align-items: center; gap: 7px; }
+.editor-checkbox input { accent-color: var(--green); width: 18px; height: 18px; }
+.editor-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.editor-select { display: grid; gap: 5px; min-width: 0; }
+.editor-row-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.stock-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: .86rem; }
+.stock-table th, .stock-table td { padding: 6px 5px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.stock-table th:last-child { width: 30%; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 780px) { .editor-fields { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .editor-row, .editor-row-three { grid-template-columns: 1fr; } }

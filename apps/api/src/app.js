@@ -15,7 +15,7 @@ export function createApp(db, adminOptions) {
   });
   app.get('/api/catalogue', (_req, res) => res.json({ departments: getCatalogue(db) }));
   app.get('/api/products', (_req, res) => res.json({ products: getProducts(db) }));
-  app.use('/api/admin', adminRouter(adminOptions));
+  app.use('/api/admin', adminRouter(db, adminOptions));
   app.use('/api', (_req, res) => res.status(404).json({ error: 'API endpoint not found' }));
 
   // Serve the built Angular app (after `npm run build`) from the same server.
