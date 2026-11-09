@@ -105,3 +105,21 @@ default: one department, three categories, and five rooms under each category.
 The PPT is the implementation baseline. Nir's later additions are proposals that
 still need team review. See docs/Developer_Architecture.md for open decisions.
 
+
+## Database and admin setup for QA
+
+- Use Node 24. Keep the SQLite database out of Git. Each local copy seeds its
+  own database on first start. Back up existing SQLite data before switching to
+  a branch that removes the old tracked file, or before deploying this update.
+- Startup upgrades existing valid variant data in place. A variant must have
+  one size and one colour from its product, with no duplicate pair. Create the
+  variant and its two option links in one transaction. If old rows violate
+  these rules, the upgrade rolls back; check the database before trying again.
+- Admin sign-in limits failed attempts per client IP. Direct connections
+  ignore forwarded IP headers by default. If hosting behind a proxy, set
+  `TRUST_PROXY_HOPS` only after confirming the trusted path length and how the
+  proxy handles forwarded client addresses. Retest with two different client
+  networks. Clients sharing an IP also share the limit.
+- On Render, use a persistent disk with `DATABASE_PATH` pointing into the
+  mounted disk if you need SQLite changes to survive restarts or redeploys.
+  Keep the hosted demo on sample data until storage is set up.

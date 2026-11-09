@@ -6,9 +6,29 @@ export function openDatabase(filename) {
   if (filename !== ':memory:') mkdirSync(dirname(filename), { recursive: true });
   const db = new DatabaseSync(filename);
   db.exec('PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;');
-  db.exec(readFileSync(new URL('./schema.sql', import.meta.url), 'utf8'));
-  seedDatabase(db);
-  return db;
+  try {
+    db.exec(readFileSync(new URL('./schema.sql', import.meta.url), 'utf8'));
+    migrateDatabase(db);
+    seedDatabase(db);
+    return db;
+  } catch (error) {
+    db.close();
+    throw error;
+  }
+}
+
+function migrateDatabase(db) {
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    if (db.prepare('PRAGMA user_version').get().user_version < 1) {
+      db.exec(readFileSync(new URL('./migrations/001-variant-combinations.sql', import.meta.url), 'utf8'));
+      db.exec('PRAGMA user_version = 1');
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
 }
 
 export function seedDatabase(db) {
