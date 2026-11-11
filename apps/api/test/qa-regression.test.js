@@ -1,8 +1,6 @@
 // QA regression tests - Romit Tejani (QA), Week 2.
 // Covers the Week 1 bugs (BUG-01) and data rules the checkout stock test will rely on.
-// Tests marked { todo } describe CORRECT behaviour that is not built yet: they run and
-// are reported, but a failure does not fail `npm test`. Remove `todo` once the developer
-// fixes the bug, so the test becomes a normal regression guard.
+// BUG-01 was fixed by the developer in Week 2 (migration 001); its tests are now normal regression guards.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { openDatabase } from '../src/database.js';
@@ -53,23 +51,45 @@ test('QA: last-item rule at database level - stock can never go below zero', wit
   assert.equal(db.prepare('SELECT stock FROM product_variants WHERE id = 4').get().stock, 0);
 }));
 
-// ---- Week 1 bugs (still open when this file was written) ----
-test('BUG-01a: a variant with no options should be rejected', { todo: 'BUG-01 open' }, withDb(db => {
-  const id = newVariant(db, 1, 'QA-NOOPT');
-  const n = db.prepare('SELECT count(*) AS n FROM variant_values WHERE variant_id = ?').get(id).n;
-  assert.ok(n > 0, 'variant was saved with no size/colour');
+// ---- Week 1 bug BUG-01: fixed by the variant-combination migration (Week 3 QA: todo markers removed) ----
+// Each attempt runs inside a transaction and must be rejected by the database, with nothing saved.
+const mustReject = (db, pattern, fn) => {
+  db.exec('BEGIN');
+  try {
+    assert.throws(() => { fn(); db.exec('COMMIT'); }, pattern);
+  } finally {
+    try { db.exec('ROLLBACK'); } catch { /* already rolled back */ }
+  }
+};
+
+test('BUG-01a: a variant with no options is rejected', withDb(db => {
+  const before = db.prepare('SELECT count(*) AS n FROM product_variants').get().n;
+  mustReject(db, /FOREIGN KEY|combination|option/i, () => newVariant(db, 1, 'QA-NOOPT'));
+  assert.equal(db.prepare('SELECT count(*) AS n FROM product_variants').get().n, before);
 }));
 
-test('BUG-01b: duplicate size+colour combination should be rejected', { todo: 'BUG-01 open' }, withDb(db => {
+test('BUG-01b: duplicate size+colour combination is rejected', withDb(db => {
   // product 1: option value 1 = first size, 4 = first colour (already used by DEMO-1-1)
-  const id = newVariant(db, 1, 'QA-DUP');
-  link(db, id, 1);
-  assert.throws(() => link(db, id, 4), 'duplicate combination accepted');
+  mustReject(db, /UNIQUE constraint failed: variant_combinations/, () => {
+    const id = newVariant(db, 1, 'QA-DUP');
+    link(db, id, 1);
+    link(db, id, 4);
+  });
 }));
 
-test('BUG-01c: option value from another product should be rejected', { todo: 'BUG-01 open' }, withDb(db => {
+test('BUG-01c: option value from another product is rejected', withDb(db => {
   const foreign = db.prepare(`SELECT v.id FROM option_values v JOIN option_types t ON t.id = v.option_type_id
     WHERE t.product_id = 2 LIMIT 1`).get().id;
-  const id = newVariant(db, 1, 'QA-CROSS');
-  assert.throws(() => link(db, id, foreign), 'cross-product option accepted');
+  mustReject(db, /of this product/, () => {
+    const id = newVariant(db, 1, 'QA-CROSS');
+    link(db, id, foreign);
+  });
+}));
+
+test('BUG-01d: a variant cannot have two options of the same type', withDb(db => {
+  mustReject(db, /already has an option of this type/, () => {
+    const id = newVariant(db, 1, 'QA-TWO-SIZES');
+    link(db, id, 1);
+    link(db, id, 2);
+  });
 }));
