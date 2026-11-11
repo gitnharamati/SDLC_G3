@@ -13,6 +13,7 @@ export function getProducts(db) {
     p.available, s.name AS room, c.name AS category, d.name AS department
     FROM products p JOIN subcategories s ON s.id = p.subcategory_id
     JOIN categories c ON c.id = s.category_id JOIN departments d ON d.id = c.department_id
+    WHERE p.available = 1
     ORDER BY p.id`).all().map(product => ({
     ...product,
     available: Boolean(product.available),

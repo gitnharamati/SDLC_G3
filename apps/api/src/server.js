@@ -10,7 +10,8 @@ const production = process.env.NODE_ENV === 'production';
 const host = process.env.HOST || (production ? '0.0.0.0' : '127.0.0.1');
 const server = createApp(db, {
   password: process.env.ADMIN_PASSWORD,
-  secure: production
+  secure: production,
+  trustProxyHops: Number(process.env.TRUST_PROXY_HOPS || 0)
 }).listen(port, host, () => {
   console.log(`Home Decor API: http://localhost:${port}/api/health`);
 });

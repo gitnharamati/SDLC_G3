@@ -60,10 +60,38 @@ test('API reads SQLite data, returns errors for unknown routes and exposes no wr
     db.prepare('UPDATE product_variants SET stock = 42 WHERE id = 1').run();
     const changed = await (await fetch(`${url}/api/products`)).json();
     assert.equal(changed.products[0].variants[0].stock, 42);
+    db.prepare('UPDATE products SET available = 0 WHERE id = 1').run();
+    const visible = await (await fetch(`${url}/api/products`)).json();
+    assert.deepEqual(visible.products.map(product => product.id), [2, 3]);
     assert.equal((await fetch(`${url}/api/missing`)).status, 404);
     assert.equal((await fetch(`${url}/api/products`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })).status, 404);
   } finally {
     await new Promise(resolve => server.close(resolve));
     db.close();
   }
+});
+
+test('database prevents incomplete, duplicate, and cross-product variant combinations', () => {
+  const db = openDatabase(':memory:');
+  try {
+    const create = () => Number(db.prepare("INSERT INTO product_variants(product_id, sku) VALUES (1, 'QA-NEW')").run().lastInsertRowid);
+    const link = (id, option) => db.prepare('INSERT INTO variant_values VALUES (?, ?)').run(id, option);
+    const tryCombination = action => {
+      db.exec('BEGIN');
+      try { action(create()); } finally { db.exec('ROLLBACK'); }
+    };
+    assert.throws(create, /FOREIGN KEY/);
+    assert.throws(() => tryCombination(id => { link(id, 1); db.exec('COMMIT'); }), /FOREIGN KEY/);
+    assert.throws(() => tryCombination(id => { link(id, 1); link(id, 4); }), /UNIQUE/);
+    assert.throws(() => tryCombination(id => link(id, 7)), /of this product/);
+    assert.throws(() => tryCombination(id => { link(id, 1); link(id, 2); }), /already has an option/);
+    assert.throws(() => db.exec('DELETE FROM variant_values WHERE variant_id = 1'), /FOREIGN KEY/);
+    db.exec('BEGIN');
+    const size = Number(db.prepare("INSERT INTO option_values(option_type_id, value) VALUES (1, '60 × 60 cm')").run().lastInsertRowid);
+    const id = create();
+    link(id, size);
+    link(id, 4);
+    db.exec('COMMIT');
+    assert.equal(db.prepare('SELECT count(*) AS n FROM variant_values WHERE variant_id = ?').get(id).n, 2);
+  } finally { db.close(); }
 });
