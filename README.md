@@ -2,15 +2,17 @@
 
 Home decor e-commerce application for Software Development Life Cycle.
 
+The app is live @ https://sdlc-g3.onrender.com/
+
 Nir Haramati: Business Analyst. Omkumar Patel: Developer. Romit Tejani: QA.
 
 ## Current milestone
 
-Week 2 includes a redesigned storefront and an admin sign-in page. The storefront
-shows three sample products and stock for each size and colour combination.
-Angular displays data from the Express API, which reads from SQLite. Customers
-can browse the catalogue; checkout, payments, and admin stock editing are not
-available yet.
+The storefront shows products and stock by size and colour. Signed-in admins
+can add products, set starting stock for each combination, and decide whether
+the product appears in the shop. Angular displays data from the Express API,
+which reads and writes SQLite. Editing existing products, photo uploads, checkout
+and payments are not available yet.
 
 ## Requirements
 
@@ -39,7 +41,7 @@ If you change the API port, update apps/web/proxy.conf.json to match.
 The browser's `/api` requests go through Angular's development proxy. SQLite is
 accessed by the backend only. No separate database server or account is needed.
 
-## Try the Week 2 demo
+## Try the storefront and Add Product demo
 
 1. Open the shop at http://localhost:4200 and choose **Explore the collection**.
 2. Open **View options and stock** on a product to see size, colour, and stock.
@@ -51,8 +53,17 @@ accessed by the backend only. No separate database server or account is needed.
    npm.cmd run dev
    ```
 
-4. Open http://localhost:4200/admin, try a wrong password, then sign in with
-   your temporary password. Refresh to check the session, then sign out.
+4. Open http://localhost:4200/admin and sign in with your temporary password.
+5. Under **Add product**, enter a name, description, material, and price in CAD.
+   Choose a department, category, and room. For example: Home Décor → Cushions
+   → Living room.
+6. Enter sizes such as `Small, Large` and colours such as `Sand, Sage`.
+   The form makes four stock rows. Enter a whole quantity in each row.
+7. Leave **Available in the shop** checked and choose **Save product**. Open
+   the shop and check the new product's price and **View options and stock**.
+   Try saving another product with visibility unchecked; it stays out of the shop.
+8. Sign out when finished. If a session ends while saving, sign in again on the
+   same page to keep your draft. Refreshing or closing the page clears the draft.
 
 The password is set in the current terminal. Keep it out of Git. If PowerShell
 blocks npm scripts, use `npm.cmd` in place of `npm` for the other commands too.
@@ -70,10 +81,10 @@ API endpoints:
 - GET /api/catalogue: returns departments, categories and rooms.
 - GET /api/products: returns products, option combinations and stock from SQLite.
 
-The catalogue endpoints are read-only. The admin API handles sign-in, session checks, and sign-out.
-`npm run build` checks and builds Angular. `npm start` starts only the API;
-serving the built frontend and HTTPS deployment are future work. This milestone
-is for running locally using the development commands above.
+The public catalogue endpoints are read-only. `POST /api/admin/products`
+requires an admin session and the `X-Admin-Request` header. It saves the product,
+its options and stock together. `npm run build` builds Angular. `npm start`
+runs Express and serves the built site when the Angular output is present.
 
 ## Folders
 

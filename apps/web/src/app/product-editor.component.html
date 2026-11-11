@@ -1,0 +1,102 @@
+<section aria-labelledby="editor-title" class="product-editor">
+  <h2 id="editor-title">Add product</h2>
+  <p class="editor-note">Set up a product and its starting stock. Choose whether it appears in the shop.</p>
+  @if (loading()) { <p role="status">Loading departments and categories…</p> }
+  @if (catalogueError()) {
+    <p class="admin-error" role="alert">{{ catalogueError() }}</p>
+    <button type="button" (click)="loadPlacement()">Try again</button>
+  }
+  @if (saved(); as product) {
+    <p class="admin-status" role="status">
+      Saved {{ product.name }} with {{ product.variantCount }} stock combination(s).
+      @if (product.available) { <a href="/#collection">View the shop</a> }
+      @else { It is hidden from the shop. }
+    </p>
+  }
+  <form #productForm="ngForm" (ngSubmit)="save(productForm)" class="editor-form">
+    <fieldset class="editor-fields" [disabled]="saving() || !canSave()">
+      <legend class="visually-hidden">Product information</legend>
+      <div class="editor-primary">
+        <section class="editor-section" aria-labelledby="details-title">
+          <h3 id="details-title">Details</h3>
+          <label>Product name
+            <input name="name" [(ngModel)]="details.name" required maxlength="120">
+          </label>
+          <label>Description
+            <textarea name="description" [(ngModel)]="details.description" required maxlength="2000" rows="3"></textarea>
+          </label>
+          <div class="editor-row">
+            <label>Material <input name="material" [(ngModel)]="details.material" required maxlength="120"></label>
+            <label>Price (CAD) <input name="price" [(ngModel)]="details.price" required inputmode="decimal" placeholder="24.99" maxlength="9"></label>
+          </div>
+        </section>
+        <section class="editor-section" aria-labelledby="placement-title">
+          <h3 id="placement-title">Placement</h3>
+          <div class="editor-row editor-row-three">
+            <div class="editor-select"><label for="product-department">Department</label>
+              <select id="product-department" name="department" [ngModel]="departmentId()" (ngModelChange)="chooseDepartment($event)" required [disabled]="loading() || !!catalogueError()">
+                <option [ngValue]="0" disabled>Choose department</option>
+                @for (item of departments(); track item.id) { <option [ngValue]="item.id">{{ item.name }}</option> }
+              </select>
+            </div>
+            <div class="editor-select"><label for="product-category">Category</label>
+              <select id="product-category" name="category" [ngModel]="categoryId()" (ngModelChange)="chooseCategory($event)" required [disabled]="!departmentId()">
+                <option [ngValue]="0" disabled>Choose category</option>
+                @for (item of categories(); track item.id) { <option [ngValue]="item.id">{{ item.name }}</option> }
+              </select>
+            </div>
+            <div class="editor-select"><label for="product-room">Room</label>
+              <select id="product-room" name="room" [ngModel]="roomId()" (ngModelChange)="roomId.set($event)" required [disabled]="!categoryId()">
+                <option [ngValue]="0" disabled>Choose room</option>
+                @for (item of rooms(); track item.id) { <option [ngValue]="item.id">{{ item.name }}</option> }
+              </select>
+            </div>
+          </div>
+        </section>
+        <section class="editor-section" aria-labelledby="options-title">
+          <h3 id="options-title">Options</h3>
+          <p class="editor-note" id="options-help">Separate values with commas. Enter up to 12 sizes and 12 colours.</p>
+          <div class="editor-row">
+            <label>Sizes <input name="sizes" [ngModel]="sizeText()" (ngModelChange)="sizeText.set($event)" required maxlength="743" aria-describedby="options-help" placeholder="45 × 45 cm, 50 × 50 cm"></label>
+            <label>Colours <input name="colours" [ngModel]="colourText()" (ngModelChange)="colourText.set($event)" required maxlength="743" aria-describedby="options-help" placeholder="Sand, Sage"></label>
+          </div>
+        </section>
+        <section class="editor-section" aria-labelledby="stock-title">
+          <h3 id="stock-title">Stock by combination</h3>
+          @if (variants().length) {
+            <p class="editor-note">{{ variants().length }} combinations. Enter a whole number for each row.</p>
+            <table class="stock-table">
+              <thead><tr><th scope="col">Size</th><th scope="col">Colour</th><th scope="col">Stock</th></tr></thead>
+              <tbody>
+                @for (row of variants(); track row.key) {
+                  <tr>
+                    <td>{{ row.size }}</td><td>{{ row.colour }}</td>
+                    <td><input type="number" min="0" max="999999" step="1" required
+                      [attr.aria-label]="'Stock for ' + row.size + ', ' + row.colour"
+                      [ngModel]="stock()[row.key] === undefined ? 0 : stock()[row.key]"
+                      [ngModelOptions]="{standalone: true}" (ngModelChange)="updateStock(row.key, $event)"></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="editor-note">Enter valid sizes and colours to generate the stock rows.</p>
+          }
+        </section>
+      </div>
+      <aside class="editor-side" aria-label="Publishing settings">
+        <section class="editor-section">
+          <h3>Visibility</h3>
+          <label class="editor-checkbox"><input type="checkbox" name="available" [(ngModel)]="details.available"> Available in the shop</label>
+          <p class="editor-note">Turn this off to save the product without showing it to shoppers.</p>
+        </section>
+        <section class="editor-section">
+          <h3>Photos</h3>
+          <p class="editor-note">New products use the shop’s category artwork for now.</p>
+        </section>
+        @if (error()) { <p class="admin-error" role="alert">{{ error() }}</p> }
+        <button type="submit" [disabled]="loading() || !!catalogueError()">{{ saving() ? 'Saving…' : 'Save product' }}</button>
+      </aside>
+    </fieldset>
+  </form>
+</section>

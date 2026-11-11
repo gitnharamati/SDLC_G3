@@ -1,11 +1,12 @@
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { Router } from 'express';
+import { addProduct, ProductInputError } from './product-editor.js';
 
 const cookieName = 'decor_admin';
 const sessionMs = 30 * 60 * 1000;
 const failureWindowMs = 60 * 1000;
 
-export function adminRouter({ password, secure = false } = {}) {
+export function adminRouter(db, { password, secure = false } = {}) {
   const router = Router();
   const enabled = typeof password === 'string' && password.length >= 12 && password.length <= 256;
   const salt = randomBytes(16);
@@ -46,13 +47,22 @@ export function adminRouter({ password, secure = false } = {}) {
     res.cookie(cookieName, key, { ...cookieOptions, maxAge: sessionMs });
     return res.json({ signedIn: true });
   });
-  router.get('/session', (req, res) => {
+  function requireSession(req, res, next) {
     const key = token(req);
     if ((sessions.get(key) ?? 0) <= Date.now()) {
       sessions.delete(key);
       return res.status(401).json({ error: 'Sign in to open the admin area.' });
     }
-    return res.json({ signedIn: true });
+    next();
+  }
+  router.get('/session', requireSession, (_req, res) => res.json({ signedIn: true }));
+  router.post('/products', requireSession, (req, res, next) => {
+    try {
+      return res.status(201).json({ product: addProduct(db, req.body) });
+    } catch (error) {
+      if (error instanceof ProductInputError) return res.status(400).json({ error: error.message });
+      return next(error);
+    }
   });
   router.post('/logout', (req, res) => {
     sessions.delete(token(req));
