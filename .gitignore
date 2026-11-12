@@ -12,7 +12,7 @@ node_modules/
 dist/
 .angular/
 coverage/
-/apps/api/data/*.sqlite*
+# /apps/api/data/*.sqlite*
 /yarn.lock
 
 # Environment files
