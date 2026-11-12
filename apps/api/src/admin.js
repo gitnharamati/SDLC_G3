@@ -13,8 +13,8 @@ export function adminRouter(db, { password, secure = false } = {}) {
   const hash = enabled ? scryptSync(password, salt, 32) : null;
   const sessions = new Map();
   const cookieOptions = { httpOnly: true, sameSite: 'strict', secure, path: '/api/admin' };
-  let failures = 0;
-  let resetAt = 0;
+  const failuresByClient = new Map();
+  let nextCleanup = 0;
 
   function token(req) {
     return req.headers.cookie?.match(/(?:^|;\s*)decor_admin=([a-f0-9]{64})(?:;|$)/)?.[1];
@@ -29,17 +29,27 @@ export function adminRouter(db, { password, secure = false } = {}) {
   });
   router.post('/login', (req, res) => {
     const now = Date.now();
-    if (now >= resetAt) { failures = 0; resetAt = now + failureWindowMs; }
-    if (failures >= 5) {
-      res.set('Retry-After', String(Math.ceil((resetAt - now) / 1000)));
+    const client = req.ip;
+    if (now >= nextCleanup) {
+      for (const [ip, entry] of failuresByClient) {
+        if (entry.resetAt <= now) failuresByClient.delete(ip);
+      }
+      nextCleanup = now + failureWindowMs;
+    }
+    const previous = failuresByClient.get(client);
+    const current = previous?.resetAt > now ? previous : { count: 0, resetAt: now + failureWindowMs };
+    if (current.count >= 5) {
+      res.set('Retry-After', String(Math.ceil((current.resetAt - now) / 1000)));
       return res.status(429).json({ error: 'Too many attempts. Try again in a minute.' });
     }
     const candidate = req.body?.password;
     if (typeof candidate !== 'string' || candidate.length > 256 ||
         !timingSafeEqual(hash, scryptSync(candidate, salt, 32))) {
-      failures++;
+      current.count++;
+      failuresByClient.set(client, current);
       return res.status(401).json({ error: 'Incorrect password.' });
     }
+    failuresByClient.delete(client);
     for (const [key, expires] of sessions) if (expires <= now) sessions.delete(key);
     sessions.delete(token(req));
     const key = randomBytes(32).toString('hex');

@@ -7,6 +7,10 @@ import { getCatalogue, getProducts } from './catalogue.js';
 
 export function createApp(db, adminOptions) {
   const app = express();
+  // Only trust forwarding headers when the deployment specifies its proxy path.
+  if (Number.isSafeInteger(adminOptions?.trustProxyHops) && adminOptions.trustProxyHops > 0) {
+    app.set('trust proxy', adminOptions.trustProxyHops);
+  }
   app.disable('x-powered-by');
   app.use(express.json({ limit: '100kb' }));
   app.get('/api/health', (_req, res) => {
