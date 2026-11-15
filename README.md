@@ -6,13 +6,25 @@ The app is live @ https://sdlc-g3.onrender.com/
 
 Nir Haramati: Business Analyst. Omkumar Patel: Developer. Romit Tejani: QA.
 
+## Hosted database update
+
+For the free hosting persistence fix, follow [HOSTED_DATABASE_SETUP.md](HOSTED_DATABASE_SETUP.md).
+Local runs keep SQLite unless DATABASE_URL is set. Hosted runs require PostgreSQL.
+Copying these files or pushing a commit does not create the hosted database or
+configure Render. Complete the setup and redeployment check before adding more
+products online.
+
 ## Current milestone
 
 The storefront shows products and stock by size and colour. Signed-in admins
 can add products, set starting stock for each combination, and decide whether
 the product appears in the shop. Angular displays data from the Express API,
-which reads and writes SQLite. Editing existing products, photo uploads, checkout
-and payments are not available yet.
+which uses local SQLite or hosted PostgreSQL. Admins can edit product details and
+stock, upload up to four photos, choose a main photo, and remove photos. The shop
+shows these photos and lets visitors switch between them. Checkout and payments
+are not available yet.
+
+For copy-over installation and photo checks, see [START_HERE_PHOTOS.md](START_HERE_PHOTOS.md).
 
 ## Requirements
 
@@ -59,10 +71,15 @@ accessed by the backend only. No separate database server or account is needed.
    → Living room.
 6. Enter sizes such as `Small, Large` and colours such as `Sand, Sage`.
    The form makes four stock rows. Enter a whole quantity in each row.
-7. Leave **Available in the shop** checked and choose **Save product**. Open
+7. Optionally choose up to four JPG, PNG or WebP photos, each 5 MB or smaller.
+   The first photo becomes the main shop photo.
+8. Leave **Available in the shop** checked and choose **Save product**. Open
    the shop and check the new product's price and **View options and stock**.
    Try saving another product with visibility unchecked; it stays out of the shop.
-8. Sign out when finished. If a session ends while saving, sign in again on the
+9. Under **Manage products**, choose **Edit product** to update details and stock.
+   In **Product photos**, upload, remove or reorder photos, then choose **Save photos**.
+   Existing size/colour definitions and category placement stay the same in this version.
+10. Sign out when finished. If a session ends while saving, sign in again on the
    same page to keep your draft. Refreshing or closing the page clears the draft.
 
 The password is set in the current terminal. Keep it out of Git. If PowerShell
@@ -79,11 +96,13 @@ API endpoints:
 
 - GET /api/health: checks the database connection.
 - GET /api/catalogue: returns departments, categories and rooms.
-- GET /api/products: returns products, option combinations and stock from SQLite.
+- GET /api/products: returns visible products, option combinations, photos and stock.
+- GET /api/photos/:id: serves a visible product’s uploaded photo.
 
 The public catalogue endpoints are read-only. `POST /api/admin/products`
 requires an admin session and the `X-Admin-Request` header. It saves the product,
-its options and stock together. `npm run build` builds Angular. `npm start`
+its options, stock and uploaded photos together.
+Admin photo changes and details/stock edits also require the session and request header. `npm run build` builds Angular. `npm start`
 runs Express and serves the built site when the Angular output is present.
 
 ## Folders
@@ -114,3 +133,21 @@ default: one department, three categories, and five rooms under each category.
 The PPT is the implementation baseline. Nir's later additions are proposals that
 still need team review. See docs/Developer_Architecture.md for open decisions.
 
+
+## Database and admin setup for QA
+
+- Use Node 24. Keep the SQLite database out of Git. Each local copy seeds its
+  own database on first start. Back up existing SQLite data before switching to
+  a branch that removes the old tracked file, or before deploying this update.
+- Startup upgrades existing valid variant data in place. A variant must have
+  one size and one colour from its product, with no duplicate pair. Create the
+  variant and its two option links in one transaction. If old rows violate
+  these rules, the upgrade rolls back; check the database before trying again.
+- Admin sign-in limits failed attempts per client IP. Direct connections
+  ignore forwarded IP headers by default. If hosting behind a proxy, set
+  `TRUST_PROXY_HOPS` only after confirming the trusted path length and how the
+  proxy handles forwarded client addresses. Retest with two different client
+  networks. Clients sharing an IP also share the limit.
+- On Render, set DATABASE_URL to the separate hosted PostgreSQL database.
+  DATABASE_PATH is only for local SQLite runs in this edition. See the hosted
+  setup guide for the one-time import and redeployment check.

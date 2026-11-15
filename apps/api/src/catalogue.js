@@ -1,4 +1,7 @@
+import { postgresCatalogue, postgresProducts } from './postgres/catalogue.js';
+
 export function getCatalogue(db) {
+  if (db.kind === 'postgres') return postgresCatalogue(db);
   return db.prepare('SELECT * FROM departments ORDER BY id').all().map(department => ({
     ...department,
     categories: db.prepare('SELECT id, name FROM categories WHERE department_id = ? ORDER BY id').all(department.id).map(category => ({
@@ -8,11 +11,13 @@ export function getCatalogue(db) {
   }));
 }
 
-export function getProducts(db) {
+export function getProducts(db, includeUnavailable = false) {
+  if (db.kind === 'postgres') return postgresProducts(db, includeUnavailable);
   return db.prepare(`SELECT p.id, p.name, p.description, p.material, p.price_cents AS priceCents,
-    p.available, s.name AS room, c.name AS category, d.name AS department
+    p.available, p.subcategory_id AS roomId, c.id AS categoryId, d.id AS departmentId, s.name AS room, c.name AS category, d.name AS department
     FROM products p JOIN subcategories s ON s.id = p.subcategory_id
     JOIN categories c ON c.id = s.category_id JOIN departments d ON d.id = c.department_id
+    ${includeUnavailable ? '' : 'WHERE p.available = 1'}
     ORDER BY p.id`).all().map(product => ({
     ...product,
     available: Boolean(product.available),

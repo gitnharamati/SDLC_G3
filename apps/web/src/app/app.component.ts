@@ -15,6 +15,8 @@ export class AppComponent implements OnInit {
   readonly products = signal<Product[]>([]);
   readonly loading = signal(true);
   readonly error = signal('');
+  readonly chosenPhotos = signal<Record<number, string>>({});
+  readonly brokenPhotos = signal<string[]>([]);
   readonly selected = signal<Product | null>(null);
   readonly totalVariants = computed(() => this.products().reduce((sum, p) => sum + p.variants.length, 0));
   ngOnInit() { if (!this.isAdmin) this.load(); }
@@ -25,6 +27,14 @@ export class AppComponent implements OnInit {
       next: response => { this.products.set(response.products); this.loading.set(false); },
       error: () => { this.error.set('We could not load the catalogue. Please try again.'); this.loading.set(false); }
     });
+  }
+  photoFor(product: Product) {
+    return this.chosenPhotos()[product.id] || product.photos.find(photo => !this.brokenPhotos().includes(photo)) || '';
+  }
+  choosePhoto(product: Product, photo: string) { this.chosenPhotos.update(photos => ({ ...photos, [product.id]: photo })); }
+  photoFailed(product: Product, photo: string) {
+    this.brokenPhotos.update(photos => photos.includes(photo) ? photos : [...photos, photo]);
+    this.chosenPhotos.update(photos => { const copy = { ...photos }; delete copy[product.id]; return copy; });
   }
   totalStock(product: Product) { return product.variants.reduce((sum, v) => sum + v.stock, 0); }
 }
