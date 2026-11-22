@@ -1,74 +1,73 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
-  <a class="wordmark" href="/" aria-label="Home Décor home">
-    <span class="brand-mark" aria-hidden="true">✦</span><span>Home Décor<small>EVERYDAY COMFORT</small></span>
-  </a>
-  <nav aria-label="Main navigation">
-    <a href="/#collection" [attr.aria-current]="isAdmin ? null : 'page'">Shop</a>
-    <a href="/admin" [attr.aria-current]="isAdmin ? 'page' : null">Admin</a>
-  </nav>
+  <a class="wordmark" href="/" aria-label="Home Décor home"><span class="brand-mark" aria-hidden="true">✦</span><span>Home Décor<small>EVERYDAY COMFORT</small></span></a>
+  <nav aria-label="Main navigation"><a [href]="shopLink()" [attr.aria-current]="!isAdmin && !isProductPage ? 'page' : null">Shop</a>@if (isAdmin) { <a href="/admin" aria-current="page">Admin</a> }</nav>
 </header>
-@if (isAdmin) {
-  <app-admin />
-} @else {
+@if (isAdmin) { <app-admin /> } @else {
 <main id="main-content" tabindex="-1">
-  <section class="hero" aria-labelledby="page-title">
-    <div class="hero-copy">
-      <p class="eyebrow">✦ &nbsp; The everyday collection</p>
-      <h1 id="page-title">Make yourself <em>at home.</em></h1>
-      <p class="lead">Soft cushions, fresh sheets and curtains that let the morning light in. Little things that make a room feel like yours.</p>
-      <a class="button" href="#collection">Explore the collection <span aria-hidden="true">↘</span></a>
-    </div>
-    <div class="hero-art" aria-hidden="true"></div>
-  </section>
-  <section class="collection" id="collection" aria-labelledby="collection-title">
-    <div class="section-heading">
-      <div><p class="eyebrow">Cushions · Bed sheets · Curtains</p><h2 id="collection-title">Little home comforts</h2></div>
-      @if (!loading() && !error()) { <span>{{ products().length }} products · {{ totalVariants() }} size and colour combinations</span> }
-    </div>
-    @if (loading()) { <p role="status" class="state">Loading the catalogue…</p> }
-    @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
-    @else if (!products().length) { <p class="state">There are no products to display yet.</p> }
-    @else {
-      <div class="product-grid">
-        @for (product of products(); track product.id) {
-          <article class="product">
-            <div class="product-art" [class.curtain]="product.category === 'Curtains'" [class.bedding]="product.category === 'Bed sheets'" [class.cushion]="product.category === 'Cushions'">
-              @if (photoFor(product); as photo) { <img [src]="photo" [alt]="product.name" loading="lazy" (error)="photoFailed(product, photo)"> }
-              <span>{{ product.category }}</span>
-            </div>
-            <div class="product-copy">
-            <p class="product-category">{{ product.category }} / {{ product.room }}</p>
-            <h3 [title]="product.name">{{ product.name }}</h3>
-            <p>{{ product.material }}</p>
-            <div class="product-bottom"><strong>{{ product.priceCents / 100 | currency:'CAD':'symbol-narrow' }}</strong><span>{{ totalStock(product) }} available across options</span></div>
-            <button class="view-button" (click)="selected.set(selected()?.id === product.id ? null : product)" [attr.aria-expanded]="selected()?.id === product.id" [attr.aria-controls]="'options-' + product.id">{{ selected()?.id === product.id ? 'Hide details' : 'View options and stock' }}</button>
-            @if (selected()?.id === product.id) {
-              <div class="details" [id]="'options-' + product.id"><p class="product-full-name"><strong>{{ product.name }}</strong></p><p>{{ product.description }}</p>
-                @if (product.photos.length > 1) {
-                  <div class="product-thumbnails" aria-label="Product photos">
-                    @for (photo of product.photos; track photo; let i = $index) {
-                      @if (!brokenPhotos().includes(photo)) {
-                        <button type="button" (click)="choosePhoto(product, photo)" [attr.aria-label]="'Show photo ' + (i + 1) + ' of ' + product.name" [attr.aria-pressed]="photoFor(product) === photo">
-                          <img [src]="photo" [alt]="product.name + ' photo ' + (i + 1)" loading="lazy" (error)="photoFailed(product, photo)">
-                        </button>
-                      }
-                    }
-                  </div>
-                }
-                <ul aria-label="Stock by product option">
-                @for (variant of product.variants; track variant.id) {
-                  <li><span>@for (option of variant.options; track option.name; let last = $last) { {{ option.value }}@if (!last) { · } }</span><strong>{{ variant.stock === 0 ? 'Out of stock' : variant.stock + ' in stock' }}</strong></li>
-                }
-              </ul></div>
+@if (isProductPage) {
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a [href]="shopLink()">Collection</a><span>/</span><span>Product details</span></nav>
+  @if (loading()) { <p class="state" role="status">Loading product…</p> }
+  @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
+  @else if (product(); as item) {
+    <section class="product-page" aria-labelledby="product-title">
+      <div>
+        <div class="product-art product-page-image" [class.curtain]="item.category === 'Curtains'" [class.bedding]="item.category === 'Bed sheets'" [class.cushion]="item.category === 'Cushions'">
+          @if (photoFor(item); as photo) { <img [src]="photo" [alt]="item.name" (error)="photoFailed(item, photo)"> }
+          @else { <span>Category illustration · no product photo</span> }
+        </div>
+        @if (item.photos.length > 1) {
+          <div class="product-thumbnails" aria-label="Product photos">
+            @for (photo of item.photos; track photo; let i = $index) {
+              @if (!brokenPhotos().includes(photo)) {
+                <button type="button" (click)="choosePhoto(item,photo)" [attr.aria-label]="'Show photo '+(i+1)+' of '+item.name" [attr.aria-pressed]="photoFor(item) === photo"><img [src]="photo" [alt]="item.name+' photo '+(i+1)" (error)="photoFailed(item,photo)"></button>
+              }
             }
-            </div>
-          </article>
+          </div>
         }
       </div>
-    }
+      <div class="product-page-copy">
+        <p class="eyebrow">{{ item.category }} / {{ item.room }}</p><h1 id="product-title">{{ item.name }}</h1>
+        <p class="product-page-price">{{ item.priceCents / 100 | currency:'CAD':'symbol-narrow' }} <small>CAD</small></p>
+        <p class="product-description">{{ item.description }}</p><p><strong>Material:</strong> {{ item.material }}</p>
+        <p><strong>Availability:</strong> {{ totalStock(item) ? totalStock(item)+' available across options' : 'Out of stock' }}</p>
+        <div class="option-selectors">
+          <div class="filter-control"><label for="product-size">Size</label><select id="product-size" [ngModel]="size()" (ngModelChange)="size.set($event)"><option value="">Select size</option>@for (value of sizes(); track value) { <option [value]="value">{{ value }}</option> }</select></div>
+          <div class="filter-control"><label for="product-colour">Colour</label><select id="product-colour" [ngModel]="colour()" (ngModelChange)="colour.set($event)"><option value="">Select colour</option>@for (value of colours(); track value) { <option [value]="value">{{ value }}</option> }</select></div>
+        </div>
+        <p class="selected-stock" role="status">@if (chosenVariant(); as variant) { {{ variant.stock ? variant.stock+' in stock for this option' : 'Out of stock for this option' }} } @else if (size() && colour()) { This combination is unavailable. } @else { Select a size and colour to check this option’s stock. }</p>
+        <h2 class="stock-heading">Stock by size and colour</h2>
+        <ul class="product-stock-list">@for (variant of item.variants; track variant.id) { <li><span>@for (option of variant.options; track option.name; let last = $last) { {{ option.name }}: {{ option.value }}@if (!last) { · } }</span><strong>{{ variant.stock ? variant.stock+' in stock' : 'Out of stock' }}</strong></li> }</ul>
+        <a class="button" [href]="shopLink()">Back to collection</a><p class="notice">Online ordering is not available yet.</p>
+      </div>
+    </section>
+  } @else { <section class="state"><h1 class="missing-product-title">Product unavailable</h1><p>This product could not be found or is no longer available.</p><a class="button" [href]="shopLink()">Back to collection</a></section> }
+} @else {
+  <section class="hero" aria-labelledby="page-title"><div class="hero-copy"><p class="eyebrow">✦ &nbsp; The everyday collection</p><h1 id="page-title">Make yourself <em>at home.</em></h1><p class="lead">Soft cushions, fresh sheets and curtains that let the morning light in. Little things that make a room feel like yours.</p><a class="button" href="#collection">Explore the collection <span aria-hidden="true">↘</span></a></div><div class="hero-art" aria-hidden="true"></div></section>
+  @if (categories().length) { <nav class="category-browse" aria-label="Browse by category">@for (item of categories(); track item.id) { <a [href]="categoryLink(item.name)">{{ item.name }} <span aria-hidden="true">↗</span></a> }</nav> }
+  <section class="collection" id="collection" aria-labelledby="collection-title">
+    <div class="section-heading"><div><p class="eyebrow">Cushions · Bed sheets · Curtains</p><h2 id="collection-title">Little home comforts</h2></div>@if (!loading() && !error()) { <span role="status">{{ filtered().length }} of {{ products().length }} products</span> }</div>
+    <section class="catalogue-filters" aria-label="Search and filter products">
+      <label class="search-field">Search products<input type="search" [ngModel]="search()" (ngModelChange)="setFilter('search',$event)" placeholder="Search name, description or material"></label>
+      <div class="filter-control"><label for="category-filter">Category</label><select id="category-filter" [ngModel]="category()" (ngModelChange)="setFilter('category',$event)"><option value="">All categories</option>@for (item of categories(); track item.id) { <option [value]="item.name">{{ item.name }}</option> }</select></div>
+      <div class="filter-control"><label for="room-filter">Room</label><select id="room-filter" [ngModel]="room()" (ngModelChange)="setFilter('room',$event)"><option value="">All rooms</option>@for (item of rooms(); track item) { <option [value]="item">{{ item }}</option> }</select></div>
+      <label>Minimum price (CAD)<input type="text" inputmode="decimal" maxlength="9" [ngModel]="minimum()" (ngModelChange)="setFilter('minimum',$event)" [attr.aria-invalid]="priceError() ? 'true' : null" aria-describedby="price-filter-help" placeholder="0.00"></label>
+      <label>Maximum price (CAD)<input type="text" inputmode="decimal" maxlength="9" [ngModel]="maximum()" (ngModelChange)="setFilter('maximum',$event)" [attr.aria-invalid]="priceError() ? 'true' : null" aria-describedby="price-filter-help" placeholder="No maximum"></label>
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+      <p id="price-filter-help" class="filter-help">Prices include the entered minimum and maximum.</p>
+    </section>
+    @if (loading()) { <p role="status" class="state">Loading the catalogue…</p> }
+    @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
+    @else if (priceError()) { <p class="state admin-error" role="alert">{{ priceError() }}</p> }
+    @else if (!products().length) { <p class="state">There are no products to display yet.</p> }
+    @else if (!filtered().length) { <div class="state" role="status"><h3>No matching products</h3><p>Try a different search or clear the filters to see the collection.</p><button type="button" (click)="clearFilters()">Show all products</button></div> }
+    @else { <div class="product-grid">@for (item of filtered(); track item.id) {
+      <article class="product"><a class="product-art product-image-link" [href]="productLink(item.id)" [attr.aria-label]="'View '+item.name" [class.curtain]="item.category === 'Curtains'" [class.bedding]="item.category === 'Bed sheets'" [class.cushion]="item.category === 'Cushions'">@if (photoFor(item); as photo) { <img [src]="photo" [alt]="item.name" loading="lazy" (error)="photoFailed(item,photo)"> }<span>{{ item.category }}</span></a>
+      <div class="product-copy"><p class="product-category">{{ item.category }} / {{ item.room }}</p><h3 [title]="item.name"><a [href]="productLink(item.id)">{{ item.name }}</a></h3><p>{{ item.material }}</p><div class="product-bottom"><strong>{{ item.priceCents / 100 | currency:'CAD':'symbol-narrow' }}</strong><span>{{ totalStock(item) ? totalStock(item)+' available across options' : 'Out of stock' }}</span></div><a class="button view-button" [href]="productLink(item.id)">View options and stock</a></div></article>
+    }</div> }
     <p class="notice">Demo catalogue · Prices in CAD. Category artwork is used when no product photo is available. Online ordering is not available.</p>
   </section>
+}
 </main>
 }
 <footer><strong>✦ &nbsp; Home Décor</strong><span>Team 3 · Software Development Life Cycle course project</span></footer>

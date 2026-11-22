@@ -133,13 +133,33 @@ test('QA-ADM-12 five wrong passwords trigger 429 with Retry-After', async t => {
   assert.ok(Number(blocked.headers.get('retry-after')) > 0);
 });
 
-// BUG-03 (open): the failure counter is global, so anyone can lock the real admin out.
-test('BUG-03 admin with the right password should not be locked out by someone else\'s failures',
-  { todo: 'BUG-03 open' }, async t => {
-    const { post } = await start(t, { password: PASSWORD });
-    for (let i = 0; i < 5; i++) await post('/login', { password: 'attacker-guess' });
-    assert.equal((await post('/login', { password: PASSWORD })).status, 200);
-  });
+// BUG-03 regression: limits are per client IP rather than global.
+// This isolated server trusts one test proxy. It does not change deployment settings.
+test('BUG-03 failures from one client do not block a different client', async t => {
+  const { post } = await start(t, { password: PASSWORD, trustProxyHops: 1 });
+  const attacker = { 'X-Forwarded-For': '192.0.2.10' };
+  const admin = { 'X-Forwarded-For': '192.0.2.20' };
+  for (let i = 0; i < 5; i++) {
+    assert.equal((await post('/login', { password: 'attacker-guess' }, attacker)).status, 401);
+  }
+  const blocked = await post('/login', { password: PASSWORD }, attacker);
+  assert.equal(blocked.status, 429);
+  assert.ok(Number(blocked.headers.get('retry-after')) > 0);
+  const login = await post('/login', { password: PASSWORD }, admin);
+  assert.equal(login.status, 200);
+  assert.ok(login.headers.get('set-cookie'));
+  // Another client's success must not clear the blocked client's failure count.
+  assert.equal((await post('/login', { password: PASSWORD }, attacker)).status, 429);
+});
+
+test('BUG-03 direct clients cannot bypass lockout by forging forwarded headers', async t => {
+  const { post } = await start(t, { password: PASSWORD });
+  for (let i = 0; i < 5; i++) {
+    assert.equal((await post('/login', { password: 'wrong' })).status, 401);
+  }
+  assert.equal((await post('/login', { password: PASSWORD },
+    { 'X-Forwarded-For': '192.0.2.99' })).status, 429);
+});
 
 // ---- Public shop is unaffected ----
 test('QA-ADM-13 public catalogue works without sign-in and exposes no admin data', async t => {

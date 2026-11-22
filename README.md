@@ -25,17 +25,19 @@ curtains. Products are organised by department, category and room. Shoppers can
 view product details, photographs, prices in CAD and stock for individual size
 and colour combinations.
 
-The project follows an incremental development approach. The current work
-focuses on catalogue management and the initial storefront. Search, shopping
-cart, checkout and order management belong to later increments. The team’s
+The project follows an incremental development approach. The current development version includes catalogue management, storefront search
+and filters, and a dedicated product page. Shopping cart, checkout and order
+management belong to later work. The team’s
 requirements and project presentation form the implementation baseline.
 
 ## Functional Coverage
 
 | Area | Current functionality |
 | --- | --- |
-| Storefront | Product cards, prices, material, category and room information |
-| Product details | Description, full product name, photographs and stock by option |
+| Storefront | Category browsing, product cards, prices, material and room information |
+| Search and filters | Search names, descriptions and materials; category, room and inclusive CAD price filters |
+| Search results | Result counts, no-results message, validation and clear filters |
+| Product details | Dedicated URL, photographs, description, material, price and stock by size and colour |
 | Admin access | Sign-in, session checks and sign-out |
 | Product creation | Details, category placement, options, starting stock and photos |
 | Product editing | Name, description, material, price, visibility and existing stock |
@@ -81,6 +83,32 @@ deletion is permanent. Cancellation leaves its records unchanged.
 The backend removes the product, photographs, options, stock variants and related
 combination records in one transaction. A failure rolls back the operation.
 Other products and the department, category and room lists remain unchanged.
+
+## Week 4 Storefront Update
+
+The Week 4 development work follows the feature list in the Business Analyst’s
+Dev expectations week 4 document, covering CUS-01–06 and CUS-10–11.
+
+The home page provides category links. Search checks product names, descriptions
+and materials without case sensitivity. Category, room and price filters work
+together. Price limits are inclusive and use integer cents for comparison.
+Invalid prices or a minimum above the maximum produce an explanatory message.
+An empty result shows No matching products with a reset option.
+
+The product cards open a separate product page at /products/:id. It displays
+photos, full description, material, CAD price, size and colour choices and stock
+for each combination. Selecting both options shows that combination’s stock.
+Products with no stock remain listed as Out of stock. Hidden products remain
+excluded by the public API, and missing or hidden product URLs show unavailable.
+
+Filter choices are retained in the URL across page refresh and the return from
+a product page. A shopper can reach product details from the home page directly
+or through a category within two link selections. Selecting an option is a
+further action. Desktop and mobile layouts use the same catalogue data.
+
+The storefront navigation no longer displays an admin link. The separate admin
+page remains available at /admin and still requires authentication. Cart and
+checkout are outside this Week 4 update.
 
 ## Technical Architecture
 
@@ -147,9 +175,9 @@ behaviour is not yet verified.
 | Local automated suite | 48 checks: 47 passed, zero counted failures, one TODO |
 | Product deletion | Access, confirmation, dependent records and rollback checks passed |
 | PostgreSQL integration | 22 checks passed in the development environment |
-| Production build | Passed before the final build dependency update |
+| Week 4 frontend production build | Passed in the development environment |
 | Tests after final dependency update | 47 passed, zero counted failures, one TODO |
-| Build after final dependency update | Awaiting confirmation |
+| Week 4 browser validation | 20 scenarios passed in the development environment |
 | Dependency audit | 16 moderate findings; no high findings in the latest installation output |
 | Independent QA review | Pending for the latest update |
 | Live database persistence | Awaiting hosted setup and redeployment verification |
@@ -166,7 +194,8 @@ installation output no longer reports the earlier high-severity dependency findi
 - Duplicate product name rules await review of the Business Analyst’s proposal.
 - Sixteen moderate dependency findings remain open.
 - Existing product editing does not change category placement or option definitions.
-- Public search, filters, cart, checkout and order tracking are not implemented.
+- Shopping cart, checkout and order tracking are not implemented.
+- The Week 4 storefront has been checked locally; hosted test-server deployment and QA sign-off remain pending.
 - Payment processing and in-store QR scanning are not implemented.
 
 ## Repository Structure
