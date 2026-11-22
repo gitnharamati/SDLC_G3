@@ -92,7 +92,7 @@
         </section>
         <section class="editor-section">
           <h3>Photos</h3>
-          <p class="editor-note">New products use the shop’s category artwork for now.</p>
+          <app-photo-picker [disabled]="saving() || !canSave()" [resetToken]="photoReset()" (filesChanged)="photoFiles.set($event)" />
         </section>
         @if (error()) { <p class="admin-error" role="alert">{{ error() }}</p> }
         <button type="submit" [disabled]="loading() || !!catalogueError()">{{ saving() ? 'Saving…' : 'Save product' }}</button>

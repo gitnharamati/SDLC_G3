@@ -33,3 +33,6 @@ yarn-error.log*
 
 # Ignore Word temporary and lock files
 ~$*.docx
+
+.env.*
+!.env.example

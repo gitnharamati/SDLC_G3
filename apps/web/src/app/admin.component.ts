@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ProductManagerComponent } from './product-manager.component';
 import { ProductEditorComponent } from './product-editor.component';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [ProductEditorComponent],
+  imports: [ProductEditorComponent, ProductManagerComponent],
   template: `
     <main id="main-content" tabindex="-1" class="admin-shell" [class.admin-workspace]="editorOpened()">
       <section class="admin-card" aria-labelledby="admin-title">
@@ -16,7 +17,7 @@ import { ProductEditorComponent } from './product-editor.component';
           <p role="status">Checking sign-in…</p>
         } @else if (signedIn()) {
           <p class="admin-status" role="status">You’re signed in as an admin.</p>
-          <button type="button" (click)="logout()" [disabled]="busy() || savingProduct()">Sign out</button>
+          <button type="button" (click)="logout()" [disabled]="busy() || savingProduct() || managerBusy()">Sign out</button>
         } @else {
           <form (submit)="login($event, password)">
             <label for="admin-password">Admin password</label>
@@ -28,8 +29,11 @@ import { ProductEditorComponent } from './product-editor.component';
         @if (error()) { <p class="admin-error" role="alert">{{ error() }}</p> }
       </section>
       @if (editorOpened()) {
-        <app-product-editor [canSave]="signedIn() && !busy()"
-          (sessionEnded)="handleExpiredSession()" (savingChanged)="savingProduct.set($event)" />
+        <app-product-editor [canSave]="signedIn() && !busy() && !managerBusy()"
+          (sessionEnded)="handleExpiredSession()" (savingChanged)="savingProduct.set($event)"
+          (productSaved)="productsRefresh.update(nextRefresh)" />
+        <app-product-manager [canSave]="signedIn() && !busy() && !savingProduct()" [refreshToken]="productsRefresh()"
+          (sessionEnded)="handleExpiredSession()" (busyChanged)="managerBusy.set($event)" />
       }
     </main>
   `
@@ -40,6 +44,9 @@ export class AdminComponent implements OnInit {
   readonly signedIn = signal(false);
   readonly editorOpened = signal(false);
   readonly savingProduct = signal(false);
+  readonly managerBusy = signal(false);
+  readonly productsRefresh = signal(0);
+  readonly nextRefresh = (value: number) => value + 1;
   readonly busy = signal(true);
   readonly loaded = signal(false);
   readonly error = signal('');
@@ -70,7 +77,7 @@ export class AdminComponent implements OnInit {
     this.error.set('Your session ended. Your draft is still below. Sign in again to save it.');
   }
   logout() {
-    if (this.savingProduct()) return;
+    if (this.savingProduct() || this.managerBusy()) return;
     this.busy.set(true);
     this.error.set('');
     this.http.post('/api/admin/logout', {}, { headers: this.headers }).subscribe({
