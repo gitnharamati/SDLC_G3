@@ -1,3 +1,6 @@
+import { insertSqlitePhotos } from './photos.js';
+import { postgresAddProduct } from './postgres/product-editor.js';
+
 function requiredText(value, label, limit) {
   const text = typeof value === 'string' ? value.trim() : '';
   if (!text || text.length > limit) throw new ProductInputError(`${label} must be 1–${limit} characters.`);
@@ -17,15 +20,13 @@ function optionList(values, label) {
 
 export class ProductInputError extends Error {}
 
-export function addProduct(db, input) {
+export function validateProduct(input) {
   const name = requiredText(input?.name, 'Product name', 120);
   const description = requiredText(input?.description, 'Description', 2000);
   const material = requiredText(input?.material, 'Material', 120);
   const { departmentId, categoryId, roomId, priceCents, available, stock } = input;
-  if (![departmentId, categoryId, roomId].every(id => Number.isSafeInteger(id) && id > 0) ||
-      !db.prepare(`SELECT 1 FROM subcategories s JOIN categories c ON c.id = s.category_id
-                    WHERE s.id = ? AND c.id = ? AND c.department_id = ?`).get(roomId, categoryId, departmentId)) {
-    throw new ProductInputError('Choose a department, category and room that go together.');
+  if (![departmentId, categoryId, roomId].every(id => Number.isSafeInteger(id) && id > 0)) {
+    throw new ProductInputError('Choose a department, category and room.');
   }
   if (!Number.isSafeInteger(priceCents) || priceCents <= 0 || priceCents > 99_999_999) {
     throw new ProductInputError('Enter a price between $0.01 and $999,999.99.');
@@ -38,6 +39,16 @@ export function addProduct(db, input) {
     throw new ProductInputError('Enter a whole stock quantity from 0 to 999,999 for every combination.');
   }
 
+  return { name, description, material, departmentId, categoryId, roomId, priceCents, available, sizes, colours, stock };
+}
+
+export function addProduct(db, input, photos = []) {
+  if (db.kind === 'postgres') return postgresAddProduct(db, validateProduct(input), photos);
+  const { name, description, material, departmentId, categoryId, roomId, priceCents, available, sizes, colours, stock } = validateProduct(input);
+  if (!db.prepare(`SELECT 1 FROM subcategories s JOIN categories c ON c.id = s.category_id
+      WHERE s.id = ? AND c.id = ? AND c.department_id = ?`).get(roomId, categoryId, departmentId)) {
+    throw new ProductInputError('Choose a department, category and room that go together.');
+  }
   db.exec('BEGIN IMMEDIATE');
   try {
     const id = Number(db.prepare(`INSERT INTO products(subcategory_id, name, description, material, price_cents, available)
@@ -59,6 +70,7 @@ export function addProduct(db, input) {
       linkValue.run(variantId, size);
       linkValue.run(variantId, colour);
     }
+    insertSqlitePhotos(db, id, photos);
     db.exec('COMMIT');
     return { id, name, available, variantCount: index };
   } catch (error) {

@@ -2,6 +2,7 @@ import express from 'express';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { photoResponse } from './photos.js';
 import { adminRouter } from './admin.js';
 import { getCatalogue, getProducts } from './catalogue.js';
 
@@ -13,12 +14,14 @@ export function createApp(db, adminOptions) {
   }
   app.disable('x-powered-by');
   app.use(express.json({ limit: '100kb' }));
-  app.get('/api/health', (_req, res) => {
-    db.prepare('SELECT 1').get();
-    res.json({ status: 'ok', database: 'connected', milestone: 'foundation' });
+  app.get('/api/health', async (_req, res) => {
+    if (db.kind === 'postgres') await db.pool.query('SELECT 1');
+    else db.prepare('SELECT 1').get();
+    res.json({ status: 'ok', database: 'connected', storage: db.kind === 'postgres' ? 'postgres' : 'sqlite', milestone: 'catalogue' });
   });
-  app.get('/api/catalogue', (_req, res) => res.json({ departments: getCatalogue(db) }));
-  app.get('/api/products', (_req, res) => res.json({ products: getProducts(db) }));
+  app.get('/api/catalogue', async (_req, res) => res.json({ departments: await getCatalogue(db) }));
+  app.get('/api/products', async (_req, res) => res.json({ products: await getProducts(db) }));
+  app.get('/api/photos/:id', photoResponse(db));
   app.use('/api/admin', adminRouter(db, adminOptions));
   app.use('/api', (_req, res) => res.status(404).json({ error: 'API endpoint not found' }));
 

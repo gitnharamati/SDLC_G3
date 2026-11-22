@@ -1,5 +1,6 @@
 import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { PhotoPickerComponent } from './photo-picker.component';
 import { FormsModule, NgForm } from '@angular/forms';
 
 interface Room { id: number; name: string; }
@@ -16,13 +17,16 @@ const validOptions = (values: string[]) => values.length >= 1 && values.length <
 @Component({
   selector: 'app-product-editor',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, PhotoPickerComponent],
   templateUrl: './product-editor.component.html'
 })
 export class ProductEditorComponent implements OnInit {
   private readonly http = inject(HttpClient);
   readonly canSave = input.required<boolean>();
   readonly sessionEnded = output<void>();
+  readonly productSaved = output<void>();
+  readonly photoFiles = signal<File[]>([]);
+  readonly photoReset = signal(0);
   readonly savingChanged = output<boolean>();
   readonly departments = signal<Department[]>([]);
   readonly loading = signal(true);
@@ -87,8 +91,11 @@ export class ProductEditorComponent implements OnInit {
     const { name, description, material, available } = this.details;
     const payload = { name, description, material, available, priceCents, departmentId: this.departmentId(),
       categoryId: this.categoryId(), roomId: this.roomId(), sizes: this.sizes(), colours: this.colours(), stock };
+    const formData = new FormData();
+    formData.append('product', JSON.stringify(payload));
+    this.photoFiles().forEach(file => formData.append('photos', file));
     this.setSaving(true);
-    this.http.post<{ product: SavedProduct }>('/api/admin/products', payload, {
+    this.http.post<{ product: SavedProduct }>('/api/admin/products', formData, {
       headers: { 'X-Admin-Request': '1' }
     }).subscribe({
       next: ({ product }) => {
@@ -98,7 +105,10 @@ export class ProductEditorComponent implements OnInit {
         this.colourText.set('');
         this.stock.set({});
         form.resetForm({ ...this.details, department: 0, category: 0, room: 0, sizes: '', colours: '' });
+        this.photoFiles.set([]);
+        this.photoReset.update(value => value + 1);
         this.saved.set(product);
+        this.productSaved.emit();
         this.setSaving(false);
       },
       error: (err: HttpErrorResponse) => {
