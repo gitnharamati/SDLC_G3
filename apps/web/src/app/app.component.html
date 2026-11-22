@@ -34,16 +34,29 @@
         @for (product of products(); track product.id) {
           <article class="product">
             <div class="product-art" [class.curtain]="product.category === 'Curtains'" [class.bedding]="product.category === 'Bed sheets'" [class.cushion]="product.category === 'Cushions'">
+              @if (photoFor(product); as photo) { <img [src]="photo" [alt]="product.name" loading="lazy" (error)="photoFailed(product, photo)"> }
               <span>{{ product.category }}</span>
             </div>
             <div class="product-copy">
             <p class="product-category">{{ product.category }} / {{ product.room }}</p>
-            <h3>{{ product.name }}</h3>
+            <h3 [title]="product.name">{{ product.name }}</h3>
             <p>{{ product.material }}</p>
             <div class="product-bottom"><strong>{{ product.priceCents / 100 | currency:'CAD':'symbol-narrow' }}</strong><span>{{ totalStock(product) }} available across options</span></div>
             <button class="view-button" (click)="selected.set(selected()?.id === product.id ? null : product)" [attr.aria-expanded]="selected()?.id === product.id" [attr.aria-controls]="'options-' + product.id">{{ selected()?.id === product.id ? 'Hide details' : 'View options and stock' }}</button>
             @if (selected()?.id === product.id) {
-              <div class="details" [id]="'options-' + product.id"><p>{{ product.description }}</p><ul aria-label="Stock by product option">
+              <div class="details" [id]="'options-' + product.id"><p class="product-full-name"><strong>{{ product.name }}</strong></p><p>{{ product.description }}</p>
+                @if (product.photos.length > 1) {
+                  <div class="product-thumbnails" aria-label="Product photos">
+                    @for (photo of product.photos; track photo; let i = $index) {
+                      @if (!brokenPhotos().includes(photo)) {
+                        <button type="button" (click)="choosePhoto(product, photo)" [attr.aria-label]="'Show photo ' + (i + 1) + ' of ' + product.name" [attr.aria-pressed]="photoFor(product) === photo">
+                          <img [src]="photo" [alt]="product.name + ' photo ' + (i + 1)" loading="lazy" (error)="photoFailed(product, photo)">
+                        </button>
+                      }
+                    }
+                  </div>
+                }
+                <ul aria-label="Stock by product option">
                 @for (variant of product.variants; track variant.id) {
                   <li><span>@for (option of variant.options; track option.name; let last = $last) { {{ option.value }}@if (!last) { · } }</span><strong>{{ variant.stock === 0 ? 'Out of stock' : variant.stock + ' in stock' }}</strong></li>
                 }
@@ -54,7 +67,7 @@
         }
       </div>
     }
-    <p class="notice">Demo catalogue · Illustrations, sample stock and prices in CAD. Online ordering is not available.</p>
+    <p class="notice">Demo catalogue · Prices in CAD. Category artwork is used when no product photo is available. Online ordering is not available.</p>
   </section>
 </main>
 }

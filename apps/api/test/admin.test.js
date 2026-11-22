@@ -31,8 +31,11 @@ test('admin API rejects guests and wrong passwords, accepts login, and invalidat
   assert.equal((await fetch(base + '/session', { headers: { Cookie } })).status, 200);
   assert.equal((await post('/logout', {}, { Cookie })).status, 204);
   assert.equal((await fetch(base + '/session', { headers: { Cookie } })).status, 401);
+  // A successful login clears earlier failures. Four new failures are below the limit.
   for (let i = 0; i < 4; i++) assert.equal((await post('/login', { password: 'wrong' })).status, 401);
-  assert.equal((await post('/login', { password: 'wrong' })).status, 401);
+  assert.equal((await post('/login', { password })).status, 200);
+  // Five consecutive failures block subsequent attempts within the same minute.
+  for (let i = 0; i < 5; i++) assert.equal((await post('/login', { password: 'wrong' })).status, 401);
   // Direct connections must not be able to change their IP via a request header.
   assert.equal((await post('/login', { password }, { 'X-Forwarded-For': '192.0.2.10' })).status, 429);
 });
