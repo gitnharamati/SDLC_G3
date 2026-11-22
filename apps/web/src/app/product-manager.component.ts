@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { afterNextRender, Component, computed, effect, ElementRef, inject, Injector, input, output, signal, ViewChild } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Product } from './catalogue.service';
@@ -14,6 +14,9 @@ interface Photo { id: number; url: string; previewUrl: string; }
 })
 export class ProductManagerComponent {
   private readonly http = inject(HttpClient);
+  private readonly injector = inject(Injector);
+  @ViewChild('editArea') private editArea?: ElementRef<HTMLElement>;
+  @ViewChild('editName') private editName?: ElementRef<HTMLInputElement>;
   readonly canSave = input.required<boolean>();
   readonly refreshToken = input(0);
   readonly sessionEnded = output<void>();
@@ -62,6 +65,14 @@ export class ProductManagerComponent {
     this.newPhotos.set([]); this.photoReset.update(n => n + 1);
     this.photos.set([]);
     this.loadPhotos(product.id);
+    afterNextRender(() => {
+      if (this.editing()?.id !== product.id) return;
+      this.editName?.nativeElement.focus({ preventScroll: true });
+      this.editArea?.nativeElement.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+        block: 'start'
+      });
+    }, { injector: this.injector });
   }
   loadPhotos(id: number) {
     this.photoLoading.set(true);

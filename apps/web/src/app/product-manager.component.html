@@ -16,7 +16,7 @@
     } @empty { @if (!loading()) { <p>No matching products.</p> } }
   </div>
   @if (editing(); as product) {
-    <section class="existing-editor" aria-labelledby="editing-title">
+    <section #editArea class="existing-editor" aria-labelledby="editing-title">
       <h3 id="editing-title">Editing {{ product.name }}</h3>
       <p class="editor-note">{{ product.department }} / {{ product.category }} / {{ product.room }}. Placement and size/colour definitions stay the same in this version.</p>
       <section class="editor-section" aria-labelledby="delete-product-title">
@@ -35,7 +35,7 @@
       <form #editForm="ngForm" (ngSubmit)="saveDetails(editForm)">
         <fieldset [disabled]="busy() || !canSave()" class="editor-section">
           <legend>Details and stock</legend>
-          <label>Product name<input name="name" [(ngModel)]="details.name" required maxlength="120"></label>
+          <label>Product name<input #editName name="name" [(ngModel)]="details.name" required maxlength="120"></label>
           <label>Description<textarea name="description" [(ngModel)]="details.description" required maxlength="2000" rows="3"></textarea></label>
           <div class="editor-row">
             <label>Material<input name="material" [(ngModel)]="details.material" required maxlength="120"></label>
