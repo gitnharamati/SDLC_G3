@@ -1,134 +1,218 @@
-# Team 3 Home Decor Course Project
+# Home Décor Store
 
-Home decor e-commerce application for Software Development Life Cycle.
+**Team 3 · Software Development Life Cycle · Laurentian University**
 
-The app is live @ https://sdlc-g3.onrender.com/
+Home Décor Store is a course project that provides an online product catalogue
+and an admin interface for managing home décor products and inventory.
 
-Nir Haramati: Business Analyst. Omkumar Patel: Developer. Romit Tejani: QA.
+**Hosted demonstration:** [sdlc-g3.onrender.com](https://sdlc-g3.onrender.com/)
 
-## Current milestone
+This README describes the current development version. Availability on the
+hosted demonstration depends on the deployed branch and database configuration.
 
-The storefront shows products and stock by size and colour. Signed-in admins
-can add products, set starting stock for each combination, and decide whether
-the product appears in the shop. Angular displays data from the Express API,
-which reads and writes SQLite. Editing existing products, photo uploads, checkout
-and payments are not available yet.
+## Project Team
 
-## Requirements
+| Team member | Student number | Responsibility |
+| --- | --- | --- |
+| Nir Haramati | 0474218 | Business analysis, requirements and project documentation |
+| Omkumar Patel | 0480176 | Application development and integration |
+| Romit Tejani | 0476882 | Quality assurance, test cases and defect reporting |
 
-- Node.js 24 LTS with npm. Check with `node --version` and `npm --version`.
-- VS Code and a terminal. Angular CLI does not need a separate global installation.
+## Project Overview
 
-Use Node 24 because the API uses its built-in SQLite module. Earlier Node versions
-may not support this setup. The module may print an experimental warning on Node 24.
+The application supports a home décor catalogue with cushions, bed sheets and
+curtains. Products are organised by department, category and room. Shoppers can
+view product details, photographs, prices in CAD and stock for individual size
+and colour combinations.
 
-## Run locally
+The project follows an incremental development approach. The current development version includes catalogue management, storefront search
+and filters, and a dedicated product page. Shopping cart, checkout and order
+management belong to later work. The team’s
+requirements and project presentation form the implementation baseline.
 
-Open a terminal in the project root, where this README and the root package.json live.
+## Functional Coverage
 
-```sh
-npm ci
-npm run dev
-```
+| Area | Current functionality |
+| --- | --- |
+| Storefront | Category browsing, product cards, prices, material and room information |
+| Search and filters | Search names, descriptions and materials; category, room and inclusive CAD price filters |
+| Search results | Result counts, no-results message, validation and clear filters |
+| Product details | Dedicated URL, photographs, description, material, price and stock by size and colour |
+| Admin access | Sign-in, session checks and sign-out |
+| Product creation | Details, category placement, options, starting stock and photos |
+| Product editing | Name, description, material, price, visibility and existing stock |
+| Photo management | Upload, preview, main photo selection and removal |
+| Product visibility | Hidden products excluded from the public catalogue |
+| Product deletion | Confirmation and removal of the product and related records |
+| Layout | Responsive pages and consistent card text spacing |
+| Storage | SQLite locally and PostgreSQL support for hosted deployment |
 
-Open http://localhost:4200. The API runs on http://127.0.0.1:3000.
-Leave the terminal running. Press Ctrl+C to stop both services.
+### Products and Inventory
 
-If needed, run `npm run dev:api` and `npm run dev:web` in two separate terminals.
-If a port is already used, stop the old process before starting again.
-If you change the API port, update apps/web/proxy.conf.json to match.
+Each product contains a name, description, material, price and category placement.
+Sizes and colours define its stock combinations. A product with two sizes and
+two colours has four combinations, each with its own quantity and SKU.
 
-The browser's `/api` requests go through Angular's development proxy. SQLite is
-accessed by the backend only. No separate database server or account is needed.
+The backend validates required fields, positive prices, category relationships,
+unique options and whole stock quantities. Database rules reject incomplete
+variants, duplicate size and colour combinations, and option links belonging to
+another product. Product creation saves details, options, stock and photos in
+one transaction.
 
-## Try the storefront and Add Product demo
+Existing product editing preserves the department, category, room and option
+definitions. Visibility can be changed without removing the product’s records.
 
-1. Open the shop at http://localhost:4200 and choose **Explore the collection**.
-2. Open **View options and stock** on a product to see size, colour, and stock.
-3. To test admin sign-in, stop the app and run the following in PowerShell
-   from the project root:
+### Product Photographs
 
-   ```powershell
-   $env:ADMIN_PASSWORD = Read-Host "Enter a temporary demo password (12 to 256 characters)"
-   npm.cmd run dev
-   ```
+Products support up to four JPG, PNG or WebP uploads, with a maximum input size
+of 5 MB per image. The backend checks image content, applies orientation and
+resizes images to fit within 1600 by 1600 pixels. It stores JPEG image data
+without the original metadata. Animated images are not supported.
 
-4. Open http://localhost:4200/admin and sign in with your temporary password.
-5. Under **Add product**, enter a name, description, material, and price in CAD.
-   Choose a department, category, and room. For example: Home Décor → Cushions
-   → Living room.
-6. Enter sizes such as `Small, Large` and colours such as `Sand, Sage`.
-   The form makes four stock rows. Enter a whole quantity in each row.
-7. Leave **Available in the shop** checked and choose **Save product**. Open
-   the shop and check the new product's price and **View options and stock**.
-   Try saving another product with visibility unchecked; it stays out of the shop.
-8. Sign out when finished. If a session ends while saving, sign in again on the
-   same page to keep your draft. Refreshing or closing the page clears the draft.
+The first saved photograph is the main storefront image. Additional photographs
+are available through thumbnails in the expanded details. Category artwork is
+used when a product has no uploaded photographs. Public image access is blocked
+for hidden and deleted products.
 
-The password is set in the current terminal. Keep it out of Git. If PowerShell
-blocks npm scripts, use `npm.cmd` in place of `npm` for the other commands too.
+### Product Deletion
 
-## Check the foundation
+Deletion requires an active admin session and explicit confirmation of the
+selected product. The confirmation identifies the product and explains that
+deletion is permanent. Cancellation leaves its records unchanged.
 
-```sh
-npm test
-npm run build
-```
+The backend removes the product, photographs, options, stock variants and related
+combination records in one transaction. A failure rolls back the operation.
+Other products and the department, category and room lists remain unchanged.
 
-API endpoints:
+## Week 4 Storefront Update
 
-- GET /api/health: checks the database connection.
-- GET /api/catalogue: returns departments, categories and rooms.
-- GET /api/products: returns products, option combinations and stock from SQLite.
+The Week 4 development work follows the feature list in the Business Analyst’s
+Dev expectations week 4 document, covering CUS-01–06 and CUS-10–11.
 
-The public catalogue endpoints are read-only. `POST /api/admin/products`
-requires an admin session and the `X-Admin-Request` header. It saves the product,
-its options and stock together. `npm run build` builds Angular. `npm start`
-runs Express and serves the built site when the Angular output is present.
+The home page provides category links. Search checks product names, descriptions
+and materials without case sensitivity. Category, room and price filters work
+together. Price limits are inclusive and use integer cents for comparison.
+Invalid prices or a minimum above the maximum produce an explanatory message.
+An empty result shows No matching products with a reset option.
 
-## Folders
+The product cards open a separate product page at /products/:id. It displays
+photos, full description, material, CAD price, size and colour choices and stock
+for each combination. Selecting both options shows that combination’s stock.
+Products with no stock remain listed as Out of stock. Hidden products remain
+excluded by the public API, and missing or hidden product URLs show unavailable.
 
-```text
-apps/api/src       Express routes, SQLite schema and seed data
-apps/api/test      Automated checks for the foundation
-apps/web/src       Angular components and catalogue service
-docs              Shared documentation and developer architecture note
-roles/BA          Nir's documents
-roles/DEV/Week 1   Developer progress and QA handover
-roles/DEV/Week 2   Admin and storefront update with demo checks
-roles/QA          QA documents
-```
+Filter choices are retained in the URL across page refresh and the return from
+a product page. A shopper can reach product details from the home page directly
+or through a category within two link selections. Selecting an option is a
+further action. Desktop and mobile layouts use the same catalogue data.
 
-The database is created at apps/api/data/home-decor.sqlite on first startup.
-The seed runs once, so restarting does not reset stock or duplicate data.
-Database files, node_modules and build output stay out of Git. Commit the root
-package-lock.json so teammates install the same dependency versions with npm ci.
+The storefront navigation no longer displays an admin link. The separate admin
+page remains available at /admin and still requires authentication. Cart and
+checkout are outside this Week 4 update.
 
-## Sample data and decisions
+## Technical Architecture
 
-All products, prices, stock and materials are demonstration content. The storefront uses original
-illustrations for the sample categories. CAD is a display
-assumption pending BA confirmation. The initial hierarchy follows Nir's proposed
-default: one department, three categories, and five rooms under each category.
+| Component | Technology and purpose |
+| --- | --- |
+| User interface | Angular, TypeScript, HTML and CSS |
+| Application server | Node.js 24 and Express |
+| Local storage | SQLite with schema migrations and seed data |
+| Hosted storage support | PostgreSQL with migrations and transactional writes |
+| Upload processing | Multer and Sharp |
+| Automated testing | Node.js test runner |
+| Version control | Git and GitHub |
+| Hosted demonstration | Render |
 
-The PPT is the implementation baseline. Nir's later additions are proposals that
-still need team review. See docs/Developer_Architecture.md for open decisions.
+The Angular frontend exchanges data with the Express API. The backend performs
+validation, checks admin access and manages database operations. Uploaded images
+are stored in the selected database rather than as temporary application files.
 
+The SQLite import feature preserves product identifiers, details, options,
+stock and image data when transferring records to PostgreSQL. It reads the
+source without changing it, rejects replacement of changed hosted data and
+rolls back invalid imports. Legacy images stored as separate files are outside
+this transfer.
 
-## Database and admin setup for QA
+## Admin Access Controls
 
-- Use Node 24. Keep the SQLite database out of Git. Each local copy seeds its
-  own database on first start. Back up existing SQLite data before switching to
-  a branch that removes the old tracked file, or before deploying this update.
-- Startup upgrades existing valid variant data in place. A variant must have
-  one size and one colour from its product, with no duplicate pair. Create the
-  variant and its two option links in one transaction. If old rows violate
-  these rules, the upgrade rolls back; check the database before trying again.
-- Admin sign-in limits failed attempts per client IP. Direct connections
-  ignore forwarded IP headers by default. If hosting behind a proxy, set
-  `TRUST_PROXY_HOPS` only after confirming the trusted path length and how the
-  proxy handles forwarded client addresses. Retest with two different client
-  networks. Clients sharing an IP also share the limit.
-- On Render, use a persistent disk with `DATABASE_PATH` pointing into the
-  mounted disk if you need SQLite changes to survive restarts or redeploys.
-  Keep the hosted demo on sample data until storage is set up.
+Admin passwords are checked against an in-memory scrypt hash. Successful login
+creates a server-side session with a random cookie. Cookies are HttpOnly,
+SameSite Strict and scoped to the admin API. Production cookies also use Secure.
+
+Sessions expire after 30 minutes. Sign-out ends the server session, and another
+sign-in replaces the previous session. Server restarts end in-memory sessions.
+Admin writes require an active session and the X-Admin-Request header. Admin
+responses use no-store caching headers.
+
+Failed login attempts are limited per client IP. Five consecutive failures
+trigger a temporary block. Successful login clears previous failures. Clients
+sharing an IP share the limit. BUG-03 remains a QA TODO, and hosted proxy
+behaviour is not yet verified.
+
+## API Summary
+
+| Endpoint | Purpose |
+| --- | --- |
+| GET /api/health | Database connection and storage status |
+| GET /api/catalogue | Departments, categories and rooms |
+| GET /api/products | Visible products, options, photographs and stock |
+| GET /api/photos/:id | Public image for a visible product |
+| POST /api/admin/login | Admin authentication |
+| GET /api/admin/session | Admin session check |
+| POST /api/admin/logout | End the admin session |
+| GET /api/admin/products | Admin product list, including hidden products |
+| POST /api/admin/products | Create a product |
+| POST /api/admin/products/:id | Update details and stock |
+| GET /api/admin/products/:id/photos | List a product’s photographs for admin management |
+| POST /api/admin/products/:id/photos | Save photo additions, removals and order |
+| GET /api/admin/photos/:id | Protected admin image preview |
+| POST /api/admin/products/:id/delete | Delete a confirmed product and related records |
+
+## Validation Status
+
+| Check | Latest recorded result |
+| --- | --- |
+| Local automated suite | 48 checks: 47 passed, zero counted failures, one TODO |
+| Product deletion | Access, confirmation, dependent records and rollback checks passed |
+| PostgreSQL integration | 22 checks passed in the development environment |
+| Week 4 frontend production build | Passed in the development environment |
+| Tests after final dependency update | 47 passed, zero counted failures, one TODO |
+| Week 4 browser validation | 20 scenarios passed in the development environment |
+| Dependency audit | 16 moderate findings; no high findings in the latest installation output |
+| Independent QA review | Pending for the latest update |
+| Live database persistence | Awaiting hosted setup and redeployment verification |
+
+The remaining TODO concerns BUG-03. It is tracked separately from passing tests.
+Development checks do not establish that the deployed service retains data after
+redeployment. The Angular build package is now version 21.2.30; the latest
+installation output no longer reports the earlier high-severity dependency finding.
+
+## Open Items and Limitations
+
+- Hosted PostgreSQL configuration and live data retention verification remain pending.
+- BUG-03 and client behaviour behind the hosting proxy remain under QA review.
+- Duplicate product name rules await review of the Business Analyst’s proposal.
+- Sixteen moderate dependency findings remain open.
+- Existing product editing does not change category placement or option definitions.
+- Shopping cart, checkout and order tracking are not implemented.
+- The Week 4 storefront has been checked locally; hosted test-server deployment and QA sign-off remain pending.
+- Payment processing and in-store QR scanning are not implemented.
+
+## Repository Structure
+
+| Location | Contents |
+| --- | --- |
+| apps/api/src | API routes, access controls and product operations |
+| apps/api/src/migrations | SQLite migrations |
+| apps/api/src/postgres | PostgreSQL schema and database operations |
+| apps/api/test | Developer and QA automated checks |
+| apps/web/src | Angular components, templates and styles |
+| scripts | Development startup and database import utilities |
+| docs | Shared project documentation |
+| roles | Business Analyst, Developer and QA deliverables |
+
+## Project Data
+
+Products, prices, materials and stock are demonstration content for the course
+project. The current release supports catalogue and inventory operations and
+does not process purchases or move money.

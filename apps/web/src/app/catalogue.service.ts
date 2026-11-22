@@ -9,5 +9,6 @@ export interface Product {
 @Injectable({ providedIn: 'root' })
 export class CatalogueService {
   private readonly http = inject(HttpClient);
+  getCatalogue() { return this.http.get<{ departments: { id: number; name: string; categories: { id: number; name: string; subcategories: { id: number; name: string }[] }[] }[] }>('/api/catalogue'); }
   getProducts() { return this.http.get<{ products: Product[] }>('/api/products'); }
 }
