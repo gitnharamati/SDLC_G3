@@ -24,6 +24,10 @@ function migrateDatabase(db) {
       db.exec(readFileSync(new URL('./migrations/001-variant-combinations.sql', import.meta.url), 'utf8'));
       db.exec('PRAGMA user_version = 1');
     }
+    if (db.prepare('PRAGMA user_version').get().user_version < 2) {
+      db.exec(readFileSync(new URL('./migrations/002-product-photos.sql', import.meta.url), 'utf8'));
+      db.exec('PRAGMA user_version = 2');
+    }
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');

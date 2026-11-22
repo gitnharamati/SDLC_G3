@@ -1,0 +1,77 @@
+<section class="product-editor" aria-labelledby="manage-title">
+  <h2 id="manage-title">Manage existing products</h2>
+  <p class="editor-note">Update details, prices, stock and photos without entering the product again.</p>
+  <label class="manager-search">Find a product
+    <input type="search" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Name, category or room">
+  </label>
+  @if (loading()) { <p role="status">Loading products…</p> }
+  @if (error()) { <p role="alert" class="admin-error">{{ error() }}</p> }
+  @if (message()) { <p role="status" class="admin-status">{{ message() }}</p> }
+  <div class="manager-list" aria-label="Existing products">
+    @for (product of filtered(); track product.id) {
+      <div class="manager-item">
+        <div><strong>{{ product.name }}</strong><small>{{ product.department }} / {{ product.category }} / {{ product.room }} · {{ product.available ? 'Visible' : 'Hidden' }}</small></div>
+        <button type="button" class="small-button" [disabled]="busy() || !canSave()" (click)="open(product)" [attr.aria-label]="'Edit ' + product.name">Edit</button>
+      </div>
+    } @empty { @if (!loading()) { <p>No matching products.</p> } }
+  </div>
+  @if (editing(); as product) {
+    <section class="existing-editor" aria-labelledby="editing-title">
+      <h3 id="editing-title">Editing {{ product.name }}</h3>
+      <p class="editor-note">{{ product.department }} / {{ product.category }} / {{ product.room }}. Placement and size/colour definitions stay the same in this version.</p>
+      <section class="editor-section" aria-labelledby="delete-product-title">
+        <h3 id="delete-product-title">Delete product</h3>
+        @if (!deleteRequested()) {
+          <p class="editor-note">To temporarily hide this product, uncheck Available in the shop below. Deletion is permanent.</p>
+          <button type="button" [disabled]="busy() || !canSave()" (click)="deleteRequested.set(true)">Delete product</button>
+        } @else {
+          <div role="group" aria-label="Confirm product deletion">
+            <p>Delete <strong>{{ product.name }}</strong> permanently? Its photos, options and stock will also be removed. This cannot be undone.</p>
+            <button type="button" [disabled]="busy() || !canSave()" (click)="deleteProduct()">{{ busy() ? 'Please wait…' : 'Yes, permanently delete' }}</button>
+            <button type="button" class="small-button" [disabled]="busy()" (click)="deleteRequested.set(false)">Cancel deletion</button>
+          </div>
+        }
+      </section>
+      <form #editForm="ngForm" (ngSubmit)="saveDetails(editForm)">
+        <fieldset [disabled]="busy() || !canSave()" class="editor-section">
+          <legend>Details and stock</legend>
+          <label>Product name<input name="name" [(ngModel)]="details.name" required maxlength="120"></label>
+          <label>Description<textarea name="description" [(ngModel)]="details.description" required maxlength="2000" rows="3"></textarea></label>
+          <div class="editor-row">
+            <label>Material<input name="material" [(ngModel)]="details.material" required maxlength="120"></label>
+            <label>Price (CAD)<input name="price" [(ngModel)]="details.price" required inputmode="decimal" maxlength="9"></label>
+          </div>
+          <label class="editor-checkbox"><input name="available" type="checkbox" [(ngModel)]="details.available"> Available in the shop</label>
+          <table class="stock-table">
+            <thead><tr><th scope="col">Options</th><th scope="col">Stock</th></tr></thead>
+            <tbody>
+              @for (variant of product.variants; track variant.id) {
+                <tr><td>@for (option of variant.options; track option.name) { <span>{{ option.name }}: {{ option.value }} </span> }</td>
+                  <td><input type="number" min="0" max="999999" step="1" required [name]="'stock-' + variant.id" [(ngModel)]="stock[variant.id]" [attr.aria-label]="'Stock for ' + variant.sku"></td></tr>
+              }
+            </tbody>
+          </table>
+          <button type="submit">Save details and stock</button>
+        </fieldset>
+      </form>
+      <section class="editor-section" aria-labelledby="existing-photos-title">
+        <h3 id="existing-photos-title">Product photos</h3>
+        <p class="editor-note">Up to four photos. Changes below take effect when you choose Save photos.</p>
+        @if (photoLoading()) { <p role="status">Loading photos…</p> }
+        @if (photoError()) { <button type="button" [disabled]="!canSave()" (click)="loadPhotos(product.id)">Retry loading photos</button> }
+        <div class="photo-grid">
+          @for (photo of photos(); track photo.id; let i = $index) {
+            <div class="photo-tile">
+              <img [src]="photo.previewUrl" [alt]="product.name + ' photo ' + (i + 1)">
+              <span>{{ i === 0 ? 'Main photo' : 'Photo ' + (i + 1) }}</span>
+              @if (i > 0) { <button type="button" class="small-button" [disabled]="busy() || !canSave()" (click)="mainPhoto(photo.id)">Make main photo {{ i + 1 }}</button> }
+              <button type="button" class="small-button" [disabled]="busy() || !canSave()" (click)="removePhoto(photo.id)">Remove saved photo {{ i + 1 }}</button>
+            </div>
+          }
+        </div>
+        <app-photo-picker [limit]="4 - photos().length" [disabled]="busy() || !canSave() || photoLoading() || photoError()" [resetToken]="photoReset()" (filesChanged)="newPhotos.set($event)" />
+        <button type="button" [disabled]="busy() || !canSave() || photoLoading() || photoError()" (click)="savePhotos()">{{ busy() ? 'Saving…' : 'Save photos' }}</button>
+      </section>
+    </section>
+  }
+</section>
