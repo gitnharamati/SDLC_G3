@@ -74,6 +74,14 @@ export class ProductManagerComponent {
       });
     }, { injector: this.injector });
   }
+  openById(id: number) {
+    if (this.busy() || !this.canSave()) return;
+    this.http.get<{products: Product[]}>('/api/admin/products').subscribe({
+      next: result => { this.products.set(result.products); const product = result.products.find(p => p.id === id);
+        if (product) this.open(product); else this.error.set('This product is no longer available to edit.'); },
+      error: error => this.handleError(error)
+    });
+  }
   loadPhotos(id: number) {
     this.photoLoading.set(true);
     this.photoError.set(false);

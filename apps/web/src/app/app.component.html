@@ -1,18 +1,53 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
   <a class="wordmark" href="/" aria-label="Home Décor home"><span class="brand-mark" aria-hidden="true">✦</span><span>Home Décor<small>EVERYDAY COMFORT</small></span></a>
-  <nav aria-label="Main navigation"><a [href]="shopLink()" [attr.aria-current]="!isAdmin && !isProductPage ? 'page' : null">Shop</a>@if (isAdmin) { <a href="/admin" aria-current="page">Admin</a> }</nav>
+  @if (!isAdmin) { <form class="header-search" (ngSubmit)="submitSearch(headerQuery.value)"><label class="visually-hidden" for="header-search">Search products</label><input #headerQuery id="header-search" name="search" type="search" minlength="2" [value]="search()" placeholder="Search products"><button type="submit">Search</button></form> }
+  @if (searchError()) { <p class="header-search-error admin-error" role="alert">{{ searchError() }}</p> }
+  <nav aria-label="Main navigation"><a [href]="shopLink()" [attr.aria-current]="!isAdmin && !isProductPage && !isCartPage() ? 'page' : null">Shop</a>@if (!isAdmin) { <a href="/cart" (click)="openCart($event)" [attr.aria-current]="isCartPage() ? 'page' : null">Cart ({{ cart.count() }})</a> }@if (isAdmin || adminSignedIn()) { <a href="/admin" [attr.aria-current]="isAdmin ? 'page' : null">Admin</a> }</nav>
 </header>
 @if (isAdmin) { <app-admin /> } @else {
 <main id="main-content" tabindex="-1">
-@if (isProductPage) {
+@if (isCartPage()) {
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Cart</span></nav>
+  <section class="cart-page" aria-labelledby="cart-title">
+    <h1 id="cart-title">Your cart</h1>
+    @if (cart.busy()) { <p role="status">Checking current prices and stock…</p> }
+    @if (cart.error()) { <div class="admin-error" role="alert">{{ cart.error() }} <button (click)="cart.refresh()" [disabled]="cart.busy()">Try again</button></div> }
+    @if (cart.storageWarning()) { <p role="status">{{ cart.storageWarning() }}</p> }
+    @if (!cart.items().length) { <div class="state"><h2>Your cart is empty</h2><a class="button" href="/shop">Continue shopping</a></div> }
+    @else {
+      <div class="cart-layout"><div class="cart-lines">
+        @for (line of cart.lines(); track line.variantId) {
+          <article class="cart-line">
+            <div class="product-art cart-photo" [class.curtain]="line.category === 'Curtains'" [class.bedding]="line.category === 'Bed sheets'" [class.cushion]="line.category === 'Cushions'">
+              @if (line.photos?.[0]; as photo) { <img [src]="photo" [alt]="line.name || 'Product photo'" (error)="$any($event.target).hidden = true"> }
+            </div>
+            <div class="cart-line-copy"><h2><a [href]="'/products/'+line.productId">{{ line.name || 'Unavailable product' }}</a></h2>
+              <p>{{ line.category }} / {{ line.room }}</p>
+              <p>@for (option of line.options || []; track option.name) { {{ option.name }}: {{ option.value }}&nbsp; }</p>
+              @if (line.priceCents !== undefined) { <p>Unit price: {{ line.priceCents / 100 | currency:'CAD':'symbol-narrow' }} CAD</p> }
+              @if (line.note) { <p class="cart-note" role="status">{{ line.note }}</p> }
+              @if (line.available && line.stock > 0) {
+                <div class="quantity-stepper"><button type="button" [disabled]="cart.busy() || line.qty <= 1" (click)="cart.update(line.variantId,line.qty-1)" [attr.aria-label]="'Decrease quantity for '+line.name">−</button>
+                  <label>Quantity<input type="number" min="1" max="999999" step="1" [disabled]="cart.busy()" [value]="line.qty" (change)="cart.update(line.variantId,$any($event.target).valueAsNumber)" [attr.aria-label]="'Quantity for '+line.name"></label>
+                  <button type="button" [disabled]="cart.busy() || line.qty >= line.stock" (click)="cart.update(line.variantId,line.qty+1)" [attr.aria-label]="'Increase quantity for '+line.name">+</button></div>
+              }
+              <p>Line total: <strong>{{ line.lineCents / 100 | currency:'CAD':'symbol-narrow' }}</strong></p>
+              <button class="small-button" type="button" [disabled]="cart.busy()" (click)="cart.remove(line.variantId)" [attr.aria-label]="'Remove '+(line.name || 'unavailable product')">Remove</button>
+            </div>
+          </article>
+        }
+      </div><aside class="cart-summary"><h2>Order summary</h2><p>Items <strong>{{ cart.totalCents() / 100 | currency:'CAD':'symbol-narrow' }}</strong></p><p>Delivery <span>Calculated at checkout</span></p><p>Order total <strong>{{ cart.totalCents() / 100 | currency:'CAD':'symbol-narrow' }} CAD</strong></p><button disabled>Check out</button><p class="notice">Checkout opens in Increment 3. Test store: no payment will be taken.</p><p class="notice">Prices and stock are checked when this cart opens. Items are not reserved.</p><a href="/shop">Continue shopping</a></aside></div>
+    }
+  </section>
+} @else if (isProductPage) {
   <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a [href]="shopLink()">Collection</a><span>/</span><span>Product details</span></nav>
   @if (loading()) { <p class="state" role="status">Loading product…</p> }
   @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
   @else if (product(); as item) {
     <section class="product-page" aria-labelledby="product-title">
       <div>
-        <div class="product-art product-page-image" [class.curtain]="item.category === 'Curtains'" [class.bedding]="item.category === 'Bed sheets'" [class.cushion]="item.category === 'Cushions'">
+        <div (touchstart)="swipeStart = $event.touches[0].clientX" (touchend)="swipePhoto($event)" class="product-art product-page-image" [class.curtain]="item.category === 'Curtains'" [class.bedding]="item.category === 'Bed sheets'" [class.cushion]="item.category === 'Cushions'">
           @if (photoFor(item); as photo) { <img [src]="photo" [alt]="item.name" (error)="photoFailed(item, photo)"> }
           @else { <span>Category illustration · no product photo</span> }
         </div>
@@ -29,43 +64,63 @@
       <div class="product-page-copy">
         <p class="eyebrow">{{ item.category }} / {{ item.room }}</p><h1 id="product-title">{{ item.name }}</h1>
         <p class="product-page-price">{{ item.priceCents / 100 | currency:'CAD':'symbol-narrow' }} <small>CAD</small></p>
+        @if (!totalStock(item)) { <p class="selected-stock">Out of stock</p> }
         <p class="product-description">{{ item.description }}</p><p><strong>Material:</strong> {{ item.material }}</p>
         <p><strong>Availability:</strong> {{ totalStock(item) ? totalStock(item)+' available across options' : 'Out of stock' }}</p>
         <div class="option-selectors">
-          <div class="filter-control"><label for="product-size">Size</label><select id="product-size" [ngModel]="size()" (ngModelChange)="size.set($event)"><option value="">Select size</option>@for (value of sizes(); track value) { <option [value]="value">{{ value }}</option> }</select></div>
-          <div class="filter-control"><label for="product-colour">Colour</label><select id="product-colour" [ngModel]="colour()" (ngModelChange)="colour.set($event)"><option value="">Select colour</option>@for (value of colours(); track value) { <option [value]="value">{{ value }}</option> }</select></div>
+          <fieldset class="option-group"><legend>Size: {{ size() || 'Choose one' }}</legend>@for (value of sizes(); track value) { <button type="button" [disabled]="!optionEnabled('Size',value)" [attr.aria-pressed]="size() === value" (click)="selectOption('Size',value)">{{ value }}</button> }</fieldset>
+          <fieldset class="option-group"><legend>Colour: {{ colour() || 'Choose one' }}</legend>@for (value of colours(); track value) { <button type="button" [disabled]="!optionEnabled('Colour',value)" [attr.aria-pressed]="colour() === value" (click)="selectOption('Colour',value)">{{ value }}</button> }</fieldset>
         </div>
-        <p class="selected-stock" role="status">@if (chosenVariant(); as variant) { {{ variant.stock ? variant.stock+' in stock for this option' : 'Out of stock for this option' }} } @else if (size() && colour()) { This combination is unavailable. } @else { Select a size and colour to check this option’s stock. }</p>
+        <p class="selected-stock" role="status">{{ selectionMessage() }}</p>
+        <label class="product-quantity">Quantity<input type="number" min="1" [max]="chosenVariant()?.stock || 1" step="1" [ngModel]="quantity()" (ngModelChange)="quantity.set($event)" [disabled]="!chosenVariant()?.stock || cart.busy()"></label>
+        @if (quantityError()) { <p class="admin-error" role="alert">{{ quantityError() }}</p> }
+        <button type="button" [disabled]="!chosenVariant()?.stock || !!quantityError() || cart.busy()" (click)="addToCart()">{{ cart.busy() ? 'Checking…' : 'Add to cart' }}</button>
+        @if (added()) { <p class="admin-status" role="status">{{ added() }} <a href="/cart" (click)="openCart($event)">View cart</a></p> }
+        @if (cart.error()) { <p class="admin-error" role="alert">{{ cart.error() }}</p> }
         <h2 class="stock-heading">Stock by size and colour</h2>
         <ul class="product-stock-list">@for (variant of item.variants; track variant.id) { <li><span>@for (option of variant.options; track option.name; let last = $last) { {{ option.name }}: {{ option.value }}@if (!last) { · } }</span><strong>{{ variant.stock ? variant.stock+' in stock' : 'Out of stock' }}</strong></li> }</ul>
-        <a class="button" [href]="shopLink()">Back to collection</a><p class="notice">Online ordering is not available yet.</p>
+        <a class="button" [href]="shopLink()">Back to collection</a><p class="notice">Test store: checkout is not available yet.</p>
       </div>
     </section>
   } @else { <section class="state"><h1 class="missing-product-title">Product unavailable</h1><p>This product could not be found or is no longer available.</p><a class="button" [href]="shopLink()">Back to collection</a></section> }
 } @else {
-  <section class="hero" aria-labelledby="page-title"><div class="hero-copy"><p class="eyebrow">✦ &nbsp; The everyday collection</p><h1 id="page-title">Make yourself <em>at home.</em></h1><p class="lead">Soft cushions, fresh sheets and curtains that let the morning light in. Little things that make a room feel like yours.</p><a class="button" href="#collection">Explore the collection <span aria-hidden="true">↘</span></a></div><div class="hero-art" aria-hidden="true"></div></section>
+  @if (!isResultsPage) { <section class="hero" aria-labelledby="page-title"><div class="hero-copy"><p class="eyebrow">✦ &nbsp; The everyday collection</p><h1 id="page-title">Make yourself <em>at home.</em></h1><p class="lead">Soft cushions, fresh sheets and curtains that let the morning light in. Little things that make a room feel like yours.</p><a class="button" href="#collection">Explore the collection <span aria-hidden="true">↘</span></a></div><div class="hero-art" aria-hidden="true"></div></section>
+  }
   @if (categories().length) { <nav class="category-browse" aria-label="Browse by category">@for (item of categories(); track item.id) { <a [href]="categoryLink(item.name)">{{ item.name }} <span aria-hidden="true">↗</span></a> }</nav> }
+  <nav class="room-browse" aria-label="Shop by room">@for (value of rooms(); track value) { <a [href]="'/shop?room='+value+'#collection'">{{ value }}</a> }</nav>
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Collection</span></nav>
   <section class="collection" id="collection" aria-labelledby="collection-title">
     <div class="section-heading"><div><p class="eyebrow">Cushions · Bed sheets · Curtains</p><h2 id="collection-title">Little home comforts</h2></div>@if (!loading() && !error()) { <span role="status">{{ filtered().length }} of {{ products().length }} products</span> }</div>
-    <section class="catalogue-filters" aria-label="Search and filter products">
-      <label class="search-field">Search products<input type="search" [ngModel]="search()" (ngModelChange)="setFilter('search',$event)" placeholder="Search name, description or material"></label>
-      <div class="filter-control"><label for="category-filter">Category</label><select id="category-filter" [ngModel]="category()" (ngModelChange)="setFilter('category',$event)"><option value="">All categories</option>@for (item of categories(); track item.id) { <option [value]="item.name">{{ item.name }}</option> }</select></div>
-      <div class="filter-control"><label for="room-filter">Room</label><select id="room-filter" [ngModel]="room()" (ngModelChange)="setFilter('room',$event)"><option value="">All rooms</option>@for (item of rooms(); track item) { <option [value]="item">{{ item }}</option> }</select></div>
+    <div class="collection-toolbar">
+      <button id="filter-sort-toggle" class="filter-toggle" type="button" aria-label="Filter and sort" [attr.aria-expanded]="filtersOpen()" aria-controls="catalogue-filters" (click)="filtersOpen.set(!filtersOpen())">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></svg>
+        Filter &amp; sort@if (filterCount()) { <span class="filter-count">{{ filterCount() }}</span> }
+      </button>
+      @if (filterCount() && !filtersOpen()) { <button class="toolbar-clear" type="button" (click)="clearFilters()">Clear filters</button> }
+    </div>
+    <section id="catalogue-filters" class="catalogue-filters" [hidden]="!filtersOpen()" aria-label="Filter and sort products">
+      <fieldset class="filter-choices"><legend>Category</legend>@for (item of categories(); track item.id) { <label><input type="checkbox" [checked]="category().includes(item.name)" (change)="toggleFilter('category',item.name)">{{ item.name }}</label> }</fieldset>
+      <fieldset class="filter-choices"><legend>Room</legend>@for (value of rooms(); track value) { <label><input type="checkbox" [checked]="room().includes(value)" (change)="toggleFilter('room',value)">{{ value }}</label> }</fieldset>
+      <label>Sort by<select [ngModel]="sort()" (ngModelChange)="sort.set($event); updateUrl()"><option value="relevance">Relevance</option><option value="price-asc">Price low to high</option><option value="price-desc">Price high to low</option></select></label>
       <label>Minimum price (CAD)<input type="text" inputmode="decimal" maxlength="9" [ngModel]="minimum()" (ngModelChange)="setFilter('minimum',$event)" [attr.aria-invalid]="priceError() ? 'true' : null" aria-describedby="price-filter-help" placeholder="0.00"></label>
       <label>Maximum price (CAD)<input type="text" inputmode="decimal" maxlength="9" [ngModel]="maximum()" (ngModelChange)="setFilter('maximum',$event)" [attr.aria-invalid]="priceError() ? 'true' : null" aria-describedby="price-filter-help" placeholder="No maximum"></label>
+      <button type="button" (click)="applyFilters()" [disabled]="!!priceError()">Apply filters</button>
       <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+      <button type="button" class="close-filters" (click)="closeFilters()">Close filters</button>
       <p id="price-filter-help" class="filter-help">Prices include the entered minimum and maximum.</p>
     </section>
+    @if (search().trim()) { <p role="status">Search: “{{ search().trim() }}”@if (search().trim().length < 2) { — Enter at least 2 characters to search. }</p> }
+    @if (activeFilters()) { <p class="active-filters">Filters: {{ activeFilters() }}</p> }
     @if (loading()) { <p role="status" class="state">Loading the catalogue…</p> }
     @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
     @else if (priceError()) { <p class="state admin-error" role="alert">{{ priceError() }}</p> }
     @else if (!products().length) { <p class="state">There are no products to display yet.</p> }
-    @else if (!filtered().length) { <div class="state" role="status"><h3>No matching products</h3><p>Try a different search or clear the filters to see the collection.</p><button type="button" (click)="clearFilters()">Show all products</button></div> }
+    @else if (!filtered().length) { <div class="state" role="status"><h3>No products match@if (search().trim()) { “{{ search().trim() }}” }</h3><p>Try another search, clear filters or browse a category.</p><button type="button" (click)="clearFilters()">Clear filters</button><nav aria-label="Browse categories after no results">@for (item of categories(); track item.id) { <a [href]="categoryLink(item.name)">{{ item.name }}</a> }</nav></div> }
     @else { <div class="product-grid">@for (item of filtered(); track item.id) {
       <article class="product"><a class="product-art product-image-link" [href]="productLink(item.id)" [attr.aria-label]="'View '+item.name" [class.curtain]="item.category === 'Curtains'" [class.bedding]="item.category === 'Bed sheets'" [class.cushion]="item.category === 'Cushions'">@if (photoFor(item); as photo) { <img [src]="photo" [alt]="item.name" loading="lazy" (error)="photoFailed(item,photo)"> }<span>{{ item.category }}</span></a>
       <div class="product-copy"><p class="product-category">{{ item.category }} / {{ item.room }}</p><h3 [title]="item.name"><a [href]="productLink(item.id)">{{ item.name }}</a></h3><p>{{ item.material }}</p><div class="product-bottom"><strong>{{ item.priceCents / 100 | currency:'CAD':'symbol-narrow' }}</strong><span>{{ totalStock(item) ? totalStock(item)+' available across options' : 'Out of stock' }}</span></div><a class="button view-button" [href]="productLink(item.id)">View options and stock</a></div></article>
     }</div> }
-    <p class="notice">Demo catalogue · Prices in CAD. Category artwork is used when no product photo is available. Online ordering is not available.</p>
+    <p class="notice">Demo catalogue · Prices in CAD. Category artwork is used when no product photo is available. Checkout is not available yet.</p>
   </section>
 }
 </main>

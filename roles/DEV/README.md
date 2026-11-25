@@ -13,8 +13,13 @@ I develop the Angular storefront and Express API, connect the product database, 
 | 2 | Admin sign-in and sign-out, home décor theme and responsive layout | 5 automated tests; production build passed | [Week 2](Dev%20-%20Week%202%20report/) |
 | 3 | Add Product form, stock by size and colour, product visibility and validation | 9 automated tests; production build and recorded browser checks passed | [Week 3](Dev%20-%20Week%203%20report/) |
 | 4 | Search and filters, product pages, admin deletion, hosted PostgreSQL setup and Edit button improvement | 49 automated tests and 20 storefront browser checks before the Edit update; latest build passed | [Week 4](Dev%20-%20Week%204%20report/) |
+| 5 | Guest cart, storefront spec gaps, duplicate protection, stable IDs and sign-in limits | 107 automated checks, 27 PostgreSQL checks and 20 browser scenarios; build passed | [Week 5 work for review](Dev%20-%20Week%205%20report/) |
 
 These counts belong to the development runs described in each report. They are not independent QA approval or a claim about the latest test suite on main. Pending items in older reports describe the position at that time.
+
+## Current development
+
+[Week 5 work and validation record](Dev%20-%20Week%205%20report/) covers the combined development branch. Independent QA review and hosted verification are pending.
 
 ## Latest report for submission
 

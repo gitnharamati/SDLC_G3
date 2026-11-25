@@ -25,6 +25,9 @@ export class ProductEditorComponent implements OnInit {
   readonly canSave = input.required<boolean>();
   readonly sessionEnded = output<void>();
   readonly productSaved = output<void>();
+  readonly editRequested = output<number>();
+  readonly duplicate = signal<{code: string; key: string; matches: {id:number; name:string; department:string; category:string; room:string}[]} | null>(null);
+  private duplicateKey() { return JSON.stringify([this.details.name.trim().toLocaleLowerCase(),this.departmentId(),this.categoryId(),this.roomId()]); }
   readonly photoFiles = signal<File[]>([]);
   readonly photoReset = signal(0);
   readonly savingChanged = output<boolean>();
@@ -68,7 +71,7 @@ export class ProductEditorComponent implements OnInit {
   chooseCategory(id: number) { this.categoryId.set(id); this.roomId.set(0); }
   updateStock(key: string, value: number | null) { this.stock.update(stock => ({ ...stock, [key]: value })); }
 
-  save(form: NgForm) {
+  save(form: NgForm, confirmName = false) {
     if (this.saving() || !this.canSave()) return;
     this.error.set('');
     this.saved.set(null);
@@ -90,7 +93,7 @@ export class ProductEditorComponent implements OnInit {
     }
     const { name, description, material, available } = this.details;
     const payload = { name, description, material, available, priceCents, departmentId: this.departmentId(),
-      categoryId: this.categoryId(), roomId: this.roomId(), sizes: this.sizes(), colours: this.colours(), stock };
+      categoryId: this.categoryId(), roomId: this.roomId(), sizes: this.sizes(), colours: this.colours(), stock, confirmDuplicateName: confirmName && this.duplicate()?.key === this.duplicateKey() };
     const formData = new FormData();
     formData.append('product', JSON.stringify(payload));
     this.photoFiles().forEach(file => formData.append('photos', file));
@@ -99,6 +102,7 @@ export class ProductEditorComponent implements OnInit {
       headers: { 'X-Admin-Request': '1' }
     }).subscribe({
       next: ({ product }) => {
+        this.duplicate.set(null);
         this.details = initialDetails();
         this.chooseDepartment(0);
         this.sizeText.set('');
@@ -112,6 +116,8 @@ export class ProductEditorComponent implements OnInit {
         this.setSaving(false);
       },
       error: (err: HttpErrorResponse) => {
+        if (err.status === 409 && Array.isArray(err.error?.matches)) this.duplicate.set({...err.error, key:this.duplicateKey()});
+        else this.duplicate.set(null);
         if (err.status === 401) this.sessionEnded.emit();
         else this.error.set(err.error?.error || 'Could not save the product. Try again.');
         this.setSaving(false);

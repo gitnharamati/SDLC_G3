@@ -45,6 +45,10 @@ export async function openPostgres(connectionString) {
         await client.query(readFileSync(new URL('./002-product-photos.sql', import.meta.url), 'utf8'));
         await client.query('INSERT INTO schema_migrations VALUES(2)');
       }
+      if (!(await client.query('SELECT 1 FROM schema_migrations WHERE version = 3')).rowCount) {
+        await client.query(readFileSync(new URL('./003-product-audit.sql', import.meta.url), 'utf8'));
+        await client.query('INSERT INTO schema_migrations VALUES(3)');
+      }
       const seeded = (await client.query('SELECT 1 FROM seed_versions WHERE version = 1')).rowCount;
       if (!seeded) {
         const occupied = (await client.query('SELECT 1 FROM departments LIMIT 1')).rowCount;

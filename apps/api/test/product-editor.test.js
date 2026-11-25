@@ -10,7 +10,7 @@ import { openDatabase } from '../src/database.js';
 const password = 'local-test-password-only';
 const product = {
   name: 'Woven cushion', description: 'Cotton cover for a sofa.', material: 'Cotton',
-  priceCents: 2999, departmentId: 1, categoryId: 1, roomId: 4, available: true,
+  priceCents: 2999, departmentId: 1, categoryId: 1, roomId: 1, available: true,
   sizes: ['45 × 45 cm', '50 × 50 cm'], colours: ['Sand', 'Sage'], stock: [5, 0, 2, 3]
 };
 
@@ -43,7 +43,7 @@ test('admin can save and publish products with stock per size and colour; hidden
     assert.equal(response.status, 201);
     const created = (await response.json()).product;
     assert.equal(created.variantCount, 4);
-    const hidden = await api.post('/admin/products', { ...product, name: 'Hidden cushion', available: false }, { Cookie });
+    const hidden = await api.post('/admin/products', { ...product, name: 'Hidden cushion', roomId:2, available: false }, { Cookie });
     assert.equal(hidden.status, 201);
     const hiddenId = (await hidden.json()).product.id;
     assert.equal(db.prepare('SELECT available FROM products WHERE id = ?').get(hiddenId).available, 0);
@@ -57,7 +57,7 @@ test('admin can save and publish products with stock per size and colour; hidden
     const visible = shop.find(item => item.id === created.id);
     assert.equal(visible.name, product.name);
     assert.equal(visible.priceCents, product.priceCents);
-    assert.equal(visible.room, 'Living room');
+    assert.equal(visible.room, 'Kitchen');
     assert.deepEqual(visible.variants.map(row => row.stock), product.stock);
     assert.deepEqual(visible.variants.map(row => row.options.map(option => option.value)),
       product.sizes.flatMap(size => product.colours.map(colour => [size, colour])));

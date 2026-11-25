@@ -94,6 +94,17 @@
           <h3>Photos</h3>
           <app-photo-picker [disabled]="saving() || !canSave()" [resetToken]="photoReset()" (filesChanged)="photoFiles.set($event)" />
         </section>
+        @if (duplicate(); as conflict) {
+          <section class="editor-section" aria-label="Existing products">
+            <h3>Existing products</h3>
+            @for (match of conflict.matches; track match.id) {
+              <p>{{ match.name }} — {{ match.department }} / {{ match.category }} / {{ match.room }}</p>
+              <button type="button" (click)="editRequested.emit(match.id)">Update existing product</button>
+            }
+            @if (conflict.code === 'DUPLICATE_NAME') { <button type="button" (click)="save(productForm,true)">Keep this name and save</button> }
+            <p class="editor-note">Your draft stays here. Existing products are only changed when you save their edit form.</p>
+          </section>
+        }
         @if (error()) { <p class="admin-error" role="alert">{{ error() }}</p> }
         <button type="submit" [disabled]="loading() || !!catalogueError()">{{ saving() ? 'Saving…' : 'Save product' }}</button>
       </aside>
