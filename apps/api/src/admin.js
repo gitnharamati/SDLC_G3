@@ -1,3 +1,4 @@
+import { ProductConflictError } from './product-duplicates.js';
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { Router } from 'express';
 import { getProducts } from './catalogue.js';
@@ -8,9 +9,9 @@ import { addProduct, ProductInputError } from './product-editor.js';
 
 const cookieName = 'decor_admin';
 const sessionMs = 30 * 60 * 1000;
-const failureWindowMs = 60 * 1000;
+const failureWindowMs = 15 * 60 * 1000;
 
-export function adminRouter(db, { password, secure = false } = {}) {
+export function adminRouter(db, { password, username = 'admin', secure = false } = {}) {
   const router = Router();
   const enabled = typeof password === 'string' && password.length >= 12 && password.length <= 256;
   const salt = randomBytes(16);
@@ -33,7 +34,9 @@ export function adminRouter(db, { password, secure = false } = {}) {
   });
   router.post('/login', (req, res) => {
     const now = Date.now();
-    const client = req.ip;
+    const suppliedUsername = typeof req.body?.username === 'string' ? req.body.username.trim().slice(0,64) : 'admin';
+    const validUsername = req.body?.username === undefined || (typeof req.body.username === 'string' && req.body.username.trim().length > 0 && req.body.username.trim().length <= 64);
+    const client = JSON.stringify([suppliedUsername, req.ip]);
     if (now >= nextCleanup) {
       for (const [ip, entry] of failuresByClient) {
         if (entry.resetAt <= now) failuresByClient.delete(ip);
@@ -44,12 +47,13 @@ export function adminRouter(db, { password, secure = false } = {}) {
     const current = previous?.resetAt > now ? previous : { count: 0, resetAt: now + failureWindowMs };
     if (current.count >= 5) {
       res.set('Retry-After', String(Math.ceil((current.resetAt - now) / 1000)));
-      return res.status(429).json({ error: 'Too many attempts. Try again in a minute.' });
+      return res.status(429).json({ error: 'Too many attempts from this device. Try again in 15 minutes.' });
     }
     const candidate = req.body?.password;
-    if (typeof candidate !== 'string' || candidate.length > 256 ||
+    if (!validUsername || suppliedUsername !== username || typeof candidate !== 'string' || candidate.length > 256 ||
         !timingSafeEqual(hash, scryptSync(candidate, salt, 32))) {
       current.count++;
+      if (current.count === 5) current.resetAt = now + failureWindowMs;
       failuresByClient.set(client, current);
       return res.status(401).json({ error: 'Incorrect password.' });
     }
@@ -69,7 +73,7 @@ export function adminRouter(db, { password, secure = false } = {}) {
     }
     next();
   }
-  router.get('/session', requireSession, (_req, res) => res.json({ signedIn: true }));
+  router.get('/session', requireSession, (req, res) => res.json({ signedIn: true, proxyHops: req.app.get('trust proxy'), clientAddress: req.ip }));
   const input = req => {
     if (!req.is('multipart/form-data')) return req.body;
     try { return JSON.parse(req.body.product); }
@@ -81,6 +85,7 @@ export function adminRouter(db, { password, secure = false } = {}) {
     return id;
   };
   const handleInputError = (error, res, next) => {
+    if (error instanceof ProductConflictError) return res.status(409).json({ error: error.message, code: error.code, matches: error.matches });
     if (error instanceof ProductInputError || error instanceof PhotoInputError) {
       return res.status(400).json({ error: error.message });
     }

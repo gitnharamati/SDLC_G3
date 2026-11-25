@@ -1,3 +1,5 @@
+import { getProducts } from './catalogue.js';
+import { duplicateDecision, ProductConflictError, logDuplicate } from './product-duplicates.js';
 import { insertSqlitePhotos } from './photos.js';
 import { postgresAddProduct } from './postgres/product-editor.js';
 
@@ -39,7 +41,7 @@ export function validateProduct(input) {
     throw new ProductInputError('Enter a whole stock quantity from 0 to 999,999 for every combination.');
   }
 
-  return { name, description, material, departmentId, categoryId, roomId, priceCents, available, sizes, colours, stock };
+  return { name, description, material, departmentId, categoryId, roomId, priceCents, available, sizes, colours, stock, confirmDuplicateName: input.confirmDuplicateName === true };
 }
 
 export function addProduct(db, input, photos = []) {
@@ -51,8 +53,11 @@ export function addProduct(db, input, photos = []) {
   }
   db.exec('BEGIN IMMEDIATE');
   try {
-    const id = Number(db.prepare(`INSERT INTO products(subcategory_id, name, description, material, price_cents, available)
-      VALUES (?, ?, ?, ?, ?, ?)`).run(roomId, name, description, material, priceCents, Number(available)).lastInsertRowid);
+    const matches = duplicateDecision(getProducts(db, true), { ...input, name });
+    const nextId = kind => db.prepare('SELECT COALESCE(MAX(id), 0) + 1 AS id FROM issued_ids WHERE kind = ?').get(kind).id;
+    const id = nextId('product');
+    db.prepare(`INSERT INTO products(id, subcategory_id, name, description, material, price_cents, available)
+      VALUES (?, ?, ?, ?, ?, ?, ?)`).run(id, roomId, name, description, material, priceCents, Number(available));
     const insertType = db.prepare('INSERT INTO option_types(product_id, name) VALUES (?, ?)');
     const insertValue = db.prepare('INSERT INTO option_values(option_type_id, value) VALUES (?, ?)');
     const addValues = (type, values) => {
@@ -61,20 +66,22 @@ export function addProduct(db, input, photos = []) {
     };
     const sizeIds = addValues('Size', sizes);
     const colourIds = addValues('Colour', colours);
-    const insertVariant = db.prepare('INSERT INTO product_variants(product_id, sku, stock) VALUES (?, ?, ?)');
+    const insertVariant = db.prepare('INSERT INTO product_variants(id, product_id, sku, stock) VALUES (?, ?, ?, ?)');
     const linkValue = db.prepare('INSERT INTO variant_values(variant_id, option_value_id) VALUES (?, ?)');
     let index = 0;
     for (const size of sizeIds) for (const colour of colourIds) {
       const sku = `PRODUCT-${id}-${index + 1}`;
-      const variantId = insertVariant.run(id, sku, stock[index++]).lastInsertRowid;
+      const variantId = insertVariant.run(nextId('variant'), id, sku, stock[index++]).lastInsertRowid;
       linkValue.run(variantId, size);
       linkValue.run(variantId, colour);
     }
     insertSqlitePhotos(db, id, photos);
+    if (matches.length) logDuplicate(db, 'NAME_WARNING_IGNORED', { ...input, name }, matches);
     db.exec('COMMIT');
     return { id, name, available, variantCount: index };
   } catch (error) {
     db.exec('ROLLBACK');
+    if (error instanceof ProductConflictError) logDuplicate(db, error.code, { ...input, name }, error.matches);
     throw error;
   }
 }

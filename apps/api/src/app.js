@@ -1,4 +1,5 @@
 import express from 'express';
+import { cartRouter } from './cart.js';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,6 +23,7 @@ export function createApp(db, adminOptions) {
   app.get('/api/catalogue', async (_req, res) => res.json({ departments: await getCatalogue(db) }));
   app.get('/api/products', async (_req, res) => res.json({ products: await getProducts(db) }));
   app.get('/api/photos/:id', photoResponse(db));
+  app.use('/api/cart', cartRouter(db));
   app.use('/api/admin', adminRouter(db, adminOptions));
   app.use('/api', (_req, res) => res.status(404).json({ error: 'API endpoint not found' }));
 

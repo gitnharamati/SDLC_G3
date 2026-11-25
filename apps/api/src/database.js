@@ -28,6 +28,10 @@ function migrateDatabase(db) {
       db.exec(readFileSync(new URL('./migrations/002-product-photos.sql', import.meta.url), 'utf8'));
       db.exec('PRAGMA user_version = 2');
     }
+    if (db.prepare('PRAGMA user_version').get().user_version < 3) {
+      db.exec(readFileSync(new URL('./migrations/003-identity-audit.sql', import.meta.url), 'utf8'));
+      db.exec('PRAGMA user_version = 3');
+    }
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');

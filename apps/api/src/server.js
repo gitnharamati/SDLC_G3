@@ -21,6 +21,7 @@ const port = Number(process.env.PORT || 3000);
 const host = process.env.HOST || (production ? '0.0.0.0' : '127.0.0.1');
 const server = createApp(db, {
   password: process.env.ADMIN_PASSWORD,
+  username: process.env.ADMIN_USERNAME || 'admin',
   secure: production,
   trustProxyHops: Number(process.env.TRUST_PROXY_HOPS || 0)
 }).listen(port, host, () => {

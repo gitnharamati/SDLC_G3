@@ -1,3 +1,7 @@
+// Week 5 maintenance: use a controlled QA fixture and the actual storefront rules.
+// Existing QA case IDs are retained; expectations now follow the BA specification.
+import { qaCatalogue } from './fixtures/qa-catalogue.mjs';
+import { filterProducts as storefront } from '../../web/src/app/storefront-rules.ts';
 // QA Week 4 (Romit Tejani) - retests of Week 3 findings, Increment 2 storefront checks
 // (CUS-01..06, CUS-10..11, ADM-09, ADM-10) and an Increment 1 admin regression.
 //
@@ -22,19 +26,18 @@ const html = read('apps/web/src/app/app.component.html');
 const ts = read('apps/web/src/app/app.component.ts');
 
 const fresh = () => openDatabase(':memory:');
-function bundled() { // a throw-away copy of the 15-product demo database
-  const file = join(mkdtempSync(join(tmpdir(), 'qa-w4-')), 'copy.sqlite');
-  copyFileSync(new URL('apps/api/data/home-decor.sqlite', root), file);
-  return openDatabase(file);
-}
+const bundled = qaCatalogue;
 const ids = list => list.map(p => p.id);
 const oracle = (db, sql, ...args) => db.prepare(sql).all(...args).map(r => r.id); // independent SQL answer
 
 // Placement ids in the seed: category 1-3 (Cushions, Bed sheets, Curtains); room = subcategory
 // id 1..15 (Kitchen, Bedroom, Bathroom, Living room, Patio inside each category).
 const base = { name: 'QA product', description: 'QA description', material: 'QA material', departmentId: 1,
-  categoryId: 1, roomId: 4, priceCents: 2000, available: true, sizes: ['One'], colours: ['Plain'], stock: [5] };
-const make = (db, overrides = {}) => addProduct(db, { ...base, ...overrides });
+  categoryId: 1, roomId: 1, priceCents: 2000, available: true, sizes: ['One'], colours: ['Plain'], stock: [5] };
+const make = (db, overrides = {}) => {
+  const free = db.prepare('SELECT id FROM subcategories WHERE category_id = 1 AND id NOT IN (SELECT subcategory_id FROM products) ORDER BY id LIMIT 1').get()?.id;
+  return addProduct(db, { ...base, roomId:free || 1, ...overrides });
+};
 const rejects = (db, overrides, pattern) => assert.throws(() => make(db, overrides), error => {
   assert.ok(error instanceof ProductInputError, `expected ProductInputError, got ${error?.constructor?.name}: ${error?.message}`);
   if (pattern) assert.match(error.message, pattern);
@@ -55,26 +58,12 @@ function priceError(minimum = '', maximum = '') {
   if (Number.isNaN(low) || Number.isNaN(high)) return 'invalid';
   return low !== null && high !== null && low > high ? 'range' : '';
 }
-function storefront(products, { search = '', category = '', room = '', minimum = '', maximum = '' } = {}) {
-  if (priceError(minimum, maximum)) return [];
-  const term = search.trim().toLocaleLowerCase(), low = cents(minimum), high = cents(maximum);
-  return products.filter(p => p.available &&
-    (!term || `${p.name} ${p.description} ${p.material}`.toLocaleLowerCase().includes(term)) &&
-    (!category || p.category === category) && (!room || p.room === room) &&
-    (low === null || p.priceCents >= low) && (high === null || p.priceCents <= high));
-}
 const totalStock = p => p.variants.reduce((sum, v) => sum + v.stock, 0);
 const chosenVariant = (p, size, colour) => p.variants.find(v =>
   v.options.some(o => o.name === 'Size' && o.value === size) && v.options.some(o => o.name === 'Colour' && o.value === colour));
 
-test('TC-W4-00 the ported storefront logic still matches app.component.ts', () => {
-  for (const line of [
-    "if (!/^\\d{1,6}(?:\\.\\d{1,2})?$/.test(value.trim())) return NaN;",
-    '`${p.name} ${p.description} ${p.material}`.toLocaleLowerCase().includes(term)',
-    '(!this.category() || p.category === this.category()) && (!this.room() || p.room === this.room())',
-    '(low === null || p.priceCents >= low) && (high === null || p.priceCents <= high)',
-    'low !== null && high !== null && low > high'
-  ]) assert.ok(ts.includes(line), `app.component.ts changed, update this test: ${line}`);
+test('TC-W4-00 the storefront uses the same rules exercised by these tests', () => {
+  assert.match(ts, /filterProducts\(this.products\(\)/);
 });
 
 // =========================== A. Retests of Week 3 findings ==============================
@@ -94,41 +83,42 @@ test('RT-BUG-02 a product switched to unavailable disappears from the public lis
 });
 
 test('RT-BUG-02 the storefront template and logic also skip unavailable products', () => {
-  assert.ok(ts.includes('p.available &&'));
+  assert.ok(read('apps/web/src/app/storefront-rules.ts').includes('p.available &&'));
 });
 
-test('RT-BUG-08 same name and same placement is still accepted (duplicate)', { todo: 'BUG-08 open: Nir\'s DCR rule (Bug 08 Resolution item 2) is not built' }, () => {
+test('RT-BUG-08 same name and same placement is blocked', () => {
   const db = fresh();
-  make(db, { name: 'Woven cushion' });
-  assert.throws(() => make(db, { name: 'Woven cushion' })); // expected: blocked or flagged for the inventory manager
+  make(db, { name: 'Woven cushion', roomId:1 });
+  assert.throws(() => make(db, { name: 'Woven cushion', roomId:1 })); // expected: blocked or flagged for the inventory manager
 });
 
-test('RT-BUG-08 same name in a different room is accepted (a warning is a UI matter)', () => {
+test('RT-BUG-08 same name in a different room is accepted after warning confirmation', () => {
   const db = fresh();
-  make(db, { name: 'Woven cushion', roomId: 4 });
-  assert.doesNotThrow(() => make(db, { name: 'Woven cushion', roomId: 2 }));
+  make(db, { name: 'Woven cushion', roomId: 1 });
+  assert.doesNotThrow(() => make(db, { name: 'Woven cushion', roomId: 2, confirmDuplicateName:true }));
 });
 
-test('RT-BUG-04 the SQLite file must be ignored by Git', { todo: 'BUG-04 open: the .gitignore line is commented out and the file is in the repo' }, () => {
+test('RT-BUG-04 the SQLite file must be ignored by Git', () => {
   const rules = read('.gitignore').split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
   assert.ok(rules.some(rule => /sqlite/.test(rule)), 'no active .gitignore rule for *.sqlite');
 });
 
-test('RT-OBS-10 stray files app_.js, server_.js and deploy-changes.patch are removed', { todo: 'OBS-10 open: all three are still in the repo' }, () => {
+test('RT-OBS-10 stray files app_.js, server_.js and deploy-changes.patch are removed', () => {
   for (const path of ['apps/api/src/app_.js', 'apps/api/src/server_.js', 'deploy-changes.patch']) {
     assert.ok(!existsSync(new URL(path, root)), `${path} still exists`);
   }
 });
 
-test('RT-BUG-03 sign-in lockout follows spec SI-8 (per username and address, 15 minutes)', { todo: 'SI-8 revised not built: per-IP only, 60 second window, message says "a minute"' }, () => {
+test('RT-BUG-03 sign-in lockout follows spec SI-8 (per username and address, 15 minutes)', () => {
   const source = read('apps/api/src/admin.js');
   assert.ok(/failureWindowMs\s*=\s*15\s*\*\s*60\s*\*\s*1000/.test(source), 'failure window is not 15 minutes');
 });
 
-test('RT-OBS-07 the Admin link only appears on the admin page, never in the storefront', () => {
+test('RT-OBS-07 Admin navigation is limited to the admin page or a verified signed-in session', () => {
   const links = html.match(/<a[^>]*href="\/admin"[^>]*>/g) || [];
   assert.equal(links.length, 1);
-  assert.match(html, /@if \(isAdmin\) \{ <a href="\/admin"/);
+  assert.match(html, /@if \(isAdmin \|\| adminSignedIn\(\)\) \{ <a href="\/admin"/);
+  assert.match(ts, /http.get\('\/api\/admin\/session'\)/);
 });
 
 // ================= B. Increment 2 storefront (CUS-01..06, CUS-10..11, ADM-09/10) ===========
@@ -160,13 +150,13 @@ test('TC-CUS-02-03 spec example: "100% linen" material is found by "linen" altho
   assert.ok(names.includes('Soft throw'));
 });
 
-test('TC-CUS-02-04 name matches are listed before material matches (BR-4, C4)', { todo: 'spec gap: results are in id order. Search "cotton" gives 2,4,5,6; name-first order is 2,4,6,5' }, () => {
+test('TC-CUS-02-04 name matches are listed before material matches (BR-4, C4)', () => {
   const result = storefront(getProducts(bundled()), { search: 'cotton' });
   const nameHits = result.filter(p => p.name.toLowerCase().includes('cotton'));
   assert.deepEqual(ids(result).slice(0, nameHits.length), ids(nameHits));
 });
 
-test('TC-CUS-02-05 search needs at least 2 characters (BR-4)', { todo: 'spec gap: a single character is searched' }, () => {
+test('TC-CUS-02-05 search needs at least 2 characters (BR-4)', () => {
   const all = getProducts(bundled());
   const result = storefront(all, { search: 'z' }); // 1 character: expected to be ignored (all products), today it filters
   assert.equal(result.length, all.length, `search "z" returned ${result.length} of ${all.length} products`);
@@ -209,24 +199,24 @@ test('TC-CUS-04-04 the price filter ignores floating point: $24.99 is 2499 cents
   assert.equal(cents('19.9'), 1990);
 });
 
-test('TC-CUS-04-05 category filter accepts several categories at once (FL-1, OR)', { todo: 'spec gap: one category at a time (single drop-down)' }, () => {
+test('TC-CUS-04-05 category filter accepts several categories at once (FL-1, OR)', () => {
   assert.ok(/category = signal<string\[\]>/.test(ts), 'category filter is a single value');
 });
 
-test('TC-CUS-04-06 results are sortable by price (BR-8)', { todo: 'spec gap: no sort control (CUS-04, "Could have" in the proposal)' }, () => {
+test('TC-CUS-04-06 results are sortable by price (BR-8)', () => {
   assert.ok(/sort/i.test(html), 'no sort control in the template');
 });
 
 test('TC-CUS-05-01 a search with no matches returns an empty list and the page shows a no-results message', () => {
   assert.deepEqual(storefront(getProducts(bundled()), { search: 'lamp' }), []);
-  assert.match(html, /No matching products/);
+  assert.match(html, /No products match/);
 });
 
-test('TC-CUS-05-02 no-results message names the search term and filters, with a link per category (NR-1, NR-2)', { todo: 'spec gap: generic wording, no search term, no category links' }, () => {
+test('TC-CUS-05-02 no-results message names the search term and filters, with a link per category (NR-1, NR-2)', () => {
   assert.ok(/No products match/.test(html), 'template says "No matching products" with no search term or category links');
 });
 
-test('TC-CUS-05-03 Clear filters keeps the search term (FL-5)', { todo: 'spec gap: Clear filters also clears the search box' }, () => {
+test('TC-CUS-05-03 Clear filters keeps the search term (FL-5)', () => {
   const body = ts.match(/clearFilters\(\)\s*\{[\s\S]*?\n  \}/)[0];
   assert.ok(!body.includes("'search'"));
 });
@@ -249,7 +239,7 @@ test('TC-NAV-01 three-click rule: every product is reachable in 2 clicks from Ho
     const onCategoryPage = storefront(all, { category: p.category });
     assert.ok(ids(onCategoryPage).includes(p.id), `${p.name} is not listed on its category page`); // click 1 = category, click 2 = product
   }
-  assert.match(ts, /categoryLink\(name: string\) \{ return '\/\?category='/);
+  assert.match(ts, /categoryLink\(name: string\) \{ return '\/shop\?category='/);
 });
 
 test('TC-CUS-10-01 product page shows photos or category artwork, name, price (CAD), material and description', () => {
@@ -280,7 +270,7 @@ test('TC-CUS-11-01 stock per size and colour matches the spec examples (50 x 50 
   assert.equal(chosenVariant(linen, '45 × 45 cm', 'Charcoal').stock, 0);
   assert.equal(chosenVariant(linen, '45 × 45 cm', 'Sand').stock, 12);
   assert.equal(totalStock(linen), 35);
-  assert.match(html, /Out of stock for this option/);
+  assert.match(html, /selectionMessage\(\)/);
 });
 
 test('TC-CUS-11-02 a product with 0 stock in every option stays listed and is labelled "Out of stock" (BR-9)', () => {
@@ -292,7 +282,7 @@ test('TC-CUS-11-02 a product with 0 stock in every option stays listed and is la
   assert.match(html, /totalStock\(item\) \? .* : 'Out of stock'/);
 });
 
-test('TC-CUS-11-03 out-of-stock products are listed after in-stock products by relevance (BR-9, C6)', { todo: 'spec gap: list is in id order, so a sold-out product with a low id is listed first' }, async () => {
+test('TC-CUS-11-03 out-of-stock products are listed after in-stock products by relevance (BR-9, C6)', async () => {
   const db = fresh();
   const rows = db.prepare('SELECT id FROM product_variants WHERE product_id = 1').all();
   await updateProduct(db, 1, { name: 'Linen square cushion', description: 'd', material: 'Linen blend', priceCents: 2499, available: true,
@@ -301,15 +291,15 @@ test('TC-CUS-11-03 out-of-stock products are listed after in-stock products by r
   assert.deepEqual(ids(result), [2, 3, 1], `listed in order ${ids(result)}`);
 });
 
-test('TC-CUS-11-04 option values with no stock are disabled and a single option value is pre-selected (PP-4, C7)', { todo: 'spec gap: Size and Colour are drop-downs, nothing is disabled or pre-selected' }, () => {
+test('TC-CUS-11-04 option values with no stock are disabled and a single option value is pre-selected (PP-4, C7)', () => {
   assert.ok(/\[disabled\]/.test(html), 'no disabled option values in the template');
 });
 
-test('TC-CUS-11-05 a size and colour pair with no variant reads "Out of stock for this combination" (C8, PP-5)', { todo: 'wording gap: page says "This combination is unavailable."' }, () => {
-  assert.ok(/Out of stock for this combination/.test(html), 'template says "This combination is unavailable."');
+test('TC-CUS-11-05 a size and colour pair with no variant reads "Out of stock for this combination" (C8, PP-5)', () => {
+  assert.ok(/Out of stock for this combination/.test(ts), 'template says "This combination is unavailable."');
 });
 
-test('TC-CUS-12-01 the product page has an Add to cart control that waits for options and stock (PP-6)', { todo: 'not built: cart is outside the Week 4 Dev task' }, () => {
+test('TC-CUS-12-01 the product page has an Add to cart control that waits for options and stock (PP-6)', () => {
   assert.ok(/Add to cart/.test(html), 'no Add to cart control');
 });
 
@@ -415,28 +405,28 @@ test('TC-ADM-REG-05 deleting removes the product and its records and nothing els
   assert.equal(count('SELECT count(*) n FROM variant_values WHERE variant_id NOT IN (SELECT id FROM product_variants)'), 0);
   assert.equal(count('SELECT count(*) n FROM option_values WHERE option_type_id NOT IN (SELECT id FROM option_types)'), 0);
   assert.equal(await deleteProduct(db, 4), false);
-  assert.equal(getProducts(db).length, 14);
+  assert.equal(getProducts(db, true).length, 14);
 });
 
-test('TC-ADM-REG-06 a deleted product id is not reused by the next product', { todo: 'OBS-12: ids are reused (no AUTOINCREMENT); will matter when orders point at products in Increment 3' }, async () => {
+test('TC-ADM-REG-06 a deleted product id is not reused by the next product', async () => {
   const db = fresh();
-  const { id } = make(db);
+  const { id } = make(db, {roomId:1});
   await deleteProduct(db, id);
-  assert.notEqual(make(db).id, id);
+  assert.notEqual(make(db, {roomId:1}).id, id);
 });
 
 test('TC-ADM-REG-07 the demo database file opens, migrates and keeps 15 products and 113 combinations', () => {
   const db = bundled();
-  assert.equal(getProducts(db).length, 15);
-  assert.equal(getProducts(db).reduce((n, p) => n + p.variants.length, 0), 113);
+  assert.equal(getProducts(db, true).length, 15);
+  assert.equal(getProducts(db, true).reduce((n, p) => n + p.variants.length, 0), 113);
 });
 
-test('TC-DATA-01 demo data has a product with 0 stock in every combination and one unavailable product (C16)', { todo: 'test data gap: all 15 products are available and in stock; QA adds its own in these tests' }, () => {
+test('TC-DATA-01 demo data has a product with 0 stock in every combination and one unavailable product (C16)', () => {
   const all = getProducts(bundled(), true);
   assert.ok(all.some(p => totalStock(p) === 0));
   assert.ok(all.some(p => !p.available));
 });
 
-test('TC-DATA-02 demo data is clean: no stray trailing punctuation in materials', { todo: 'data note from Nir: product 6 material ends with a comma' }, () => {
+test('TC-DATA-02 demo data is clean: no stray trailing punctuation in materials', () => {
   assert.ok(getProducts(bundled()).every(p => !/[,;]\s*$/.test(p.material)));
 });

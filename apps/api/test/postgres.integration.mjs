@@ -1,3 +1,4 @@
+import { week5Postgres } from './week5-postgres-workflow.mjs';
 import { deleteWorkflow } from './delete-workflow.mjs';
 import sharp from 'sharp';
 import { preparePhotos } from '../src/photos.js';
@@ -35,7 +36,7 @@ test('PostgreSQL persistence, imports and admin API', { skip: !connection && 'Se
   const importPhoto = await preparePhotos([{ mimetype: 'image/png', buffer: await sharp({ create: { width: 40, height: 30, channels: 3, background: '#667744' } }).png().toBuffer() }]);
   addProduct(source, {
     name: 'Imported cushion', material: 'Cotton', description: 'Existing product from SQLite.',
-    priceCents: 3200, departmentId: 1, categoryId: 1, roomId: 4, available: true,
+    priceCents: 3200, departmentId: 1, categoryId: 1, roomId: 1, available: true,
     sizes: ['Small'], colours: ['Sage'], stock: [15]
   }, importPhoto);
   source.close();
@@ -86,7 +87,7 @@ test('PostgreSQL persistence, imports and admin API', { skip: !connection && 'Se
       });
       const item = {
         name: 'Postgres cushion', material: 'Cotton', description: 'Saved through the API.',
-        priceCents: 2999, departmentId: 1, categoryId: 1, roomId: 4, available: true,
+        priceCents: 2999, departmentId: 1, categoryId: 1, roomId: 2, available: true,
         sizes: ['Small', 'Large'], colours: ['Sand', 'Sage'], stock: [1, 0, 5, 8]
       };
       try {
@@ -98,7 +99,7 @@ test('PostgreSQL persistence, imports and admin API', { skip: !connection && 'Se
         assert.ok(id > 4, 'import advanced generated IDs');
         assert.equal((await post('/admin/products', { ...item, categoryId: 2 }, cookie)).status, 400);
         assert.equal((await post('/admin/products', { ...item, stock: [-1, 0, 5, 8] }, cookie)).status, 400);
-        assert.equal((await post('/admin/products', { ...item, available: false, name: 'Hidden PG item' }, cookie)).status, 201);
+        assert.equal((await post('/admin/products', { ...item, available: false, roomId:3, name: 'Hidden PG item' }, cookie)).status, 201);
         const products = (await (await fetch(base + '/products')).json()).products;
         assert.deepEqual(products.find(p => p.id === id).variants.map(v => v.stock), item.stock);
         assert.ok(!products.some(p => p.name === 'Hidden PG item'));
@@ -134,6 +135,15 @@ test('PostgreSQL persistence, imports and admin API', { skip: !connection && 'Se
         await other.close();
         await admin.query(`DROP SCHEMA ${otherSchema} CASCADE`);
       }
+    });
+    await t.test('Week 5 PostgreSQL cart, duplicate protection and identifiers', async week5Test => {
+      const extraSchema = schema + '_week5';
+      await admin.query(`CREATE SCHEMA ${extraSchema}`);
+      const extraUrl = new URL(connection);
+      extraUrl.searchParams.set('options', '-c search_path=' + extraSchema);
+      const extraDb = await openPostgres(extraUrl.toString());
+      try { await week5Postgres(extraDb, week5Test); }
+      finally { await extraDb.close(); await admin.query(`DROP SCHEMA ${extraSchema} CASCADE`); }
     });
     await t.test('PostgreSQL product deletion and atomic rollback', async deletionTest => {
       const deleteSchema = schema + '_delete';

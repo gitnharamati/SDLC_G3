@@ -11,7 +11,7 @@ export async function deleteWorkflow(db, t) {
   const snapshot = async () => Object.fromEntries(await Promise.all(tables.map(async name => [name, await query(`SELECT * FROM ${name} ORDER BY ${name === 'variant_values' ? '1, 2' : '1'}`)])));
   const original = await snapshot();
   const photo = await preparePhotos([{mimetype:'image/png',buffer:await sharp({create:{width:30,height:20,channels:3,background:'#889944'}}).png().toBuffer()}]);
-  const item = await addProduct(db, {name:'Temporary delete test',description:'Delete this test product only.',material:'Cotton',priceCents:2500,departmentId:1,categoryId:1,roomId:4,available:true,sizes:['Small','Large'],colours:['Sand'],stock:[3,9]}, photo);
+  const item = await addProduct(db, {name:'Temporary delete test',description:'Delete this test product only.',material:'Cotton',priceCents:2500,departmentId:1,categoryId:1,roomId:1,available:true,sizes:['Small','Large'],colours:['Sand'],stock:[3,9]}, photo);
   const photoId = (await query(`SELECT id FROM product_photos WHERE product_id = ${item.id}`))[0].id;
   const password = 'delete-test-password';
   const server = createApp(db,{password}).listen(0,'127.0.0.1'); await once(server,'listening');

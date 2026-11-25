@@ -1,0 +1,2390 @@
+{
+  "departments": [
+    {
+      "id": 1,
+      "name": "Home D\u00e9cor"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "department_id": 1,
+      "name": "Cushions"
+    },
+    {
+      "id": 2,
+      "department_id": 1,
+      "name": "Bed sheets"
+    },
+    {
+      "id": 3,
+      "department_id": 1,
+      "name": "Curtains"
+    }
+  ],
+  "subcategories": [
+    {
+      "id": 1,
+      "category_id": 1,
+      "name": "Kitchen"
+    },
+    {
+      "id": 2,
+      "category_id": 1,
+      "name": "Bedroom"
+    },
+    {
+      "id": 3,
+      "category_id": 1,
+      "name": "Bathroom"
+    },
+    {
+      "id": 4,
+      "category_id": 1,
+      "name": "Living room"
+    },
+    {
+      "id": 5,
+      "category_id": 1,
+      "name": "Patio"
+    },
+    {
+      "id": 6,
+      "category_id": 2,
+      "name": "Kitchen"
+    },
+    {
+      "id": 7,
+      "category_id": 2,
+      "name": "Bedroom"
+    },
+    {
+      "id": 8,
+      "category_id": 2,
+      "name": "Bathroom"
+    },
+    {
+      "id": 9,
+      "category_id": 2,
+      "name": "Living room"
+    },
+    {
+      "id": 10,
+      "category_id": 2,
+      "name": "Patio"
+    },
+    {
+      "id": 11,
+      "category_id": 3,
+      "name": "Kitchen"
+    },
+    {
+      "id": 12,
+      "category_id": 3,
+      "name": "Bedroom"
+    },
+    {
+      "id": 13,
+      "category_id": 3,
+      "name": "Bathroom"
+    },
+    {
+      "id": 14,
+      "category_id": 3,
+      "name": "Living room"
+    },
+    {
+      "id": 15,
+      "category_id": 3,
+      "name": "Patio"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "subcategory_id": 4,
+      "name": "Linen square cushion",
+      "description": "A soft cushion for a sofa or reading chair. Sample content for the course project.",
+      "material": "Linen blend",
+      "price_cents": 2499,
+      "available": 1
+    },
+    {
+      "id": 2,
+      "subcategory_id": 7,
+      "name": "Cotton bed sheet",
+      "description": "A cotton bed sheet for everyday use. Sample content for the course project.",
+      "material": "Cotton",
+      "price_cents": 4999,
+      "available": 1
+    },
+    {
+      "id": 3,
+      "subcategory_id": 14,
+      "name": "Light filtering curtain",
+      "description": "A curtain panel that softens daylight. Sample content for the course project.",
+      "material": "Polyester blend",
+      "price_cents": 3999,
+      "available": 1
+    },
+    {
+      "id": 4,
+      "subcategory_id": 7,
+      "name": "Organic Cotton Sheet Set",
+      "description": "Made from GOTS-certified organic cotton, this Paarizaat sheet set is soft, breathable and grown from non-GMO cotton.",
+      "material": "Organic Cotton",
+      "price_cents": 6900,
+      "available": 1
+    },
+    {
+      "id": 5,
+      "subcategory_id": 7,
+      "name": "Tommy Hilfiger Solid Sheet Set",
+      "description": "Tommy Hilfiger\u2019s 100% cotton percale sheet sets offer a premium sleep experience, combining comfort, breathability, and style.",
+      "material": "100% Cotton",
+      "price_cents": 12900,
+      "available": 1
+    },
+    {
+      "id": 6,
+      "subcategory_id": 7,
+      "name": "Calvin Klein Modern Cotton Melange Sheet Set",
+      "description": "Soft, stretchy and relaxed, these jersey sheets take their cue from Calvin Klein's best-selling Modern Cotton underwear, with the brand's signature elastic on show.",
+      "material": "Yarn-Dyed Cotton and TENCEL\u2122 Lyocell Jersey",
+      "price_cents": 22500,
+      "available": 1
+    },
+    {
+      "id": 7,
+      "subcategory_id": 7,
+      "name": "Vera Wang Solid Sheet Set",
+      "description": "A rich sateen gives this Vera Wang sheet set a sleek, smooth feel with a dramatic splash of color.",
+      "material": "60% cotton, 40% polyester",
+      "price_cents": 18900,
+      "available": 1
+    },
+    {
+      "id": 8,
+      "subcategory_id": 2,
+      "name": "Z Zoned ActiveDough + Cooling Gel Pillow",
+      "description": "Zoned support and cooling gel come together in this mid-loft pillow: larger holes in the centre cradle your head while smaller holes around the edge support your neck.",
+      "material": "ActiveDough\u2122 foam",
+      "price_cents": 14000,
+      "available": 1
+    },
+    {
+      "id": 9,
+      "subcategory_id": 2,
+      "name": "Eco Soy Pillow",
+      "description": "A memory foam core infused with soy oil gives the Silk and Snow Eco Soy pillow contouring support, in your choice of soft or firm.",
+      "material": "38% TENCEL\u2122 Lyocell, 62% polyester cover",
+      "price_cents": 19900,
+      "available": 1
+    },
+    {
+      "id": 10,
+      "subcategory_id": 4,
+      "name": "Block Print Goldenrise Pillow",
+      "description": "Warm yellow tones and a block-printed pattern give the Goldenrise pillow a bright, artisanal feel.",
+      "material": "100% cotton cover, 100% polyester fill",
+      "price_cents": 4500,
+      "available": 1
+    },
+    {
+      "id": 11,
+      "subcategory_id": 4,
+      "name": "Venus Embroidered Pillow",
+      "description": "Embroidery on green cotton velvet gives the Venus pillow plenty of texture and a pop of colour.",
+      "material": "Polyester",
+      "price_cents": 7200,
+      "available": 1
+    },
+    {
+      "id": 12,
+      "subcategory_id": 14,
+      "name": "Total Blackout Curtain Panel",
+      "description": "Darken a bedroom, nursery or home theatre, even in the middle of the day. This triple-weave blackout curtain panel also gives you privacy, with a heavy, soft-draping fabric that hangs neatly from the start.",
+      "material": "100% polyester",
+      "price_cents": 2345,
+      "available": 1
+    },
+    {
+      "id": 13,
+      "subcategory_id": 13,
+      "name": "Fall Peony Shower Curtain",
+      "description": "An oversized peony print in soft, muted tones gives the Fall Peony shower curtain a warm, vintage-inspired look.",
+      "material": "Polyester",
+      "price_cents": 4000,
+      "available": 1
+    },
+    {
+      "id": 14,
+      "subcategory_id": 15,
+      "name": "Printed Knotted Window Panel",
+      "description": "Refresh your windows with this semi-sheer curtain panel. Cut in a shorter length, this light-filtering curtain features allover patterns with knotted ties along the top for easy setup. Available exclusively at Urban Outfitters.",
+      "material": "100% Cotton",
+      "price_cents": 4450,
+      "available": 1
+    },
+    {
+      "id": 15,
+      "subcategory_id": 12,
+      "name": "Chloe Patchwork Gauze Curtain Panel",
+      "description": "Light and airy, this patchworked gauze curtain adds a breezy-boho look to the room while allowing natural light in. Only at Urban Outfitters.",
+      "material": "100% Cotton",
+      "price_cents": 6500,
+      "available": 0
+    }
+  ],
+  "product_photos": [],
+  "option_types": [
+    {
+      "id": 1,
+      "product_id": 1,
+      "name": "Size"
+    },
+    {
+      "id": 2,
+      "product_id": 1,
+      "name": "Colour"
+    },
+    {
+      "id": 3,
+      "product_id": 2,
+      "name": "Size"
+    },
+    {
+      "id": 4,
+      "product_id": 2,
+      "name": "Colour"
+    },
+    {
+      "id": 5,
+      "product_id": 3,
+      "name": "Size"
+    },
+    {
+      "id": 6,
+      "product_id": 3,
+      "name": "Colour"
+    },
+    {
+      "id": 7,
+      "product_id": 4,
+      "name": "Size"
+    },
+    {
+      "id": 8,
+      "product_id": 4,
+      "name": "Colour"
+    },
+    {
+      "id": 9,
+      "product_id": 5,
+      "name": "Size"
+    },
+    {
+      "id": 10,
+      "product_id": 5,
+      "name": "Colour"
+    },
+    {
+      "id": 11,
+      "product_id": 6,
+      "name": "Size"
+    },
+    {
+      "id": 12,
+      "product_id": 6,
+      "name": "Colour"
+    },
+    {
+      "id": 13,
+      "product_id": 7,
+      "name": "Size"
+    },
+    {
+      "id": 14,
+      "product_id": 7,
+      "name": "Colour"
+    },
+    {
+      "id": 15,
+      "product_id": 8,
+      "name": "Size"
+    },
+    {
+      "id": 16,
+      "product_id": 8,
+      "name": "Colour"
+    },
+    {
+      "id": 17,
+      "product_id": 9,
+      "name": "Size"
+    },
+    {
+      "id": 18,
+      "product_id": 9,
+      "name": "Colour"
+    },
+    {
+      "id": 19,
+      "product_id": 10,
+      "name": "Size"
+    },
+    {
+      "id": 20,
+      "product_id": 10,
+      "name": "Colour"
+    },
+    {
+      "id": 21,
+      "product_id": 11,
+      "name": "Size"
+    },
+    {
+      "id": 22,
+      "product_id": 11,
+      "name": "Colour"
+    },
+    {
+      "id": 23,
+      "product_id": 12,
+      "name": "Size"
+    },
+    {
+      "id": 24,
+      "product_id": 12,
+      "name": "Colour"
+    },
+    {
+      "id": 25,
+      "product_id": 13,
+      "name": "Size"
+    },
+    {
+      "id": 26,
+      "product_id": 13,
+      "name": "Colour"
+    },
+    {
+      "id": 27,
+      "product_id": 14,
+      "name": "Size"
+    },
+    {
+      "id": 28,
+      "product_id": 14,
+      "name": "Colour"
+    },
+    {
+      "id": 29,
+      "product_id": 15,
+      "name": "Size"
+    },
+    {
+      "id": 30,
+      "product_id": 15,
+      "name": "Colour"
+    }
+  ],
+  "option_values": [
+    {
+      "id": 1,
+      "option_type_id": 1,
+      "value": "45 \u00d7 45 cm"
+    },
+    {
+      "id": 2,
+      "option_type_id": 1,
+      "value": "50 \u00d7 50 cm"
+    },
+    {
+      "id": 3,
+      "option_type_id": 2,
+      "value": "Sand"
+    },
+    {
+      "id": 4,
+      "option_type_id": 2,
+      "value": "Sage"
+    },
+    {
+      "id": 5,
+      "option_type_id": 2,
+      "value": "Charcoal"
+    },
+    {
+      "id": 6,
+      "option_type_id": 3,
+      "value": "Double"
+    },
+    {
+      "id": 7,
+      "option_type_id": 3,
+      "value": "Queen"
+    },
+    {
+      "id": 8,
+      "option_type_id": 4,
+      "value": "White"
+    },
+    {
+      "id": 9,
+      "option_type_id": 4,
+      "value": "Stone"
+    },
+    {
+      "id": 10,
+      "option_type_id": 5,
+      "value": "140 \u00d7 180 cm"
+    },
+    {
+      "id": 11,
+      "option_type_id": 5,
+      "value": "140 \u00d7 220 cm"
+    },
+    {
+      "id": 12,
+      "option_type_id": 6,
+      "value": "Cream"
+    },
+    {
+      "id": 13,
+      "option_type_id": 6,
+      "value": "Grey"
+    },
+    {
+      "id": 14,
+      "option_type_id": 7,
+      "value": "Full"
+    },
+    {
+      "id": 15,
+      "option_type_id": 7,
+      "value": "King"
+    },
+    {
+      "id": 16,
+      "option_type_id": 7,
+      "value": "Queen"
+    },
+    {
+      "id": 17,
+      "option_type_id": 7,
+      "value": "Twin"
+    },
+    {
+      "id": 18,
+      "option_type_id": 8,
+      "value": "White"
+    },
+    {
+      "id": 19,
+      "option_type_id": 8,
+      "value": "Rust"
+    },
+    {
+      "id": 20,
+      "option_type_id": 8,
+      "value": "Light Grey"
+    },
+    {
+      "id": 21,
+      "option_type_id": 9,
+      "value": "Full"
+    },
+    {
+      "id": 22,
+      "option_type_id": 9,
+      "value": "King"
+    },
+    {
+      "id": 23,
+      "option_type_id": 9,
+      "value": "Queen"
+    },
+    {
+      "id": 24,
+      "option_type_id": 9,
+      "value": "Twin"
+    },
+    {
+      "id": 25,
+      "option_type_id": 10,
+      "value": "Blue"
+    },
+    {
+      "id": 26,
+      "option_type_id": 10,
+      "value": "Navy Blue"
+    },
+    {
+      "id": 27,
+      "option_type_id": 10,
+      "value": "Red"
+    },
+    {
+      "id": 28,
+      "option_type_id": 10,
+      "value": "Grey"
+    },
+    {
+      "id": 29,
+      "option_type_id": 10,
+      "value": "White"
+    },
+    {
+      "id": 30,
+      "option_type_id": 10,
+      "value": "Natural"
+    },
+    {
+      "id": 31,
+      "option_type_id": 11,
+      "value": "King"
+    },
+    {
+      "id": 32,
+      "option_type_id": 11,
+      "value": "Queen"
+    },
+    {
+      "id": 33,
+      "option_type_id": 11,
+      "value": "Twin"
+    },
+    {
+      "id": 34,
+      "option_type_id": 12,
+      "value": "Grey"
+    },
+    {
+      "id": 35,
+      "option_type_id": 12,
+      "value": "Aqua Blue"
+    },
+    {
+      "id": 36,
+      "option_type_id": 12,
+      "value": "Green"
+    },
+    {
+      "id": 37,
+      "option_type_id": 12,
+      "value": "Charcoal"
+    },
+    {
+      "id": 38,
+      "option_type_id": 12,
+      "value": "Mocha"
+    },
+    {
+      "id": 39,
+      "option_type_id": 13,
+      "value": "KIng"
+    },
+    {
+      "id": 40,
+      "option_type_id": 13,
+      "value": "Queen"
+    },
+    {
+      "id": 41,
+      "option_type_id": 14,
+      "value": "Plum"
+    },
+    {
+      "id": 42,
+      "option_type_id": 14,
+      "value": "Azur"
+    },
+    {
+      "id": 43,
+      "option_type_id": 15,
+      "value": "73.7 x 40.6 x 40.6 cm"
+    },
+    {
+      "id": 44,
+      "option_type_id": 15,
+      "value": "89.5 x 453 x 44.9 cm"
+    },
+    {
+      "id": 45,
+      "option_type_id": 16,
+      "value": "Grey"
+    },
+    {
+      "id": 46,
+      "option_type_id": 16,
+      "value": "White"
+    },
+    {
+      "id": 47,
+      "option_type_id": 17,
+      "value": "KIng"
+    },
+    {
+      "id": 48,
+      "option_type_id": 17,
+      "value": "Queen"
+    },
+    {
+      "id": 49,
+      "option_type_id": 18,
+      "value": "White"
+    },
+    {
+      "id": 50,
+      "option_type_id": 18,
+      "value": "Grey"
+    },
+    {
+      "id": 51,
+      "option_type_id": 19,
+      "value": "18\" x 18\""
+    },
+    {
+      "id": 52,
+      "option_type_id": 19,
+      "value": "23\" x 23\""
+    },
+    {
+      "id": 53,
+      "option_type_id": 20,
+      "value": "Yellow"
+    },
+    {
+      "id": 54,
+      "option_type_id": 20,
+      "value": "Pink"
+    },
+    {
+      "id": 55,
+      "option_type_id": 21,
+      "value": "18\" x 18\""
+    },
+    {
+      "id": 56,
+      "option_type_id": 21,
+      "value": "22\" x 22\""
+    },
+    {
+      "id": 57,
+      "option_type_id": 22,
+      "value": "Green"
+    },
+    {
+      "id": 58,
+      "option_type_id": 22,
+      "value": "Aquamarine Blue"
+    },
+    {
+      "id": 59,
+      "option_type_id": 23,
+      "value": "84\""
+    },
+    {
+      "id": 60,
+      "option_type_id": 23,
+      "value": "96\""
+    },
+    {
+      "id": 61,
+      "option_type_id": 24,
+      "value": "Sand"
+    },
+    {
+      "id": 62,
+      "option_type_id": 24,
+      "value": "Sage"
+    },
+    {
+      "id": 63,
+      "option_type_id": 24,
+      "value": "Azure"
+    },
+    {
+      "id": 64,
+      "option_type_id": 25,
+      "value": "182.9 x 182.9 x 1.3 cm"
+    },
+    {
+      "id": 65,
+      "option_type_id": 26,
+      "value": "Red"
+    },
+    {
+      "id": 66,
+      "option_type_id": 26,
+      "value": "Black"
+    },
+    {
+      "id": 67,
+      "option_type_id": 26,
+      "value": "Dark Blue"
+    },
+    {
+      "id": 68,
+      "option_type_id": 26,
+      "value": "Grey"
+    },
+    {
+      "id": 69,
+      "option_type_id": 27,
+      "value": "52\" X 63\""
+    },
+    {
+      "id": 70,
+      "option_type_id": 27,
+      "value": "76\" x 89\""
+    },
+    {
+      "id": 71,
+      "option_type_id": 28,
+      "value": "Regina Dot"
+    },
+    {
+      "id": 72,
+      "option_type_id": 28,
+      "value": "Myla"
+    },
+    {
+      "id": 73,
+      "option_type_id": 28,
+      "value": "Carbon Clarissa"
+    },
+    {
+      "id": 74,
+      "option_type_id": 29,
+      "value": "52\"X84\""
+    },
+    {
+      "id": 75,
+      "option_type_id": 29,
+      "value": "52\"X63\""
+    },
+    {
+      "id": 76,
+      "option_type_id": 30,
+      "value": "Honey"
+    },
+    {
+      "id": 77,
+      "option_type_id": 30,
+      "value": "Almond Cream"
+    },
+    {
+      "id": 78,
+      "option_type_id": 30,
+      "value": "Mauve Morn"
+    },
+    {
+      "id": 79,
+      "option_type_id": 30,
+      "value": "Neutral Sky"
+    },
+    {
+      "id": 80,
+      "option_type_id": 30,
+      "value": "Maroon"
+    },
+    {
+      "id": 81,
+      "option_type_id": 30,
+      "value": "Ivory"
+    }
+  ],
+  "product_variants": [
+    {
+      "id": 1,
+      "product_id": 1,
+      "sku": "DEMO-1-1",
+      "stock": 12
+    },
+    {
+      "id": 2,
+      "product_id": 1,
+      "sku": "DEMO-1-2",
+      "stock": 8
+    },
+    {
+      "id": 3,
+      "product_id": 1,
+      "sku": "DEMO-1-3",
+      "stock": 0
+    },
+    {
+      "id": 4,
+      "product_id": 1,
+      "sku": "DEMO-1-4",
+      "stock": 5
+    },
+    {
+      "id": 5,
+      "product_id": 1,
+      "sku": "DEMO-1-5",
+      "stock": 3
+    },
+    {
+      "id": 6,
+      "product_id": 1,
+      "sku": "DEMO-1-6",
+      "stock": 7
+    },
+    {
+      "id": 7,
+      "product_id": 2,
+      "sku": "DEMO-2-1",
+      "stock": 6
+    },
+    {
+      "id": 8,
+      "product_id": 2,
+      "sku": "DEMO-2-2",
+      "stock": 4
+    },
+    {
+      "id": 9,
+      "product_id": 2,
+      "sku": "DEMO-2-3",
+      "stock": 8
+    },
+    {
+      "id": 10,
+      "product_id": 2,
+      "sku": "DEMO-2-4",
+      "stock": 2
+    },
+    {
+      "id": 11,
+      "product_id": 3,
+      "sku": "DEMO-3-1",
+      "stock": 5
+    },
+    {
+      "id": 12,
+      "product_id": 3,
+      "sku": "DEMO-3-2",
+      "stock": 2
+    },
+    {
+      "id": 13,
+      "product_id": 3,
+      "sku": "DEMO-3-3",
+      "stock": 4
+    },
+    {
+      "id": 14,
+      "product_id": 3,
+      "sku": "DEMO-3-4",
+      "stock": 0
+    },
+    {
+      "id": 15,
+      "product_id": 4,
+      "sku": "PRODUCT-4-1",
+      "stock": 5
+    },
+    {
+      "id": 16,
+      "product_id": 4,
+      "sku": "PRODUCT-4-2",
+      "stock": 5
+    },
+    {
+      "id": 17,
+      "product_id": 4,
+      "sku": "PRODUCT-4-3",
+      "stock": 5
+    },
+    {
+      "id": 18,
+      "product_id": 4,
+      "sku": "PRODUCT-4-4",
+      "stock": 5
+    },
+    {
+      "id": 19,
+      "product_id": 4,
+      "sku": "PRODUCT-4-5",
+      "stock": 5
+    },
+    {
+      "id": 20,
+      "product_id": 4,
+      "sku": "PRODUCT-4-6",
+      "stock": 5
+    },
+    {
+      "id": 21,
+      "product_id": 4,
+      "sku": "PRODUCT-4-7",
+      "stock": 5
+    },
+    {
+      "id": 22,
+      "product_id": 4,
+      "sku": "PRODUCT-4-8",
+      "stock": 5
+    },
+    {
+      "id": 23,
+      "product_id": 4,
+      "sku": "PRODUCT-4-9",
+      "stock": 5
+    },
+    {
+      "id": 24,
+      "product_id": 4,
+      "sku": "PRODUCT-4-10",
+      "stock": 5
+    },
+    {
+      "id": 25,
+      "product_id": 4,
+      "sku": "PRODUCT-4-11",
+      "stock": 5
+    },
+    {
+      "id": 26,
+      "product_id": 4,
+      "sku": "PRODUCT-4-12",
+      "stock": 5
+    },
+    {
+      "id": 27,
+      "product_id": 5,
+      "sku": "PRODUCT-5-1",
+      "stock": 1
+    },
+    {
+      "id": 28,
+      "product_id": 5,
+      "sku": "PRODUCT-5-2",
+      "stock": 4
+    },
+    {
+      "id": 29,
+      "product_id": 5,
+      "sku": "PRODUCT-5-3",
+      "stock": 4
+    },
+    {
+      "id": 30,
+      "product_id": 5,
+      "sku": "PRODUCT-5-4",
+      "stock": 8
+    },
+    {
+      "id": 31,
+      "product_id": 5,
+      "sku": "PRODUCT-5-5",
+      "stock": 7
+    },
+    {
+      "id": 32,
+      "product_id": 5,
+      "sku": "PRODUCT-5-6",
+      "stock": 12
+    },
+    {
+      "id": 33,
+      "product_id": 5,
+      "sku": "PRODUCT-5-7",
+      "stock": 1
+    },
+    {
+      "id": 34,
+      "product_id": 5,
+      "sku": "PRODUCT-5-8",
+      "stock": 45
+    },
+    {
+      "id": 35,
+      "product_id": 5,
+      "sku": "PRODUCT-5-9",
+      "stock": 8
+    },
+    {
+      "id": 36,
+      "product_id": 5,
+      "sku": "PRODUCT-5-10",
+      "stock": 12
+    },
+    {
+      "id": 37,
+      "product_id": 5,
+      "sku": "PRODUCT-5-11",
+      "stock": 11
+    },
+    {
+      "id": 38,
+      "product_id": 5,
+      "sku": "PRODUCT-5-12",
+      "stock": 5
+    },
+    {
+      "id": 39,
+      "product_id": 5,
+      "sku": "PRODUCT-5-13",
+      "stock": 6
+    },
+    {
+      "id": 40,
+      "product_id": 5,
+      "sku": "PRODUCT-5-14",
+      "stock": 7
+    },
+    {
+      "id": 41,
+      "product_id": 5,
+      "sku": "PRODUCT-5-15",
+      "stock": 4
+    },
+    {
+      "id": 42,
+      "product_id": 5,
+      "sku": "PRODUCT-5-16",
+      "stock": 76
+    },
+    {
+      "id": 43,
+      "product_id": 5,
+      "sku": "PRODUCT-5-17",
+      "stock": 3
+    },
+    {
+      "id": 44,
+      "product_id": 5,
+      "sku": "PRODUCT-5-18",
+      "stock": 4
+    },
+    {
+      "id": 45,
+      "product_id": 5,
+      "sku": "PRODUCT-5-19",
+      "stock": 3
+    },
+    {
+      "id": 46,
+      "product_id": 5,
+      "sku": "PRODUCT-5-20",
+      "stock": 2
+    },
+    {
+      "id": 47,
+      "product_id": 5,
+      "sku": "PRODUCT-5-21",
+      "stock": 11
+    },
+    {
+      "id": 48,
+      "product_id": 5,
+      "sku": "PRODUCT-5-22",
+      "stock": 2
+    },
+    {
+      "id": 49,
+      "product_id": 5,
+      "sku": "PRODUCT-5-23",
+      "stock": 7
+    },
+    {
+      "id": 50,
+      "product_id": 5,
+      "sku": "PRODUCT-5-24",
+      "stock": 7
+    },
+    {
+      "id": 51,
+      "product_id": 6,
+      "sku": "PRODUCT-6-1",
+      "stock": 5
+    },
+    {
+      "id": 52,
+      "product_id": 6,
+      "sku": "PRODUCT-6-2",
+      "stock": 5
+    },
+    {
+      "id": 53,
+      "product_id": 6,
+      "sku": "PRODUCT-6-3",
+      "stock": 5
+    },
+    {
+      "id": 54,
+      "product_id": 6,
+      "sku": "PRODUCT-6-4",
+      "stock": 5
+    },
+    {
+      "id": 55,
+      "product_id": 6,
+      "sku": "PRODUCT-6-5",
+      "stock": 5
+    },
+    {
+      "id": 56,
+      "product_id": 6,
+      "sku": "PRODUCT-6-6",
+      "stock": 5
+    },
+    {
+      "id": 57,
+      "product_id": 6,
+      "sku": "PRODUCT-6-7",
+      "stock": 5
+    },
+    {
+      "id": 58,
+      "product_id": 6,
+      "sku": "PRODUCT-6-8",
+      "stock": 5
+    },
+    {
+      "id": 59,
+      "product_id": 6,
+      "sku": "PRODUCT-6-9",
+      "stock": 5
+    },
+    {
+      "id": 60,
+      "product_id": 6,
+      "sku": "PRODUCT-6-10",
+      "stock": 5
+    },
+    {
+      "id": 61,
+      "product_id": 6,
+      "sku": "PRODUCT-6-11",
+      "stock": 5
+    },
+    {
+      "id": 62,
+      "product_id": 6,
+      "sku": "PRODUCT-6-12",
+      "stock": 5
+    },
+    {
+      "id": 63,
+      "product_id": 6,
+      "sku": "PRODUCT-6-13",
+      "stock": 5
+    },
+    {
+      "id": 64,
+      "product_id": 6,
+      "sku": "PRODUCT-6-14",
+      "stock": 5
+    },
+    {
+      "id": 65,
+      "product_id": 6,
+      "sku": "PRODUCT-6-15",
+      "stock": 5
+    },
+    {
+      "id": 66,
+      "product_id": 7,
+      "sku": "PRODUCT-7-1",
+      "stock": 7
+    },
+    {
+      "id": 67,
+      "product_id": 7,
+      "sku": "PRODUCT-7-2",
+      "stock": 8
+    },
+    {
+      "id": 68,
+      "product_id": 7,
+      "sku": "PRODUCT-7-3",
+      "stock": 9
+    },
+    {
+      "id": 69,
+      "product_id": 7,
+      "sku": "PRODUCT-7-4",
+      "stock": 3
+    },
+    {
+      "id": 70,
+      "product_id": 8,
+      "sku": "PRODUCT-8-1",
+      "stock": 11
+    },
+    {
+      "id": 71,
+      "product_id": 8,
+      "sku": "PRODUCT-8-2",
+      "stock": 8
+    },
+    {
+      "id": 72,
+      "product_id": 8,
+      "sku": "PRODUCT-8-3",
+      "stock": 0
+    },
+    {
+      "id": 73,
+      "product_id": 8,
+      "sku": "PRODUCT-8-4",
+      "stock": 0
+    },
+    {
+      "id": 74,
+      "product_id": 9,
+      "sku": "PRODUCT-9-1",
+      "stock": 13
+    },
+    {
+      "id": 75,
+      "product_id": 9,
+      "sku": "PRODUCT-9-2",
+      "stock": 15
+    },
+    {
+      "id": 76,
+      "product_id": 9,
+      "sku": "PRODUCT-9-3",
+      "stock": 3
+    },
+    {
+      "id": 77,
+      "product_id": 9,
+      "sku": "PRODUCT-9-4",
+      "stock": 8
+    },
+    {
+      "id": 78,
+      "product_id": 10,
+      "sku": "PRODUCT-10-1",
+      "stock": 11
+    },
+    {
+      "id": 79,
+      "product_id": 10,
+      "sku": "PRODUCT-10-2",
+      "stock": 11
+    },
+    {
+      "id": 80,
+      "product_id": 10,
+      "sku": "PRODUCT-10-3",
+      "stock": 11
+    },
+    {
+      "id": 81,
+      "product_id": 10,
+      "sku": "PRODUCT-10-4",
+      "stock": 11
+    },
+    {
+      "id": 82,
+      "product_id": 11,
+      "sku": "PRODUCT-11-1",
+      "stock": 5
+    },
+    {
+      "id": 83,
+      "product_id": 11,
+      "sku": "PRODUCT-11-2",
+      "stock": 16
+    },
+    {
+      "id": 84,
+      "product_id": 11,
+      "sku": "PRODUCT-11-3",
+      "stock": 13
+    },
+    {
+      "id": 85,
+      "product_id": 11,
+      "sku": "PRODUCT-11-4",
+      "stock": 16
+    },
+    {
+      "id": 86,
+      "product_id": 12,
+      "sku": "PRODUCT-12-1",
+      "stock": 15
+    },
+    {
+      "id": 87,
+      "product_id": 12,
+      "sku": "PRODUCT-12-2",
+      "stock": 15
+    },
+    {
+      "id": 88,
+      "product_id": 12,
+      "sku": "PRODUCT-12-3",
+      "stock": 18
+    },
+    {
+      "id": 89,
+      "product_id": 12,
+      "sku": "PRODUCT-12-4",
+      "stock": 16
+    },
+    {
+      "id": 90,
+      "product_id": 12,
+      "sku": "PRODUCT-12-5",
+      "stock": 21
+    },
+    {
+      "id": 91,
+      "product_id": 12,
+      "sku": "PRODUCT-12-6",
+      "stock": 18
+    },
+    {
+      "id": 92,
+      "product_id": 13,
+      "sku": "PRODUCT-13-1",
+      "stock": 16
+    },
+    {
+      "id": 93,
+      "product_id": 13,
+      "sku": "PRODUCT-13-2",
+      "stock": 18
+    },
+    {
+      "id": 94,
+      "product_id": 13,
+      "sku": "PRODUCT-13-3",
+      "stock": 17
+    },
+    {
+      "id": 95,
+      "product_id": 13,
+      "sku": "PRODUCT-13-4",
+      "stock": 13
+    },
+    {
+      "id": 96,
+      "product_id": 14,
+      "sku": "PRODUCT-14-1",
+      "stock": 0
+    },
+    {
+      "id": 97,
+      "product_id": 14,
+      "sku": "PRODUCT-14-2",
+      "stock": 0
+    },
+    {
+      "id": 98,
+      "product_id": 14,
+      "sku": "PRODUCT-14-3",
+      "stock": 0
+    },
+    {
+      "id": 99,
+      "product_id": 14,
+      "sku": "PRODUCT-14-4",
+      "stock": 0
+    },
+    {
+      "id": 100,
+      "product_id": 14,
+      "sku": "PRODUCT-14-5",
+      "stock": 0
+    },
+    {
+      "id": 101,
+      "product_id": 14,
+      "sku": "PRODUCT-14-6",
+      "stock": 0
+    },
+    {
+      "id": 102,
+      "product_id": 15,
+      "sku": "PRODUCT-15-1",
+      "stock": 6
+    },
+    {
+      "id": 103,
+      "product_id": 15,
+      "sku": "PRODUCT-15-2",
+      "stock": 4
+    },
+    {
+      "id": 104,
+      "product_id": 15,
+      "sku": "PRODUCT-15-3",
+      "stock": 5
+    },
+    {
+      "id": 105,
+      "product_id": 15,
+      "sku": "PRODUCT-15-4",
+      "stock": 4
+    },
+    {
+      "id": 106,
+      "product_id": 15,
+      "sku": "PRODUCT-15-5",
+      "stock": 14
+    },
+    {
+      "id": 107,
+      "product_id": 15,
+      "sku": "PRODUCT-15-6",
+      "stock": 12
+    },
+    {
+      "id": 108,
+      "product_id": 15,
+      "sku": "PRODUCT-15-7",
+      "stock": 15
+    },
+    {
+      "id": 109,
+      "product_id": 15,
+      "sku": "PRODUCT-15-8",
+      "stock": 12
+    },
+    {
+      "id": 110,
+      "product_id": 15,
+      "sku": "PRODUCT-15-9",
+      "stock": 13
+    },
+    {
+      "id": 111,
+      "product_id": 15,
+      "sku": "PRODUCT-15-10",
+      "stock": 12
+    },
+    {
+      "id": 112,
+      "product_id": 15,
+      "sku": "PRODUCT-15-11",
+      "stock": 13
+    },
+    {
+      "id": 113,
+      "product_id": 15,
+      "sku": "PRODUCT-15-12",
+      "stock": 15
+    }
+  ],
+  "variant_values": [
+    {
+      "variant_id": 1,
+      "option_value_id": 1
+    },
+    {
+      "variant_id": 1,
+      "option_value_id": 3
+    },
+    {
+      "variant_id": 2,
+      "option_value_id": 1
+    },
+    {
+      "variant_id": 2,
+      "option_value_id": 4
+    },
+    {
+      "variant_id": 3,
+      "option_value_id": 1
+    },
+    {
+      "variant_id": 3,
+      "option_value_id": 5
+    },
+    {
+      "variant_id": 4,
+      "option_value_id": 2
+    },
+    {
+      "variant_id": 4,
+      "option_value_id": 3
+    },
+    {
+      "variant_id": 5,
+      "option_value_id": 2
+    },
+    {
+      "variant_id": 5,
+      "option_value_id": 4
+    },
+    {
+      "variant_id": 6,
+      "option_value_id": 2
+    },
+    {
+      "variant_id": 6,
+      "option_value_id": 5
+    },
+    {
+      "variant_id": 7,
+      "option_value_id": 6
+    },
+    {
+      "variant_id": 7,
+      "option_value_id": 8
+    },
+    {
+      "variant_id": 8,
+      "option_value_id": 6
+    },
+    {
+      "variant_id": 8,
+      "option_value_id": 9
+    },
+    {
+      "variant_id": 9,
+      "option_value_id": 7
+    },
+    {
+      "variant_id": 9,
+      "option_value_id": 8
+    },
+    {
+      "variant_id": 10,
+      "option_value_id": 7
+    },
+    {
+      "variant_id": 10,
+      "option_value_id": 9
+    },
+    {
+      "variant_id": 11,
+      "option_value_id": 10
+    },
+    {
+      "variant_id": 11,
+      "option_value_id": 12
+    },
+    {
+      "variant_id": 12,
+      "option_value_id": 10
+    },
+    {
+      "variant_id": 12,
+      "option_value_id": 13
+    },
+    {
+      "variant_id": 13,
+      "option_value_id": 11
+    },
+    {
+      "variant_id": 13,
+      "option_value_id": 12
+    },
+    {
+      "variant_id": 14,
+      "option_value_id": 11
+    },
+    {
+      "variant_id": 14,
+      "option_value_id": 13
+    },
+    {
+      "variant_id": 15,
+      "option_value_id": 14
+    },
+    {
+      "variant_id": 15,
+      "option_value_id": 18
+    },
+    {
+      "variant_id": 16,
+      "option_value_id": 14
+    },
+    {
+      "variant_id": 16,
+      "option_value_id": 19
+    },
+    {
+      "variant_id": 17,
+      "option_value_id": 14
+    },
+    {
+      "variant_id": 17,
+      "option_value_id": 20
+    },
+    {
+      "variant_id": 18,
+      "option_value_id": 15
+    },
+    {
+      "variant_id": 18,
+      "option_value_id": 18
+    },
+    {
+      "variant_id": 19,
+      "option_value_id": 15
+    },
+    {
+      "variant_id": 19,
+      "option_value_id": 19
+    },
+    {
+      "variant_id": 20,
+      "option_value_id": 15
+    },
+    {
+      "variant_id": 20,
+      "option_value_id": 20
+    },
+    {
+      "variant_id": 21,
+      "option_value_id": 16
+    },
+    {
+      "variant_id": 21,
+      "option_value_id": 18
+    },
+    {
+      "variant_id": 22,
+      "option_value_id": 16
+    },
+    {
+      "variant_id": 22,
+      "option_value_id": 19
+    },
+    {
+      "variant_id": 23,
+      "option_value_id": 16
+    },
+    {
+      "variant_id": 23,
+      "option_value_id": 20
+    },
+    {
+      "variant_id": 24,
+      "option_value_id": 17
+    },
+    {
+      "variant_id": 24,
+      "option_value_id": 18
+    },
+    {
+      "variant_id": 25,
+      "option_value_id": 17
+    },
+    {
+      "variant_id": 25,
+      "option_value_id": 19
+    },
+    {
+      "variant_id": 26,
+      "option_value_id": 17
+    },
+    {
+      "variant_id": 26,
+      "option_value_id": 20
+    },
+    {
+      "variant_id": 27,
+      "option_value_id": 21
+    },
+    {
+      "variant_id": 27,
+      "option_value_id": 25
+    },
+    {
+      "variant_id": 28,
+      "option_value_id": 21
+    },
+    {
+      "variant_id": 28,
+      "option_value_id": 26
+    },
+    {
+      "variant_id": 29,
+      "option_value_id": 21
+    },
+    {
+      "variant_id": 29,
+      "option_value_id": 27
+    },
+    {
+      "variant_id": 30,
+      "option_value_id": 21
+    },
+    {
+      "variant_id": 30,
+      "option_value_id": 28
+    },
+    {
+      "variant_id": 31,
+      "option_value_id": 21
+    },
+    {
+      "variant_id": 31,
+      "option_value_id": 29
+    },
+    {
+      "variant_id": 32,
+      "option_value_id": 21
+    },
+    {
+      "variant_id": 32,
+      "option_value_id": 30
+    },
+    {
+      "variant_id": 33,
+      "option_value_id": 22
+    },
+    {
+      "variant_id": 33,
+      "option_value_id": 25
+    },
+    {
+      "variant_id": 34,
+      "option_value_id": 22
+    },
+    {
+      "variant_id": 34,
+      "option_value_id": 26
+    },
+    {
+      "variant_id": 35,
+      "option_value_id": 22
+    },
+    {
+      "variant_id": 35,
+      "option_value_id": 27
+    },
+    {
+      "variant_id": 36,
+      "option_value_id": 22
+    },
+    {
+      "variant_id": 36,
+      "option_value_id": 28
+    },
+    {
+      "variant_id": 37,
+      "option_value_id": 22
+    },
+    {
+      "variant_id": 37,
+      "option_value_id": 29
+    },
+    {
+      "variant_id": 38,
+      "option_value_id": 22
+    },
+    {
+      "variant_id": 38,
+      "option_value_id": 30
+    },
+    {
+      "variant_id": 39,
+      "option_value_id": 23
+    },
+    {
+      "variant_id": 39,
+      "option_value_id": 25
+    },
+    {
+      "variant_id": 40,
+      "option_value_id": 23
+    },
+    {
+      "variant_id": 40,
+      "option_value_id": 26
+    },
+    {
+      "variant_id": 41,
+      "option_value_id": 23
+    },
+    {
+      "variant_id": 41,
+      "option_value_id": 27
+    },
+    {
+      "variant_id": 42,
+      "option_value_id": 23
+    },
+    {
+      "variant_id": 42,
+      "option_value_id": 28
+    },
+    {
+      "variant_id": 43,
+      "option_value_id": 23
+    },
+    {
+      "variant_id": 43,
+      "option_value_id": 29
+    },
+    {
+      "variant_id": 44,
+      "option_value_id": 23
+    },
+    {
+      "variant_id": 44,
+      "option_value_id": 30
+    },
+    {
+      "variant_id": 45,
+      "option_value_id": 24
+    },
+    {
+      "variant_id": 45,
+      "option_value_id": 25
+    },
+    {
+      "variant_id": 46,
+      "option_value_id": 24
+    },
+    {
+      "variant_id": 46,
+      "option_value_id": 26
+    },
+    {
+      "variant_id": 47,
+      "option_value_id": 24
+    },
+    {
+      "variant_id": 47,
+      "option_value_id": 27
+    },
+    {
+      "variant_id": 48,
+      "option_value_id": 24
+    },
+    {
+      "variant_id": 48,
+      "option_value_id": 28
+    },
+    {
+      "variant_id": 49,
+      "option_value_id": 24
+    },
+    {
+      "variant_id": 49,
+      "option_value_id": 29
+    },
+    {
+      "variant_id": 50,
+      "option_value_id": 24
+    },
+    {
+      "variant_id": 50,
+      "option_value_id": 30
+    },
+    {
+      "variant_id": 51,
+      "option_value_id": 31
+    },
+    {
+      "variant_id": 51,
+      "option_value_id": 34
+    },
+    {
+      "variant_id": 52,
+      "option_value_id": 31
+    },
+    {
+      "variant_id": 52,
+      "option_value_id": 35
+    },
+    {
+      "variant_id": 53,
+      "option_value_id": 31
+    },
+    {
+      "variant_id": 53,
+      "option_value_id": 36
+    },
+    {
+      "variant_id": 54,
+      "option_value_id": 31
+    },
+    {
+      "variant_id": 54,
+      "option_value_id": 37
+    },
+    {
+      "variant_id": 55,
+      "option_value_id": 31
+    },
+    {
+      "variant_id": 55,
+      "option_value_id": 38
+    },
+    {
+      "variant_id": 56,
+      "option_value_id": 32
+    },
+    {
+      "variant_id": 56,
+      "option_value_id": 34
+    },
+    {
+      "variant_id": 57,
+      "option_value_id": 32
+    },
+    {
+      "variant_id": 57,
+      "option_value_id": 35
+    },
+    {
+      "variant_id": 58,
+      "option_value_id": 32
+    },
+    {
+      "variant_id": 58,
+      "option_value_id": 36
+    },
+    {
+      "variant_id": 59,
+      "option_value_id": 32
+    },
+    {
+      "variant_id": 59,
+      "option_value_id": 37
+    },
+    {
+      "variant_id": 60,
+      "option_value_id": 32
+    },
+    {
+      "variant_id": 60,
+      "option_value_id": 38
+    },
+    {
+      "variant_id": 61,
+      "option_value_id": 33
+    },
+    {
+      "variant_id": 61,
+      "option_value_id": 34
+    },
+    {
+      "variant_id": 62,
+      "option_value_id": 33
+    },
+    {
+      "variant_id": 62,
+      "option_value_id": 35
+    },
+    {
+      "variant_id": 63,
+      "option_value_id": 33
+    },
+    {
+      "variant_id": 63,
+      "option_value_id": 36
+    },
+    {
+      "variant_id": 64,
+      "option_value_id": 33
+    },
+    {
+      "variant_id": 64,
+      "option_value_id": 37
+    },
+    {
+      "variant_id": 65,
+      "option_value_id": 33
+    },
+    {
+      "variant_id": 65,
+      "option_value_id": 38
+    },
+    {
+      "variant_id": 66,
+      "option_value_id": 39
+    },
+    {
+      "variant_id": 66,
+      "option_value_id": 41
+    },
+    {
+      "variant_id": 67,
+      "option_value_id": 39
+    },
+    {
+      "variant_id": 67,
+      "option_value_id": 42
+    },
+    {
+      "variant_id": 68,
+      "option_value_id": 40
+    },
+    {
+      "variant_id": 68,
+      "option_value_id": 41
+    },
+    {
+      "variant_id": 69,
+      "option_value_id": 40
+    },
+    {
+      "variant_id": 69,
+      "option_value_id": 42
+    },
+    {
+      "variant_id": 70,
+      "option_value_id": 43
+    },
+    {
+      "variant_id": 70,
+      "option_value_id": 45
+    },
+    {
+      "variant_id": 71,
+      "option_value_id": 43
+    },
+    {
+      "variant_id": 71,
+      "option_value_id": 46
+    },
+    {
+      "variant_id": 72,
+      "option_value_id": 44
+    },
+    {
+      "variant_id": 72,
+      "option_value_id": 45
+    },
+    {
+      "variant_id": 73,
+      "option_value_id": 44
+    },
+    {
+      "variant_id": 73,
+      "option_value_id": 46
+    },
+    {
+      "variant_id": 74,
+      "option_value_id": 47
+    },
+    {
+      "variant_id": 74,
+      "option_value_id": 49
+    },
+    {
+      "variant_id": 75,
+      "option_value_id": 47
+    },
+    {
+      "variant_id": 75,
+      "option_value_id": 50
+    },
+    {
+      "variant_id": 76,
+      "option_value_id": 48
+    },
+    {
+      "variant_id": 76,
+      "option_value_id": 49
+    },
+    {
+      "variant_id": 77,
+      "option_value_id": 48
+    },
+    {
+      "variant_id": 77,
+      "option_value_id": 50
+    },
+    {
+      "variant_id": 78,
+      "option_value_id": 51
+    },
+    {
+      "variant_id": 78,
+      "option_value_id": 53
+    },
+    {
+      "variant_id": 79,
+      "option_value_id": 51
+    },
+    {
+      "variant_id": 79,
+      "option_value_id": 54
+    },
+    {
+      "variant_id": 80,
+      "option_value_id": 52
+    },
+    {
+      "variant_id": 80,
+      "option_value_id": 53
+    },
+    {
+      "variant_id": 81,
+      "option_value_id": 52
+    },
+    {
+      "variant_id": 81,
+      "option_value_id": 54
+    },
+    {
+      "variant_id": 82,
+      "option_value_id": 55
+    },
+    {
+      "variant_id": 82,
+      "option_value_id": 57
+    },
+    {
+      "variant_id": 83,
+      "option_value_id": 55
+    },
+    {
+      "variant_id": 83,
+      "option_value_id": 58
+    },
+    {
+      "variant_id": 84,
+      "option_value_id": 56
+    },
+    {
+      "variant_id": 84,
+      "option_value_id": 57
+    },
+    {
+      "variant_id": 85,
+      "option_value_id": 56
+    },
+    {
+      "variant_id": 85,
+      "option_value_id": 58
+    },
+    {
+      "variant_id": 86,
+      "option_value_id": 59
+    },
+    {
+      "variant_id": 86,
+      "option_value_id": 61
+    },
+    {
+      "variant_id": 87,
+      "option_value_id": 59
+    },
+    {
+      "variant_id": 87,
+      "option_value_id": 62
+    },
+    {
+      "variant_id": 88,
+      "option_value_id": 59
+    },
+    {
+      "variant_id": 88,
+      "option_value_id": 63
+    },
+    {
+      "variant_id": 89,
+      "option_value_id": 60
+    },
+    {
+      "variant_id": 89,
+      "option_value_id": 61
+    },
+    {
+      "variant_id": 90,
+      "option_value_id": 60
+    },
+    {
+      "variant_id": 90,
+      "option_value_id": 62
+    },
+    {
+      "variant_id": 91,
+      "option_value_id": 60
+    },
+    {
+      "variant_id": 91,
+      "option_value_id": 63
+    },
+    {
+      "variant_id": 92,
+      "option_value_id": 64
+    },
+    {
+      "variant_id": 92,
+      "option_value_id": 65
+    },
+    {
+      "variant_id": 93,
+      "option_value_id": 64
+    },
+    {
+      "variant_id": 93,
+      "option_value_id": 66
+    },
+    {
+      "variant_id": 94,
+      "option_value_id": 64
+    },
+    {
+      "variant_id": 94,
+      "option_value_id": 67
+    },
+    {
+      "variant_id": 95,
+      "option_value_id": 64
+    },
+    {
+      "variant_id": 95,
+      "option_value_id": 68
+    },
+    {
+      "variant_id": 96,
+      "option_value_id": 69
+    },
+    {
+      "variant_id": 96,
+      "option_value_id": 71
+    },
+    {
+      "variant_id": 97,
+      "option_value_id": 69
+    },
+    {
+      "variant_id": 97,
+      "option_value_id": 72
+    },
+    {
+      "variant_id": 98,
+      "option_value_id": 69
+    },
+    {
+      "variant_id": 98,
+      "option_value_id": 73
+    },
+    {
+      "variant_id": 99,
+      "option_value_id": 70
+    },
+    {
+      "variant_id": 99,
+      "option_value_id": 71
+    },
+    {
+      "variant_id": 100,
+      "option_value_id": 70
+    },
+    {
+      "variant_id": 100,
+      "option_value_id": 72
+    },
+    {
+      "variant_id": 101,
+      "option_value_id": 70
+    },
+    {
+      "variant_id": 101,
+      "option_value_id": 73
+    },
+    {
+      "variant_id": 102,
+      "option_value_id": 74
+    },
+    {
+      "variant_id": 102,
+      "option_value_id": 76
+    },
+    {
+      "variant_id": 103,
+      "option_value_id": 74
+    },
+    {
+      "variant_id": 103,
+      "option_value_id": 77
+    },
+    {
+      "variant_id": 104,
+      "option_value_id": 74
+    },
+    {
+      "variant_id": 104,
+      "option_value_id": 78
+    },
+    {
+      "variant_id": 105,
+      "option_value_id": 74
+    },
+    {
+      "variant_id": 105,
+      "option_value_id": 79
+    },
+    {
+      "variant_id": 106,
+      "option_value_id": 74
+    },
+    {
+      "variant_id": 106,
+      "option_value_id": 80
+    },
+    {
+      "variant_id": 107,
+      "option_value_id": 74
+    },
+    {
+      "variant_id": 107,
+      "option_value_id": 81
+    },
+    {
+      "variant_id": 108,
+      "option_value_id": 75
+    },
+    {
+      "variant_id": 108,
+      "option_value_id": 76
+    },
+    {
+      "variant_id": 109,
+      "option_value_id": 75
+    },
+    {
+      "variant_id": 109,
+      "option_value_id": 77
+    },
+    {
+      "variant_id": 110,
+      "option_value_id": 75
+    },
+    {
+      "variant_id": 110,
+      "option_value_id": 78
+    },
+    {
+      "variant_id": 111,
+      "option_value_id": 75
+    },
+    {
+      "variant_id": 111,
+      "option_value_id": 79
+    },
+    {
+      "variant_id": 112,
+      "option_value_id": 75
+    },
+    {
+      "variant_id": 112,
+      "option_value_id": 80
+    },
+    {
+      "variant_id": 113,
+      "option_value_id": 75
+    },
+    {
+      "variant_id": 113,
+      "option_value_id": 81
+    }
+  ],
+  "seed_versions": [
+    {
+      "version": 1
+    }
+  ]
+}

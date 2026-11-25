@@ -19,7 +19,8 @@ import { ProductEditorComponent } from './product-editor.component';
           <p class="admin-status" role="status">You’re signed in as an admin.</p>
           <button type="button" (click)="logout()" [disabled]="busy() || savingProduct() || managerBusy()">Sign out</button>
         } @else {
-          <form (submit)="login($event, password)">
+          <form (submit)="login($event, password, username)">
+            <label for="admin-username">Admin username</label><input id="admin-username" #username value="admin" type="text" required maxlength="64" autocomplete="username">
             <label for="admin-password">Admin password</label>
             <input id="admin-password" #password type="password" required
               maxlength="256" autocomplete="current-password">
@@ -31,8 +32,8 @@ import { ProductEditorComponent } from './product-editor.component';
       @if (editorOpened()) {
         <app-product-editor [canSave]="signedIn() && !busy() && !managerBusy()"
           (sessionEnded)="handleExpiredSession()" (savingChanged)="savingProduct.set($event)"
-          (productSaved)="productsRefresh.update(nextRefresh)" />
-        <app-product-manager [canSave]="signedIn() && !busy() && !savingProduct()" [refreshToken]="productsRefresh()"
+          (productSaved)="productsRefresh.update(nextRefresh)" (editRequested)="manager.openById($event)" />
+        <app-product-manager #manager [canSave]="signedIn() && !busy() && !savingProduct()" [refreshToken]="productsRefresh()"
           (sessionEnded)="handleExpiredSession()" (busyChanged)="managerBusy.set($event)" />
       }
     </main>
@@ -60,21 +61,21 @@ export class AdminComponent implements OnInit {
       }
     });
   }
-  login(event: Event, input: HTMLInputElement) {
+  login(event: Event, input: HTMLInputElement, username: HTMLInputElement) {
     event.preventDefault();
     if (this.busy()) return;
     const password = input.value;
     input.value = '';
     this.busy.set(true);
     this.error.set('');
-    this.http.post('/api/admin/login', { password }, { headers: this.headers }).subscribe({
+    this.http.post('/api/admin/login', { password, username: username.value.trim() }, { headers: this.headers }).subscribe({
       next: () => { this.signedIn.set(true); this.editorOpened.set(true); this.finish(); },
       error: err => { this.showError(err); this.finish(); }
     });
   }
   handleExpiredSession() {
     this.signedIn.set(false);
-    this.error.set('Your session ended. Your draft is still below. Sign in again to save it.');
+    this.error.set('Your session has ended. Your changes are kept on this page. Sign in again, then save.');
   }
   logout() {
     if (this.savingProduct() || this.managerBusy()) return;

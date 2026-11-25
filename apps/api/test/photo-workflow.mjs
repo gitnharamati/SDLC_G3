@@ -26,7 +26,7 @@ export async function photoWorkflow(db, reopen, t) {
   let cookie;
   const signIn = async () => cookie = (await json('/login', { password })).headers.get('set-cookie').split(';')[0];
   const item = { name: 'Photographed cushion', description: 'A real product picture.', material: 'Cotton',
-    priceCents: 2999, departmentId: 1, categoryId: 1, roomId: 4, available: true,
+    priceCents: 2999, departmentId: 1, categoryId: 1, roomId: 1, available: true,
     sizes: ['Small'], colours: ['Red', 'Green'], stock: [4, 9] };
   try {
     await t.test('photo and inventory endpoints require an admin session and request header', async () => {
