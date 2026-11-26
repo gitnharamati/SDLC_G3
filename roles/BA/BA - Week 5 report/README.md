@@ -2,7 +2,6 @@
 
 Week 5 report
 
-.
 ├── 'ADM-13 & ADM-14 — Rollback and Concurrency Test Scenarios.docx'
 ├── 'Home Décor Store Traceability Matrix (Updated).html'
 ├── 'Increment 2 Demo - Feedback Log.docx'
