@@ -42,6 +42,10 @@ export class CartService {
       return {...line, note:[line.note,priceNote].filter(Boolean).join('. ')};
     });
   }
+  completeOrder() {
+    this.items.set([]); this.lines.set([]); this.prices.clear(); this.error.set('');
+    try { localStorage.removeItem(key); } catch { this.storageWarning.set('The order is saved. Clear the old cart in this browser before shopping again.'); }
+  }
   async refresh() {
     if (this.busy()) return;
     this.busy.set(true); this.error.set('');
@@ -70,8 +74,10 @@ export class CartService {
     if (!Number.isSafeInteger(value) || value === null || value < 1 || value > 999999) {
       this.error.set('Quantity must be a whole number from 1 to 999,999. Use Remove to delete an item.'); return;
     }
+    const previous = this.items();
     this.items.update(items => items.map(line => line.variantId === variantId ? {...line,qty:value} : line));
     await this.refresh();
+    if (this.error()) this.items.set(previous);
   }
   async remove(variantId: number) {
     if (this.busy()) return;

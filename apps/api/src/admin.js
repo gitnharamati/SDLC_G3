@@ -1,3 +1,6 @@
+import { orderResponse } from './checkout.js';
+import { listOrders, orderDetail, recordEvent, adjustStock, settlePayment, processDuePayments, paymentMode } from './orders.js';
+import { reader, OrderError } from './order-store.js';
 import { ProductConflictError } from './product-duplicates.js';
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { Router } from 'express';
@@ -11,8 +14,9 @@ const cookieName = 'decor_admin';
 const sessionMs = 30 * 60 * 1000;
 const failureWindowMs = 15 * 60 * 1000;
 
-export function adminRouter(db, { password, username = 'admin', secure = false } = {}) {
+export function adminRouter(db, { password, username = 'admin', secure = false, paymentMode: configuredPaymentMode } = {}) {
   const router = Router();
+  const mode = paymentMode(configuredPaymentMode);
   const enabled = typeof password === 'string' && password.length >= 12 && password.length <= 256;
   const salt = randomBytes(16);
   const hash = enabled ? scryptSync(password, salt, 32) : null;
@@ -71,6 +75,7 @@ export function adminRouter(db, { password, username = 'admin', secure = false }
       sessions.delete(key);
       return res.status(401).json({ error: 'Sign in to open the admin area.' });
     }
+    req.adminUsername = username;
     next();
   }
   router.get('/session', requireSession, (req, res) => res.json({ signedIn: true, proxyHops: req.app.get('trust proxy'), clientAddress: req.ip }));
@@ -85,12 +90,26 @@ export function adminRouter(db, { password, username = 'admin', secure = false }
     return id;
   };
   const handleInputError = (error, res, next) => {
+    if (error?.status && error?.code) return orderResponse(error, res, next);
     if (error instanceof ProductConflictError) return res.status(409).json({ error: error.message, code: error.code, matches: error.matches });
     if (error instanceof ProductInputError || error instanceof PhotoInputError) {
       return res.status(400).json({ error: error.message });
     }
     return next(error);
   };
+  const staffId=req=>{const id=Number(req.params.id);if(!Number.isSafeInteger(id)||id<1)throw new OrderError('Invalid record ID.');return id;};
+  router.get('/workspace', requireSession, async (_req,res,next) => {
+    try {
+      await processDuePayments(db,mode);
+      const products=await getProducts(db,true),orders=await listOrders(db);
+      const inventory=products.flatMap(p=>p.variants.map(v=>({productId:p.id,variantId:v.id,name:p.name,category:p.category,room:p.room,available:p.available,sku:v.sku,stock:v.stock,options:v.options})));
+      return res.json({products,inventory,orders,adjustments:await reader(db)('SELECT * FROM stock_adjustments ORDER BY id DESC LIMIT 100'),metrics:{products:products.length,units:inventory.reduce((n,v)=>n+v.stock,0),low:inventory.filter(v=>v.stock>0&&v.stock<=5).length,out:inventory.filter(v=>v.stock===0).length,orders:orders.length,attention:orders.filter(o=>o.status!=='Delivered to customer').length,paymentProblems:orders.filter(o=>o.paymentFlag).length},paymentMode:mode});
+    } catch(error){return orderResponse(error,res,next);}
+  });
+  router.get('/orders/:id', requireSession, async(req,res,next)=>{try{return res.json({order:await orderDetail(db,staffId(req))});}catch(error){return orderResponse(error,res,next);}});
+  router.post('/orders/:id/events', requireSession, async(req,res,next)=>{try{return res.json({order:await recordEvent(db,staffId(req),req.body,username)});}catch(error){return orderResponse(error,res,next);}});
+  router.post('/orders/:id/payment', requireSession, async(req,res,next)=>{try{await settlePayment(db,staffId(req),mode,true);return res.json({order:await orderDetail(db,staffId(req))});}catch(error){return orderResponse(error,res,next);}});
+  router.post('/inventory/:id', requireSession, async(req,res,next)=>{try{return res.json(await adjustStock(db,staffId(req),req.body,username));}catch(error){return orderResponse(error,res,next);}});
   router.get('/products', requireSession, async (_req, res) => res.json({ products: await getProducts(db, true) }));
   router.get('/photos/:id', requireSession, photoResponse(db, true));
   router.post('/products', requireSession, receivePhotos, async (req, res, next) => {
@@ -109,7 +128,7 @@ export function adminRouter(db, { password, username = 'admin', secure = false }
   });
   router.post('/products/:id', requireSession, async (req, res, next) => {
     try {
-      if (!await updateProduct(db, idFrom(req), req.body)) return res.status(404).json({ error: 'Product not found.' });
+      if (!await updateProduct(db, idFrom(req), req.body, username)) return res.status(404).json({ error: 'Product not found.' });
       return res.json({ saved: true });
     } catch (error) { return handleInputError(error, res, next); }
   });

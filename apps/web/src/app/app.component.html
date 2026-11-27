@@ -1,10 +1,16 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
-<header class="site-header">
+<header id="page-top" class="site-header" tabindex="-1">
   <a class="wordmark" href="/" aria-label="Home Décor home"><span class="brand-mark" aria-hidden="true">✦</span><span>Home Décor<small>EVERYDAY COMFORT</small></span></a>
-  @if (!isAdmin) { <form class="header-search" (ngSubmit)="submitSearch(headerQuery.value)"><label class="visually-hidden" for="header-search">Search products</label><input #headerQuery id="header-search" name="search" type="search" minlength="2" [value]="search()" placeholder="Search products"><button type="submit">Search</button></form> }
-  @if (searchError()) { <p class="header-search-error admin-error" role="alert">{{ searchError() }}</p> }
-  <nav aria-label="Main navigation"><a [href]="shopLink()" [attr.aria-current]="!isAdmin && !isProductPage && !isCartPage() ? 'page' : null">Shop</a>@if (!isAdmin) { <a href="/cart" (click)="openCart($event)" [attr.aria-current]="isCartPage() ? 'page' : null">Cart ({{ cart.count() }})</a> }@if (isAdmin || adminSignedIn()) { <a href="/admin" [attr.aria-current]="isAdmin ? 'page' : null">Admin</a> }</nav>
+  @if (!isAdmin) { <form class="header-search" (ngSubmit)="submitSearch(headerQuery.value)"><label class="visually-hidden" for="header-search">Search products</label><input #headerQuery id="header-search" name="search" type="search" minlength="2" [value]="search()" (input)="clearSearchMessage()" [attr.aria-invalid]="searchError() ? 'true' : null" [attr.aria-describedby]="searchError() ? 'search-popup-message' : null" placeholder="Search products"><button type="submit">Search</button></form> }
+  <nav aria-label="Main navigation"><a [href]="shopLink()" [attr.aria-current]="!isAdmin && !isProductPage && !isCartPage() && !isCheckoutPage ? 'page' : null">Shop</a>@if (!isAdmin) { <a href="/cart" (click)="openCart($event)" [attr.aria-current]="isCartPage() ? 'page' : null">Cart ({{ cart.count() }})</a> }@if (isAdmin || adminSignedIn()) { <a href="/admin" [attr.aria-current]="isAdmin ? 'page' : null">Admin</a> }</nav>
 </header>
+@if (searchError()) {
+  <aside class="search-popup" role="alert" aria-labelledby="search-popup-title">
+    <span class="search-popup-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span>
+    <div class="search-popup-copy"><p id="search-popup-title">What are you looking for?</p><p id="search-popup-message">{{ searchError() }}</p></div>
+    <button class="search-popup-close" type="button" aria-label="Dismiss search message" (click)="dismissSearchError()"><svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+  </aside>
+}
 @if (isAdmin) { <app-admin /> } @else {
 <main id="main-content" tabindex="-1">
 @if (isCartPage()) {
@@ -20,16 +26,16 @@
         @for (line of cart.lines(); track line.variantId) {
           <article class="cart-line">
             <div class="product-art cart-photo" [class.curtain]="line.category === 'Curtains'" [class.bedding]="line.category === 'Bed sheets'" [class.cushion]="line.category === 'Cushions'">
-              @if (line.photos?.[0]; as photo) { <img [src]="photo" [alt]="line.name || 'Product photo'" (error)="$any($event.target).hidden = true"> }
+              @if (line.photos?.[0]; as photo) { <img [src]="photo" [alt]="line.name || 'Product photo'" (error)="$any($event.target).hidden = true"> } @else if (!line.category) { <span class="cart-image-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="m3 17 6-6 4 4 3-3 5 5"/><circle cx="16" cy="8" r="1"/></svg></span> }
             </div>
-            <div class="cart-line-copy"><h2><a [href]="'/products/'+line.productId">{{ line.name || 'Unavailable product' }}</a></h2>
-              <p>{{ line.category }} / {{ line.room }}</p>
-              <p>@for (option of line.options || []; track option.name) { {{ option.name }}: {{ option.value }}&nbsp; }</p>
+            <div class="cart-line-copy"><h2>@if (line.available && line.name) { <a [href]="'/products/'+line.productId">{{ line.name }}</a> } @else { {{ line.name || 'Unavailable product' }} }</h2>
+              @if (line.category) { <p>{{ line.category }}@if (line.room) { / {{ line.room }} }</p> }
+              @if (line.options?.length) { <p>@for (option of line.options || []; track option.name) { {{ option.name }}: {{ option.value }}&nbsp; }</p> }
               @if (line.priceCents !== undefined) { <p>Unit price: {{ line.priceCents / 100 | currency:'CAD':'symbol-narrow' }} CAD</p> }
               @if (line.note) { <p class="cart-note" role="status">{{ line.note }}</p> }
               @if (line.available && line.stock > 0) {
                 <div class="quantity-stepper"><button type="button" [disabled]="cart.busy() || line.qty <= 1" (click)="cart.update(line.variantId,line.qty-1)" [attr.aria-label]="'Decrease quantity for '+line.name">−</button>
-                  <label>Quantity<input type="number" min="1" max="999999" step="1" [disabled]="cart.busy()" [value]="line.qty" (change)="cart.update(line.variantId,$any($event.target).valueAsNumber)" [attr.aria-label]="'Quantity for '+line.name"></label>
+                  <label>Quantity<input type="number" min="1" max="999999" step="1" [disabled]="cart.busy()" [value]="line.qty" (change)="updateCartQuantity(line.variantId,$any($event.target))" [attr.aria-label]="'Quantity for '+line.name"></label>
                   <button type="button" [disabled]="cart.busy() || line.qty >= line.stock" (click)="cart.update(line.variantId,line.qty+1)" [attr.aria-label]="'Increase quantity for '+line.name">+</button></div>
               }
               <p>Line total: <strong>{{ line.lineCents / 100 | currency:'CAD':'symbol-narrow' }}</strong></p>
@@ -37,9 +43,10 @@
             </div>
           </article>
         }
-      </div><aside class="cart-summary"><h2>Order summary</h2><p>Items <strong>{{ cart.totalCents() / 100 | currency:'CAD':'symbol-narrow' }}</strong></p><p>Delivery <span>Calculated at checkout</span></p><p>Order total <strong>{{ cart.totalCents() / 100 | currency:'CAD':'symbol-narrow' }} CAD</strong></p><button disabled>Check out</button><p class="notice">Checkout opens in Increment 3. Test store: no payment will be taken.</p><p class="notice">Prices and stock are checked when this cart opens. Items are not reserved.</p><a href="/shop">Continue shopping</a></aside></div>
+      </div><aside class="cart-summary"><h2>Order summary</h2><p>Items <strong>{{ cart.totalCents() / 100 | currency:'CAD':'symbol-narrow' }}</strong></p><p>Delivery <span>Calculated at checkout</span></p><p>Order total <strong>{{ cart.totalCents() / 100 | currency:'CAD':'symbol-narrow' }} CAD</strong></p><a class="button" href="/checkout">Check out</a><p class="notice">Place a test order. No payment will be taken.</p><p class="notice">Prices and stock are checked when this cart opens. Items are not reserved.</p><a href="/shop">Continue shopping</a></aside></div>
     }
   </section>
+} @else if (isCheckoutPage) { <app-checkout />
 } @else if (isProductPage) {
   <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a [href]="shopLink()">Collection</a><span>/</span><span>Product details</span></nav>
   @if (loading()) { <p class="state" role="status">Loading product…</p> }
@@ -79,19 +86,26 @@
         @if (cart.error()) { <p class="admin-error" role="alert">{{ cart.error() }}</p> }
         <h2 class="stock-heading">Stock by size and colour</h2>
         <ul class="product-stock-list">@for (variant of item.variants; track variant.id) { <li><span>@for (option of variant.options; track option.name; let last = $last) { {{ option.name }}: {{ option.value }}@if (!last) { · } }</span><strong>{{ variant.stock ? variant.stock+' in stock' : 'Out of stock' }}</strong></li> }</ul>
-        <a class="button" [href]="shopLink()">Back to collection</a><p class="notice">Test store: checkout is not available yet.</p>
+        <a class="button" [href]="shopLink()">Back to collection</a><p class="notice">Test store: orders use simulated payments. No money is charged.</p>
       </div>
     </section>
   } @else { <section class="state"><h1 class="missing-product-title">Product unavailable</h1><p>This product could not be found or is no longer available.</p><a class="button" [href]="shopLink()">Back to collection</a></section> }
 } @else {
-  @if (!isResultsPage) { <section class="hero" aria-labelledby="page-title"><div class="hero-copy"><p class="eyebrow">✦ &nbsp; The everyday collection</p><h1 id="page-title">Make yourself <em>at home.</em></h1><p class="lead">Soft cushions, fresh sheets and curtains that let the morning light in. Little things that make a room feel like yours.</p><a class="button" href="#collection">Explore the collection <span aria-hidden="true">↘</span></a></div><div class="hero-art" aria-hidden="true"></div></section>
+  @if (!isResultsPage) { <section class="hero" aria-labelledby="page-title"><div class="hero-copy"><p class="eyebrow">✦ &nbsp; The everyday collection</p><h1 id="page-title">Make yourself <em>at home.</em></h1><p class="lead">Soft cushions, fresh sheets and curtains that let the morning light in. Little things that make a room feel like yours.</p><a class="button" href="#collection-products" (click)="exploreCollection($event)">Explore the collection <span aria-hidden="true">↘</span></a></div><div class="hero-art" aria-hidden="true"></div></section>
   }
-  @if (categories().length) { <nav class="category-browse" aria-label="Browse by category">@for (item of categories(); track item.id) { <a [href]="categoryLink(item.name)">{{ item.name }} <span aria-hidden="true">↗</span></a> }</nav> }
-  <nav class="room-browse" aria-label="Shop by room">@for (value of rooms(); track value) { <a [href]="'/shop?room='+value+'#collection'">{{ value }}</a> }</nav>
-  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Collection</span></nav>
-  <section class="collection" id="collection" aria-labelledby="collection-title">
-    <div class="section-heading"><div><p class="eyebrow">Cushions · Bed sheets · Curtains</p><h2 id="collection-title">Little home comforts</h2></div>@if (!loading() && !error()) { <span role="status">{{ filtered().length }} of {{ products().length }} products</span> }</div>
+  <section class="collection collection-edit" id="collection" aria-labelledby="collection-title">
+    <nav class="breadcrumbs collection-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Collection</span></nav>
+    <div class="collection-intro">
+      <div class="collection-intro-copy">
+        <p class="eyebrow">The home edit</p>
+        @if (isResultsPage) { <h1 id="collection-title">A little more <em>you.</em></h1> }
+        @else { <h2 id="collection-title">A little more <em>you.</em></h2> }
+        <p class="collection-lead">Soft textures. Warmer corners. Find the details that make a place your own.</p>
+      </div>
+      @if (isResultsPage) { <div class="collection-vignette" aria-hidden="true"><div class="collection-vignette-art"></div><span>Everyday, made lovely.</span></div> }
+    </div>
     <div class="collection-toolbar">
+      <div class="collection-result-copy"><span class="collection-result-mark" aria-hidden="true">✦</span><p role="status">@if (loading()) { Finding your next favourite… } @else if (!error()) { {{ filtered().length }} of {{ products().length }} products } @else { The collection }</p><span class="collection-currency">Prices in CAD</span></div>
       <button id="filter-sort-toggle" class="filter-toggle" type="button" aria-label="Filter and sort" [attr.aria-expanded]="filtersOpen()" aria-controls="catalogue-filters" (click)="filtersOpen.set(!filtersOpen())">
         <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></svg>
         Filter &amp; sort@if (filterCount()) { <span class="filter-count">{{ filterCount() }}</span> }
@@ -111,6 +125,7 @@
     </section>
     @if (search().trim()) { <p role="status">Search: “{{ search().trim() }}”@if (search().trim().length < 2) { — Enter at least 2 characters to search. }</p> }
     @if (activeFilters()) { <p class="active-filters">Filters: {{ activeFilters() }}</p> }
+    <div id="collection-products" class="collection-products" tabindex="-1" role="region" aria-label="Product results">
     @if (loading()) { <p role="status" class="state">Loading the catalogue…</p> }
     @else if (error()) { <div class="state" role="alert"><p>{{ error() }}</p><button (click)="load()">Try again</button></div> }
     @else if (priceError()) { <p class="state admin-error" role="alert">{{ priceError() }}</p> }
@@ -120,9 +135,17 @@
       <article class="product"><a class="product-art product-image-link" [href]="productLink(item.id)" [attr.aria-label]="'View '+item.name" [class.curtain]="item.category === 'Curtains'" [class.bedding]="item.category === 'Bed sheets'" [class.cushion]="item.category === 'Cushions'">@if (photoFor(item); as photo) { <img [src]="photo" [alt]="item.name" loading="lazy" (error)="photoFailed(item,photo)"> }<span>{{ item.category }}</span></a>
       <div class="product-copy"><p class="product-category">{{ item.category }} / {{ item.room }}</p><h3 [title]="item.name"><a [href]="productLink(item.id)">{{ item.name }}</a></h3><p>{{ item.material }}</p><div class="product-bottom"><strong>{{ item.priceCents / 100 | currency:'CAD':'symbol-narrow' }}</strong><span>{{ totalStock(item) ? totalStock(item)+' available across options' : 'Out of stock' }}</span></div><a class="button view-button" [href]="productLink(item.id)">View options and stock</a></div></article>
     }</div> }
-    <p class="notice">Demo catalogue · Prices in CAD. Category artwork is used when no product photo is available. Checkout is not available yet.</p>
+    </div>
+    <p class="notice">Demo catalogue · Prices in CAD. Category artwork is used when no product photo is available. Test orders only. No money is charged.</p>
   </section>
 }
 </main>
 }
-<footer><strong>✦ &nbsp; Home Décor</strong><span>Team 3 · Software Development Life Cycle course project</span></footer>
+<footer><strong>✦ &nbsp; Home Décor</strong><span>Team 3 · Software Development Life Cycle course project</span>@if (!isAdmin) { <a class="staff-portal-link" href="/staff">Staff portal</a> }</footer>
+
+@if (showBackToTop()) {
+  <button class="back-to-top" [style.--back-to-top-offset]="backToTopBottom()+'px'" type="button" aria-label="Back to top" title="Back to top" (click)="backToTop()">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12 6-6 6 6M12 6v13"/></svg>
+    <span>Top</span>
+  </button>
+}

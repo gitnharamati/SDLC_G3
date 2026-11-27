@@ -18,7 +18,7 @@
     "start": "npm run start --workspace apps/api",
     "test": "npm run test --workspace apps/api",
     "db:import": "node scripts/import-sqlite.mjs",
-    "test:postgres": "node --test apps/api/test/postgres.integration.mjs",
+    "test:postgres": "node --test apps/api/test/postgres.integration.mjs apps/api/test/staff-postgres.mjs",
     "repo:prepare-week5": "node scripts/prepare-week5.mjs"
   }
 }

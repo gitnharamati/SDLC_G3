@@ -1,3 +1,4 @@
+import { processDuePayments, paymentMode } from './orders.js';
 import { fileURLToPath } from 'node:url';
 import { openDatabase } from './database.js';
 import { openPostgres } from './postgres/database.js';
@@ -8,6 +9,8 @@ if (production && !process.env.DATABASE_URL) {
   console.error('Set DATABASE_URL to the hosted PostgreSQL database connection string. Production will not use a temporary SQLite file.');
   process.exit(1);
 }
+let mode;
+try { mode=paymentMode(); } catch(error) { console.error(error.message); process.exit(1); }
 let db;
 try {
   db = process.env.DATABASE_URL
@@ -28,10 +31,14 @@ const server = createApp(db, {
   console.log(`Home Decor API listening on port ${port} using ${db.kind === 'postgres' ? 'PostgreSQL' : 'local SQLite'}.`);
 });
 
+let paymentWorkerBusy=false;
+const paymentWorker=setInterval(async()=>{if(paymentWorkerBusy)return;paymentWorkerBusy=true;try{await processDuePayments(db,mode);}catch{console.error('Pending payment check will retry.');}finally{paymentWorkerBusy=false;}},15000);
+paymentWorker.unref();
 let stopping = false;
 function stop() {
   if (stopping) return;
   stopping = true;
+  clearInterval(paymentWorker);
   const timeout = setTimeout(() => process.exit(1), 25000);
   timeout.unref();
   server.close(async () => {

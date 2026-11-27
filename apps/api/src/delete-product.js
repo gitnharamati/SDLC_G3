@@ -1,3 +1,4 @@
+import { OrderError } from './order-store.js';
 import { transaction } from './postgres/database.js';
 
 // Remove only this product's dependent records, in one transaction. The
@@ -14,6 +15,7 @@ export async function deleteProduct(db, id) {
   if (db.kind === 'postgres') {
     return transaction(db.pool, async client => {
       if (!(await client.query('SELECT id FROM products WHERE id = $1 FOR UPDATE', [id])).rowCount) return false;
+      if ((await client.query('SELECT 1 FROM order_lines WHERE product_id=$1 LIMIT 1',[id])).rowCount) throw new OrderError('This product has orders. Hide it instead.','PRODUCT_HAS_ORDERS',409);
       for (const sql of statements) await client.query(sql.replace('?', '$1'), [id]);
       return true;
     });
@@ -23,6 +25,7 @@ export async function deleteProduct(db, id) {
     if (!db.prepare('SELECT id FROM products WHERE id = ?').get(id)) {
       db.exec('COMMIT'); return false;
     }
+    if (db.prepare('SELECT 1 FROM order_lines WHERE product_id=? LIMIT 1').get(id)) throw new OrderError('This product has orders. Hide it instead.','PRODUCT_HAS_ORDERS',409);
     for (const sql of statements) db.prepare(sql).run(id);
     db.exec('COMMIT'); return true;
   } catch (error) { db.exec('ROLLBACK'); throw error; }
