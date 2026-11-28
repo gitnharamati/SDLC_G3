@@ -23,6 +23,7 @@ export class ProductManagerComponent {
   readonly busyChanged = output<boolean>();
   readonly products = signal<Product[]>([]);
   readonly loading = signal(false);
+  readonly listFailed = signal(false);
   readonly error = signal('');
   readonly message = signal('');
   readonly busy = signal(false);
@@ -48,14 +49,14 @@ export class ProductManagerComponent {
   }
 
   load() {
-    this.loading.set(true);
+    this.loading.set(true); this.listFailed.set(false); this.error.set('');
     this.http.get<{ products: Product[] }>('/api/admin/products').subscribe({
       next: result => { this.products.set(result.products); this.loading.set(false); },
-      error: error => { this.handleError(error); this.loading.set(false); }
+      error: error => { this.listFailed.set(true); this.handleError(error); this.loading.set(false); }
     });
   }
   open(product: Product) {
-    if (this.busy()) return;
+    if (this.busy() || this.loading()) return;
     this.deleteRequested.set(false);
     this.editing.set(product);
     this.error.set(''); this.message.set('');
@@ -98,13 +99,13 @@ export class ProductManagerComponent {
     this.error.set(''); this.message.set('');
     const price = /^(\d{1,6})(?:\.(\d{1,2}))?$/.exec(this.details.price.trim());
     const priceCents = price ? Number(price[1]) * 100 + Number((price[2] ?? '').padEnd(2, '0')) : 0;
-    const stock = product.variants.map(row => ({ id: row.id, quantity: this.stock[row.id] }));
+    const stock = product.variants.map(row => ({ id: row.id, quantity: this.stock[row.id], expectedStock: row.stock }));
     if (form.invalid || !priceCents || stock.some(row => row.quantity === null || !Number.isSafeInteger(row.quantity) || row.quantity < 0 || row.quantity > 999999)) {
       this.error.set('Complete the details, enter a valid price and whole stock quantities.'); return;
     }
     this.setBusy(true);
     this.http.post(`/api/admin/products/${product.id}`, { ...this.details, priceCents, stock }, { headers: this.headers }).subscribe({
-      next: () => { this.message.set('Product details and stock saved.'); this.setBusy(false); this.load(); },
+      next: () => { this.editing.update(p => p ? {...p, variants:p.variants.map(v=>({...v,stock:this.stock[v.id] as number}))} : null); this.message.set('Product details and stock saved.'); this.setBusy(false); this.load(); },
       error: error => { this.handleError(error); this.setBusy(false); }
     });
   }

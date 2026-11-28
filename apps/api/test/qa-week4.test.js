@@ -122,12 +122,13 @@ test('RT-OBS-07 Admin navigation is limited to the admin page or a verified sign
 });
 
 // ================= B. Increment 2 storefront (CUS-01..06, CUS-10..11, ADM-09/10) ===========
-test('TC-CUS-01-01 the catalogue has three categories with five rooms each, shown as category links', () => {
+test('TC-CUS-01-01 the catalogue has three categories with five rooms each, available through category filters', () => {
   const catalogue = getCatalogue(bundled());
   const categories = catalogue.flatMap(d => d.categories);
   assert.deepEqual(categories.map(c => c.name), ['Cushions', 'Bed sheets', 'Curtains']);
   for (const c of categories) assert.equal(c.subcategories.length, 5);
-  assert.match(html, /aria-label="Browse by category"/);
+  assert.match(html, /id="filter-sort-toggle"/);
+  assert.match(html, /toggleFilter\('category',item.name\)/);
 });
 
 test('TC-CUS-02-01 search "cush" finds the same products as an independent SQL check, any letter case', () => {

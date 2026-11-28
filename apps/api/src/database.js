@@ -32,6 +32,10 @@ function migrateDatabase(db) {
       db.exec(readFileSync(new URL('./migrations/003-identity-audit.sql', import.meta.url), 'utf8'));
       db.exec('PRAGMA user_version = 3');
     }
+    if (db.prepare('PRAGMA user_version').get().user_version < 4) {
+      db.exec(readFileSync(new URL('./migrations/004-orders.sql', import.meta.url), 'utf8'));
+      db.exec('PRAGMA user_version = 4');
+    }
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');

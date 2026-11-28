@@ -1,6 +1,7 @@
+import { CheckoutComponent } from './checkout.component';
 import { CartService } from './cart.service';
 import { cents, filterProducts } from './storefront-rules';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,9 +13,9 @@ type Filter = 'search' | 'category' | 'room' | 'minimum' | 'maximum';
 const initial = new URLSearchParams(window.location.search);
 @Component({
   selector: 'app-root', standalone: true,
-  imports: [CurrencyPipe, FormsModule, AdminComponent], templateUrl: './app.component.html'
+  imports: [CurrencyPipe, FormsModule, AdminComponent, CheckoutComponent], templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly http = inject(HttpClient);
   readonly adminSignedIn = signal(false);
   readonly cart = inject(CartService);
@@ -22,11 +23,16 @@ export class AppComponent implements OnInit {
   readonly isResultsPage = window.location.pathname === '/shop' || initial.size > 0;
   readonly filtersOpen = signal(false);
   readonly searchError = signal('');
+  private searchMessageTimer?: number;
+  readonly showBackToTop = signal(window.scrollY > 480);
+  readonly backToTopBottom = signal(20);
+  private pageResize?: ResizeObserver;
   readonly filterCount = computed(() => this.category().length + this.room().length + Number(!!this.minimum()) + Number(!!this.maximum()) + Number(this.sort() !== 'relevance'));
   readonly sort = signal(initial.get('sort') || 'relevance');
   readonly quantity = signal<number | null>(1);
   readonly added = signal('');
-  readonly isAdmin = window.location.pathname.replace(/\/$/, '') === '/admin';
+  readonly isAdmin = ['/admin','/staff'].includes(window.location.pathname.replace(/\/$/, ''));
+  readonly isCheckoutPage = window.location.pathname.replace(/\/$/, '') === '/checkout';
   readonly isProductPage = window.location.pathname.startsWith('/products/');
   private readonly productId = /^\/products\/(\d+)\/?$/.exec(window.location.pathname)?.[1];
   private readonly catalogue = inject(CatalogueService);
@@ -84,6 +90,38 @@ export class AppComponent implements OnInit {
     if (this.isCartPage()) void this.cart.refresh();
     window.addEventListener('popstate', () => window.location.reload());
   }
+  ngAfterViewInit() {
+    this.pageResize = new ResizeObserver(() => this.updateScrollControls());
+    this.pageResize.observe(document.body);
+  }
+  @HostListener('window:scroll')
+  updateScrollPosition() {
+    this.clearSearchMessage();
+    this.updateScrollControls();
+  }
+  @HostListener('window:resize')
+  updateScrollControls() {
+    this.showBackToTop.set(window.scrollY > 480);
+    const footerTop = document.querySelector('footer')?.getBoundingClientRect().top ?? window.innerHeight;
+    this.backToTopBottom.set(Math.min(window.innerHeight - 80, Math.max(20, window.innerHeight - footerTop + 16)));
+  }
+  private scrollBehaviour(): ScrollBehavior {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
+  }
+  exploreCollection(event: MouseEvent) {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const target = document.getElementById('collection-products');
+    if (!target) return;
+    event.preventDefault();
+    window.history.replaceState(null, '', window.location.pathname + window.location.search + '#collection-products');
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ behavior: this.scrollBehaviour(), block: 'start' });
+  }
+  backToTop() {
+    document.getElementById('page-top')?.focus({ preventScroll: true });
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    window.scrollTo({ top: 0, behavior: this.scrollBehaviour() });
+  }
   private checkAdminSession() {
     this.http.get('/api/admin/session').subscribe({
       next: () => this.adminSignedIn.set(true),
@@ -106,13 +144,38 @@ export class AppComponent implements OnInit {
       error: () => { this.error.set('We could not load the catalogue. Please try again.'); this.loading.set(false); }
     });
   }
+  ngOnDestroy() {
+    this.pageResize?.disconnect();
+    window.clearTimeout(this.searchMessageTimer);
+  }
+  clearSearchMessage() {
+    window.clearTimeout(this.searchMessageTimer);
+    this.searchMessageTimer = undefined;
+    this.searchError.set('');
+  }
+  private showSearchMessage(message: string) {
+    this.clearSearchMessage();
+    this.searchError.set(message);
+    this.searchMessageTimer = window.setTimeout(() => this.clearSearchMessage(), 5000);
+  }
+  @HostListener('document:keydown.escape')
+  dismissSearchError() {
+    if (!this.searchError()) return;
+    this.clearSearchMessage();
+    document.getElementById('header-search')?.focus({ preventScroll: true });
+  }
   submitSearch(value: string) {
     const term = value.trim();
-    if (term.length === 1) {
-      this.searchError.set('Enter at least 2 characters to search.');
+    if (!term) {
+      this.showSearchMessage('Try a product name or material, like cotton or linen.');
+      document.getElementById('header-search')?.focus({ preventScroll: true });
       return;
     }
-    this.searchError.set('');
+    if (term.length === 1) {
+      this.showSearchMessage('Enter at least 2 characters to search.');
+      return;
+    }
+    this.clearSearchMessage();
     const query = new URLSearchParams();
     if (term) query.set('search', term);
     // Explicit navigation is needed because Angular intercepts form submits.
@@ -159,6 +222,11 @@ export class AppComponent implements OnInit {
     const p = this.product(), v = this.chosenVariant(), qty = this.quantity();
     if (!p || !v?.stock || !qty || this.quantityError()) return;
     if (await this.cart.add(p.id,v.id,qty,p.priceCents)) this.added.set(`Added ${p.name}, ${this.size()}, ${this.colour()} to your cart.`);
+  }
+  async updateCartQuantity(variantId: number, field: HTMLInputElement) {
+    await this.cart.update(variantId, field.valueAsNumber);
+    const item = this.cart.items().find(line => line.variantId === variantId);
+    if (item) field.value = String(item.qty);
   }
   openCart(event: Event) {
     event.preventDefault(); this.isCartPage.set(true); this.added.set('');

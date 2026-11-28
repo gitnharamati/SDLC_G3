@@ -76,7 +76,7 @@ test('product and variant identifiers survive deletion and SQLite reconnection w
   }finally{db.close();rmSync(folder,{recursive:true,force:true});}
 });
 test('migration preserves existing products, photos and stock on repeated startups',()=>{
-  const db=openDatabase(':memory:');try{assert.equal(db.prepare('PRAGMA user_version').get().user_version,3);assert.equal(getProducts(db).length,3);assert.equal(getProducts(db)[0].variants[0].stock,12);}finally{db.close();}
+  const db=openDatabase(':memory:');try{assert.equal(db.prepare('PRAGMA user_version').get().user_version,4);assert.equal(getProducts(db).length,3);assert.equal(getProducts(db)[0].variants[0].stock,12);}finally{db.close();}
 });
 test('sign-in failures are isolated by username and trusted client, and lock for fifteen minutes from the fifth failure',async t=>{
   const {post}=await start(t,undefined,{trustProxyHops:1});

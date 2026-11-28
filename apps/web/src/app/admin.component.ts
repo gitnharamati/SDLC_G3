@@ -1,3 +1,4 @@
+import { StaffWorkspaceComponent } from './staff-workspace.component';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductManagerComponent } from './product-manager.component';
@@ -6,18 +7,18 @@ import { ProductEditorComponent } from './product-editor.component';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [ProductEditorComponent, ProductManagerComponent],
+  imports: [ProductEditorComponent, ProductManagerComponent, StaffWorkspaceComponent],
   template: `
     <main id="main-content" tabindex="-1" class="admin-shell" [class.admin-workspace]="editorOpened()">
       <section class="admin-card" aria-labelledby="admin-title">
         <a class="back-link" href="/">← Back to shop</a>
         <p class="eyebrow">✦ &nbsp; Store access</p>
-        <h1 id="admin-title">Admin area</h1>
+        <h1 id="admin-title">Staff portal</h1>
         @if (busy() && !loaded()) {
           <p role="status">Checking sign-in…</p>
         } @else if (signedIn()) {
           <p class="admin-status" role="status">You’re signed in as an admin.</p>
-          <button type="button" (click)="logout()" [disabled]="busy() || savingProduct() || managerBusy()">Sign out</button>
+          <button type="button" (click)="logout()" [disabled]="busy() || savingProduct() || managerBusy() || staffBusy()">Sign out</button>
         } @else {
           <form (submit)="login($event, password, username)">
             <label for="admin-username">Admin username</label><input id="admin-username" #username value="admin" type="text" required maxlength="64" autocomplete="username">
@@ -30,11 +31,14 @@ import { ProductEditorComponent } from './product-editor.component';
         @if (error()) { <p class="admin-error" role="alert">{{ error() }}</p> }
       </section>
       @if (editorOpened()) {
+        <app-staff-workspace [panel]="activePanel()" [canSave]="signedIn() && !busy() && !savingProduct() && !managerBusy()" [refreshToken]="productsRefresh()" (panelChanged)="changePanel($event)" (sessionEnded)="handleExpiredSession()" (busyChanged)="staffBusy.set($event)" />
+        <div class="staff-products" [hidden]="activePanel()!=='products'">
         <app-product-editor [canSave]="signedIn() && !busy() && !managerBusy()"
           (sessionEnded)="handleExpiredSession()" (savingChanged)="savingProduct.set($event)"
           (productSaved)="productsRefresh.update(nextRefresh)" (editRequested)="manager.openById($event)" />
         <app-product-manager #manager [canSave]="signedIn() && !busy() && !savingProduct()" [refreshToken]="productsRefresh()"
           (sessionEnded)="handleExpiredSession()" (busyChanged)="managerBusy.set($event)" />
+        </div>
       }
     </main>
   `
@@ -42,6 +46,9 @@ import { ProductEditorComponent } from './product-editor.component';
 export class AdminComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly headers = { 'X-Admin-Request': '1' };
+  readonly staffBusy = signal(false);
+  readonly activePanel = signal('overview');
+  changePanel(panel:string) { if(panel==='products')this.productsRefresh.update(this.nextRefresh); this.activePanel.set(panel); }
   readonly signedIn = signal(false);
   readonly editorOpened = signal(false);
   readonly savingProduct = signal(false);
@@ -78,7 +85,7 @@ export class AdminComponent implements OnInit {
     this.error.set('Your session has ended. Your changes are kept on this page. Sign in again, then save.');
   }
   logout() {
-    if (this.savingProduct() || this.managerBusy()) return;
+    if (this.savingProduct() || this.managerBusy() || this.staffBusy()) return;
     this.busy.set(true);
     this.error.set('');
     this.http.post('/api/admin/logout', {}, { headers: this.headers }).subscribe({

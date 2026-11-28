@@ -1,0 +1,47 @@
+<section class="staff-workspace" aria-label="Staff dashboard">
+  <nav class="staff-tabs" aria-label="Staff sections">
+    @for (tab of ['overview','products','inventory','orders','payments']; track tab) { <button type="button" [disabled]="busy() || !canSave()" [attr.aria-pressed]="panel()===tab" (click)="choose(tab)">{{ tab === 'overview' ? 'Overview' : tab === 'products' ? 'Products' : tab === 'inventory' ? 'Inventory' : tab === 'orders' ? 'Orders' : 'Test payments' }}</button> }
+  </nav>
+  @if (panel()!=='products') {
+    <div class="staff-panel">
+      <div class="staff-panel-heading"><div><p class="eyebrow">Store management</p><h2>{{ panel()==='overview'?'Your store at a glance':panel()==='inventory'?'Inventory':panel()==='orders'?'Orders':'Test payments' }}</h2></div><button type="button" class="small-button secondary-button" [disabled]="loading()||busy()||!canSave()" (click)="load()">Refresh</button></div>
+      @if (loading()) { <p role="status">Loading the latest store data…</p> }
+      @if (error()) { <p class="admin-error" role="alert">{{ error() }}</p> }
+      @if (message()) { <p class="admin-status" role="status">{{ message() }}</p> }
+      @if (data(); as store) {
+        @if (panel()==='overview') {
+          <div class="metric-grid">
+            <button type="button" (click)="metric('products')"><span>Products</span><strong>{{ store.metrics.products }}</strong><small>Manage the catalogue ↗</small></button>
+            <button type="button" (click)="metric('inventory')"><span>Units in stock</span><strong>{{ store.metrics.units }}</strong><small>Across all combinations ↗</small></button>
+            <button type="button" (click)="metric('inventory','low')"><span>Low stock</span><strong>{{ store.metrics.low }}</strong><small>1–5 units per combination ↗</small></button>
+            <button type="button" (click)="metric('inventory','out')"><span>Out of stock</span><strong>{{ store.metrics.out }}</strong><small>Combinations at zero ↗</small></button>
+            <button type="button" (click)="metric('orders')"><span>Total test orders</span><strong>{{ store.metrics.orders }}</strong><small>{{ store.metrics.attention }} not yet delivered ↗</small></button>
+            <button type="button" (click)="metric('payments')"><span>Payment issues</span><strong>{{ store.metrics.paymentProblems }}</strong><small>Review simulated results ↗</small></button>
+          </div>
+          <h3>Latest orders</h3>
+          @for (o of store.orders.slice(0,5); track o.id) { <div class="staff-list-row"><div><strong>{{ o.orderNumber }}</strong><p>{{ o.customer.fullName }} · {{ o.status }}</p></div><button type="button" class="small-button" (click)="choose('orders');openOrder(o.id)">View order</button></div> } @empty { <p class="staff-empty">No orders yet. Placed test orders will appear here.</p> }
+        }
+        @if (panel()==='inventory') {
+          <div class="staff-controls"><label>Find stock<input type="search" placeholder="Product, size, colour or SKU" [ngModel]="query()" (ngModelChange)="query.set($event)"></label><label>Stock level<select [ngModel]="inventoryFilter()" (ngModelChange)="inventoryFilter.set($event)"><option value="all">All combinations</option><option value="low">Low stock · 1–5 units</option><option value="out">Out of stock</option></select></label></div>
+          @if (adjustment(); as row) { <form class="stock-adjustment" (ngSubmit)="saveStock()"><h3>Adjust {{ row.name }}</h3><p>@for (o of row.options; track o.name) { {{ o.name }}: {{ o.value }} · } Current stock: {{ row.stock }}</p><label>New stock quantity<input name="adjustedStock" type="number" min="0" max="999999" step="1" required [(ngModel)]="quantity" [disabled]="busy()"></label><label>Reason for adjustment<input name="reason" required minlength="3" maxlength="200" [(ngModel)]="reason" placeholder="For example, new delivery" [disabled]="busy()"></label><div class="staff-actions"><button [disabled]="busy()||!canSave()">Save stock adjustment</button><button type="button" class="secondary-button" [disabled]="busy()" (click)="adjustment.set(null)">Cancel</button></div></form> }
+          <div class="staff-table-scroll" tabindex="0" role="region" aria-label="Inventory table"><table class="staff-table"><thead><tr><th>Product</th><th>Size and colour</th><th>Stock</th><th>Availability</th><th>Action</th></tr></thead><tbody>@for (row of inventory(); track row.variantId) { <tr><td>{{ row.name }}<small>{{ row.sku }}</small></td><td>@for (o of row.options; track o.name) { <span class="option-line">{{ o.name }}: {{ o.value }}</span> }</td><td><span class="stock-badge" [class.stock-warning]="row.stock<=5">{{ row.stock }}</span></td><td>{{ !row.available?'Hidden':row.stock===0?'Out of stock':row.stock<=5?'Low stock':'In stock' }}</td><td><button type="button" class="small-button secondary-button" [disabled]="busy()||!canSave()" (click)="adjust(row)" [attr.aria-label]="'Adjust stock for '+row.sku">Adjust</button></td></tr> } @empty { <tr><td colspan="5">No matching stock combinations.</td></tr> }</tbody></table></div>
+          <h3>Recent stock adjustments</h3>@for (a of store.adjustments.slice(0,10); track a.id) { <p class="staff-history">{{ a.product_name }} · {{ a.previous_stock }} → {{ a.new_stock }} · {{ a.reason }}<small>{{ a.actor }} · {{ a.created_at | date:'medium' }}</small></p> } @empty { <p>No manual adjustments recorded yet.</p> }
+        }
+        @if (panel()==='orders') {
+          <div class="staff-controls"><label>Find an order<input type="search" placeholder="Order number or customer name" [ngModel]="query()" (ngModelChange)="query.set($event)"></label><label>Order status<select [ngModel]="orderFilter()" (ngModelChange)="orderFilter.set($event)"><option value="all">All statuses</option>@for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }</select></label></div>
+          @if (detail(); as o) {
+            <section class="order-detail" aria-labelledby="order-detail-title"><div class="staff-panel-heading"><div><h3 id="order-detail-title">{{ o.orderNumber }}</h3><p>{{ o.status }} · {{ o.paymentFlag || 'Payment simulation confirmed' }}</p></div><button type="button" class="small-button secondary-button" (click)="detail.set(null)">Close order</button></div><p>{{ o.customer.fullName }} · {{ o.customer.email || o.customer.mobile }}</p><p>{{ o.customer.address1 }} {{ o.customer.address2 }}<br>{{ o.customer.city }}, {{ o.customer.province }} {{ o.customer.postalCode }}</p>@if (o.customer.notes) { <p>Delivery notes: {{ o.customer.notes }}</p> }
+              @for (line of o.lines; track line.variantId) { <div class="staff-list-row"><div><strong>{{ line.name }}</strong><p>@for (option of line.options; track option.name) { {{ option.name }}: {{ option.value }} · } Qty {{ line.qty }}</p></div><span>{{ line.lineCents/100 | currency:'CAD':'symbol-narrow' }}</span></div> }<p class="order-total">Total: {{ o.totalCents/100 | currency:'CAD':'symbol-narrow' }} CAD</p>
+              @if (o.nextEvent) { <label>Optional event note<input maxlength="200" [(ngModel)]="eventNote" [disabled]="busy()"></label><button type="button" [disabled]="busy()||!canSave()" (click)="event()">{{ eventNames[o.nextEvent] }}</button> } @else { <p>{{ o.status==='Received'?'Waiting for payment confirmation.':'Delivered. No further shipping events.' }}</p> }
+              @if (o.paymentFlag==='Payment check pending') { <button type="button" [disabled]="busy()||!canSave()" (click)="checkPayment()">Check payment again</button> }
+              <h3>Order history</h3>@for (h of o.history; track $index) { <p class="staff-history">{{ h.event }} · {{ h.old_status ? h.old_status+' → ' : '' }}{{ h.new_status }}<small>{{ h.actor }} · {{ h.created_at | date:'medium' }} · {{ h.note }}</small></p> }
+              <h3>Payment attempts</h3>@for (a of o.payments; track a.attempt_no) { <p>Attempt {{ a.attempt_no }} · {{ a.result }} · {{ a.reference || 'No reference' }}</p> }
+            </section>
+          }
+          @for (o of orders(); track o.id) { <div class="staff-list-row"><div><strong>{{ o.orderNumber }}</strong><p>{{ o.customer.fullName }} · {{ o.customer.email || o.customer.mobile }}</p><small>{{ o.createdAt | date:'medium' }} · {{ o.status }}@if (o.paymentFlag) { · {{ o.paymentFlag }} }</small></div><div><p>{{ o.totalCents/100 | currency:'CAD':'symbol-narrow' }}</p><button type="button" class="small-button" (click)="openOrder(o.id)" [attr.aria-label]="'Open order '+o.orderNumber">Open</button></div></div> } @empty { <p class="staff-empty">No matching orders.</p> }
+        }
+        @if (panel()==='payments') { <p class="admin-status">Test payments only. No money is charged and no card details are collected.</p><p>Simulator setting: {{ store.paymentMode }}. Production uses successful simulated payments.</p><div class="staff-table-scroll" tabindex="0" role="region" aria-label="Test payments table"><table class="staff-table"><thead><tr><th>Order</th><th>Test amount</th><th>Result</th><th>Action</th></tr></thead><tbody>@for (o of store.orders; track o.id) { <tr><td>{{ o.orderNumber }}</td><td>{{ o.totalCents/100 | currency:'CAD':'symbol-narrow' }}</td><td>{{ o.paymentFlag || 'Simulated payment confirmed' }}</td><td><button type="button" class="small-button secondary-button" (click)="choose('orders');openOrder(o.id)">View attempts</button></td></tr> } @empty { <tr><td colspan="4">No test payments yet.</td></tr> }</tbody></table></div> }
+      }
+    </div>
+  }
+</section>
